@@ -24,7 +24,7 @@ namespace TrackYourLife.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            DiRegistrator.Register(services);
+            DiContainer.AddCustomServices(services);
 
             services.AddMvc();
         }

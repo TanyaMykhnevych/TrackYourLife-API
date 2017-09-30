@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TrackYourLife.API.Data.Repositories
+namespace BusinessLayer.Services.Abstractions
 {
-    public interface IValuesRepository
+    public interface IValuesService
     {
     }
 }

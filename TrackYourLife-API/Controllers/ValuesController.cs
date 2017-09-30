@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using TrackYourLife.API.Business.Services;
+using BusinessLayer.Services.Abstractions;
 
 namespace TrackYourLife.API.Controllers
 {

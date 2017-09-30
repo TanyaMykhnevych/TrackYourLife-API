@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using TrackYourLife.API.Data.Repositories;
+﻿using BusinessLayer.Services.Abstractions;
+using DataLayer.Repositories.Abstractions;
 
-namespace TrackYourLife.API.Business.Services.Implementations
+namespace BusinessLayer.Services.Implementations
 {
     public class ValuesService : IValuesService
     {
