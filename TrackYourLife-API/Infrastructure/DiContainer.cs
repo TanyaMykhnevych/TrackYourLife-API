@@ -14,10 +14,13 @@ namespace TrackYourLife.API.Infrastructure
             // Data Layer
             services.AddDbContext<AppDbContext>();
             services.AddTransient<IValuesRepository, ValuesRepository>();
+            services.AddTransient<IUsersRepository, UsersRepository>();
 
 
             // Business Layer
             services.AddTransient<IValuesService, ValuesService>();
+            services.AddTransient<ITokensService, TokensService>();
+            services.AddTransient<IUsersService, UsersService>();
         }
     }
 }
