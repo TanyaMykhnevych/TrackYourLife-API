@@ -3,9 +3,6 @@ using DataLayer.Entities.Identity;
 using DataLayer.Repositories.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DataLayer.Repositories.Implementations
@@ -25,6 +22,17 @@ namespace DataLayer.Repositories.Implementations
                 .Include(u => u.UserRoles)
                     .ThenInclude(u => u.Role)
                 .SingleOrDefaultAsync(u => u.PasswordHash.Equals(passwordHash));
+        }
+
+        public User SaveUser(User user)
+        {
+            user.Created = DateTime.UtcNow;
+            user.CreatedBy = "Default";
+
+            user = _dbContext.Users.Update(user).Entity;
+            _dbContext.SaveChanges();
+
+            return user;
         }
     }
 }

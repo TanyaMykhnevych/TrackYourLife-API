@@ -13,14 +13,20 @@ namespace TrackYourLife.API.Infrastructure
         {
             // Data Layer
             services.AddDbContext<AppDbContext>();
-            services.AddTransient<IValuesRepository, ValuesRepository>();
             services.AddTransient<IUsersRepository, UsersRepository>();
+            services.AddTransient<IDonorOrganRequestRepository, DonorOrganRequestRepository>();
+            services.AddTransient<IOrganInfoRepository, OrganInfoRepository>();
+            services.AddTransient<IRolesRepository, RolesRepository>();
+            services.AddTransient<IClinicsRepository, ClinicsRepository>();
 
 
             // Business Layer
-            services.AddTransient<IValuesService, ValuesService>();
             services.AddTransient<ITokensService, TokensService>();
             services.AddTransient<IUsersService, UsersService>();
+            services.AddTransient<IDonorOrganRequestService, DonorOrganRequestService>();
+            services.AddTransient<IOrganInfoService, OrganInfoService>();
+            services.AddTransient<ITransplantOrgansService, TransplantOrgansService>();
+            services.AddTransient<IClinicsService, ClinicsService>();
         }
     }
 }

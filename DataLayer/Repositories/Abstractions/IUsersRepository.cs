@@ -6,5 +6,7 @@ namespace DataLayer.Repositories.Abstractions
     public interface IUsersRepository
     {
         Task<User> GetUserAsync(string username, string passwordHash);
+
+        User SaveUser(User user);
     }
 }

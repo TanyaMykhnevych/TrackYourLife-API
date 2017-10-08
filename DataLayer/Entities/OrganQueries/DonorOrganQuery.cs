@@ -15,7 +15,7 @@ namespace DataLayer.Entities.OrganQueries
         //TODO: Enum
         public int Status { get; set; }
 
-        public int? DonorInfoId { get; set; }
+        public int DonorInfoId { get; set; }
         public UserInfo DonorInfo { get; set; }
 
         public int OrganInfoId { get; set; }

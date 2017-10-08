@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace BusinessLayer.Helpers
+namespace Common.Utils
 {
     public static class PasswordHasher
     {
@@ -22,6 +23,13 @@ namespace BusinessLayer.Helpers
         public static bool IsPasswordEqualToHash(string pass, string hash)
         {
             return GetPasswordHash(pass).Equals(hash);
+        }
+
+        public static string GeneratePassword()
+        {
+            var x = Guid.NewGuid().ToString();
+            x = x.Replace("-", "");
+            return string.Join("", x.Take(8));
         }
     }
 }

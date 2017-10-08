@@ -1,8 +1,5 @@
 ﻿using DataLayer.Entities.Base;
 using DataLayer.Entities.OrganDelivery;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DataLayer.Entities.Organ
 {
