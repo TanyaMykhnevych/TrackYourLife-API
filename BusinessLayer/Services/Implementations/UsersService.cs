@@ -71,6 +71,8 @@ namespace BusinessLayer.Services.Implementations
                 throw;
             }
 
+            //TODO: send email with credentials to userInfo.Email
+
             return user;
         }
     }
