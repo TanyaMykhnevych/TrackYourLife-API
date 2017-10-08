@@ -7,6 +7,10 @@ namespace DataLayer.Repositories.Abstractions
 {
     public interface IPatientOrganQueriesRepository
     {
+        IList<PatientOrganQuery> GetAllPending();
+
+        IList<PatientOrganQuery> GetPendingByOrganInfo(int organInfoId);
+
         PatientOrganQuery GetById(int patientOrganQueryId);
 
         PatientOrganQuery Save(PatientOrganQuery patientOrganQuery);

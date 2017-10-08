@@ -2,6 +2,7 @@
 using DataLayer.Entities.OrganQueries;
 using DataLayer.DbContext;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace DataLayer.Repositories.Implementations
 {
@@ -12,6 +13,24 @@ namespace DataLayer.Repositories.Implementations
         public PatientOrganQueriesRepository(AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;
+        }
+
+        public IList<PatientOrganQuery> GetAllPending()
+        {
+            return _appDbContext
+                .PatientOrganQueries
+                //TODO: use valud from enum
+                .Where(x => x.Status == 100)
+                .ToList();
+        }
+
+        public IList<PatientOrganQuery> GetPendingByOrganInfo(int organInfoId)
+        {
+            return _appDbContext
+                .PatientOrganQueries
+                //TODO: use valud from enum
+                .Where(x => x.OrganInfoId == organInfoId && x.Status == 100)
+                .ToList();
         }
 
         public PatientOrganQuery GetById(int patientOrganQueryId)
