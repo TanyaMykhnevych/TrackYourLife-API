@@ -25,7 +25,7 @@ namespace DataLayer.DbContext
         public DbSet<DonorOrganQuery> DonorOrganQueries { get; set; }
         public DbSet<PatientOrganQuery> PatientOrganQueries { get; set; }
 
-        public DbSet<PatientQueueItem> PatientQueue { get; set; }
+        public DbSet<DonorMedicalExam> DonorMedicalExams { get; set; }
 
         public DbSet<Clinic> Clinics { get; set; }
 

@@ -23,5 +23,7 @@ namespace DataLayer.Entities.OrganQueries
 
         public int? TransplantOrganId { get; set; }
         public TransplantOrgan TransplantOrgan { get; set; }
+
+        public ICollection<DonorMedicalExam> DonorMedicalExams { get; set; }
     }
 }

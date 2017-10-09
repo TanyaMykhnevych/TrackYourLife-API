@@ -7,6 +7,8 @@ namespace DataLayer.Entities.Organ
     {
         public int Id { get; set; }
 
+        public string AdditionalInfo { get; set; }
+
         public int UserInfoId { get; set; }
         public virtual UserInfo UserInfo { get; set; }
 
