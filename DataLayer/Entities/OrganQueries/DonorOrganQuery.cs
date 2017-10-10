@@ -12,7 +12,7 @@ namespace DataLayer.Entities.OrganQueries
 
         public string Message { get; set; }
 
-        //TODO: Enum
+        // enum DonorRequestStatuses
         public int Status { get; set; }
 
         public int DonorInfoId { get; set; }

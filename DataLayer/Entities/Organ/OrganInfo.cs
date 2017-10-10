@@ -12,6 +12,6 @@ namespace DataLayer.Entities.Organ
 
         public string Description { get; set; }
 
-        public DateTime OutsideHumanPossibleTime { get; set; }
+        public TimeSpan OutsideHumanPossibleTime { get; set; }
     }
 }

@@ -15,7 +15,8 @@ namespace DataLayer.Entities.OrganQueries
         /// </summary>
         public int ClinicId { get; set; }
         public Clinic Clinic { get; set; }
-
+        
+        //TODO: need to implement
         public int Status { get; set; }
 
         public string Message { get; set; }

@@ -9,6 +9,9 @@ namespace DataLayer.Entities.Organ
 
         public string AdditionalInfo { get; set; }
 
+        // enum TransplantOrganStatuses
+        public int Status { get; set; }
+
         public int UserInfoId { get; set; }
         public virtual UserInfo UserInfo { get; set; }
 

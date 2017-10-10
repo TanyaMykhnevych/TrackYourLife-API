@@ -11,8 +11,10 @@ namespace DataLayer.Entities.OrganQueries
 
         public string Message { get; set; }
 
+        //TODO: need to implement enum
         public int Status { get; set; }
-        
+
+        // enum PatientQueryPriority
         public int Priority { get; set; }
 
         public int? PatientInfoId { get; set; }
