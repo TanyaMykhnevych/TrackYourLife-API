@@ -34,7 +34,12 @@ namespace BusinessLayer.Services.Implementations
             _transplantOrgansService = transplantOrgansService;
         }
 
-        public void RegisterDonorOrganRequest(DonorOrganRequestViewModel request)
+        public DonorOrganQuery GetById(int id)
+        {
+            return _donorOrganRequestRepository.GetById(id);
+        }
+
+        public void RegisterDonorOrganRequest(PatientOrganRequestViewModel request)
         {
             if (request == null)
             {
@@ -51,7 +56,7 @@ namespace BusinessLayer.Services.Implementations
             RegisterDonorOrganRequestInner(request);
         }
 
-        private void RegisterDonorOrganRequestInner(DonorOrganRequestViewModel request)
+        private void RegisterDonorOrganRequestInner(PatientOrganRequestViewModel request)
         { 
             var userInfo = new UserInfo()
             {
@@ -81,7 +86,7 @@ namespace BusinessLayer.Services.Implementations
             {
                 DonorInfoId = user.UserInfo.UserInfoId,
                 OrganInfoId = request.OrganInfoId,
-                Message = request.Message,
+                Message = request.AdditionalInfo,
                 Status = (int)DonorRequestStatuses.PendingMedicalExamination,
                 Created = DateTime.UtcNow,
                 //TODO: determine current user

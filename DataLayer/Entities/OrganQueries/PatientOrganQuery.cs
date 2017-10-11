@@ -23,7 +23,6 @@ namespace DataLayer.Entities.OrganQueries
         public int OrganInfoId { get; set; }
         public OrganInfo OrganInfo { get; set; }
 
-        public int? TransplantOrganId { get; set; }
-        public TransplantOrgan TransplantOrgan { get; set; }
+        public DonorOrganQuery DonorOrganQuery { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using DataLayer.Entities.Base;
 using DataLayer.Entities.OrganDelivery;
+using DataLayer.Entities.OrganQueries;
 
 namespace DataLayer.Entities.Organ
 {
@@ -14,6 +15,8 @@ namespace DataLayer.Entities.Organ
 
         public int UserInfoId { get; set; }
         public virtual UserInfo UserInfo { get; set; }
+        
+        public virtual DonorOrganQuery DonorOrganQuery { get; set; }
 
         public int OrganInfoId { get; set; }
         public OrganInfo OrganInfo { get; set; }

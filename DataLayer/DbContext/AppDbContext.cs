@@ -70,12 +70,18 @@ namespace DataLayer.DbContext
             modelBuilder.Entity<OrganDeliveryInfo>()
                 .HasOne(ot => ot.TransplantOrgan)
                 .WithOne(x => x.OrganDeliveryInfo)
-                .HasForeignKey<TransplantOrgan>(ot => ot.OrganDeliveryInfoId);
+                .HasForeignKey<TransplantOrgan>(ot => ot.OrganDeliveryInfoId)
+                .IsRequired(false);
 
             modelBuilder.Entity<DonorOrganQuery>()
                 .HasOne(ot => ot.DonorInfo)
                 .WithMany()
                 .HasForeignKey(ot => ot.DonorInfoId);
+            
+            modelBuilder.Entity<DonorOrganQuery>()
+                .HasOne(ot => ot.PatientOrganQuery)
+                .WithOne()
+                .IsRequired(false);
 
             modelBuilder.Entity<PatientOrganQuery>()
                 .HasOne(ot => ot.PatientInfo)

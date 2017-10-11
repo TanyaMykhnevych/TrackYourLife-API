@@ -11,15 +11,18 @@ namespace BusinessLayer.Services.Implementations
 {
     public class PatientOrganRequestService : IPatientOrganRequestService
     {
+        private readonly IDonorOrganRequestService _donorOrganRequestService;
         private readonly IPatientOrganQueriesRepository _patientOrganQueriesRepository;
         private readonly IOrganInfoService _organInfoService;
 
         public PatientOrganRequestService(
             IPatientOrganQueriesRepository patientOrganQueriesRepository,
-            IOrganInfoService organInfoService)
+            IOrganInfoService organInfoService,
+            IDonorOrganRequestService donorOrganRequestService)
         {
             _patientOrganQueriesRepository = patientOrganQueriesRepository;
             _organInfoService = organInfoService;
+            _donorOrganRequestService = donorOrganRequestService;
         }
 
         public void AddPatientOrganQueryToQueue(PatientOrganQuery patientOrganQuery)
@@ -62,7 +65,7 @@ namespace BusinessLayer.Services.Implementations
             //TODO: send email to clinic that query status has been changed
         }
 
-        public void SetTransplantOrganToPatient(int patientOrganQueryId, TransplantOrgan transplantOrgan)
+        public void AssignToDonorOrganQuery(int patientOrganQueryId, int donorOrganQueryId)
         {
             PatientOrganQuery patientOrganQuery = _patientOrganQueriesRepository.GetById(patientOrganQueryId);
             if (patientOrganQuery == null)
@@ -70,27 +73,20 @@ namespace BusinessLayer.Services.Implementations
                 throw new ArgumentException(nameof(patientOrganQueryId));
             }
 
-            if (transplantOrgan == null)
+            //TODO: get PURE entity
+            DonorOrganQuery donorOrganQuery = _donorOrganRequestService.GetById(donorOrganQueryId);
+            if (donorOrganQuery == null)
             {
-                throw new ArgumentException(nameof(transplantOrgan));
+                throw new ArgumentException(nameof(donorOrganQueryId));
             }
 
-            if (!Enum.IsDefined(typeof(PatientQueryPriority), patientOrganQuery.Priority))
-            {
-                patientOrganQuery.Priority = (int)PatientQueryPriority.Normal;
-            }
-
-            //TODO: determine current user
-            transplantOrgan.CreatedBy = "Default";
-            transplantOrgan.Created = DateTime.UtcNow;
-
-            patientOrganQuery.TransplantOrgan = transplantOrgan;
+            patientOrganQuery.DonorOrganQuery = donorOrganQuery;
             patientOrganQuery.Status = (int)PatientQueryStatuses.AwaitingForTransplanting;
 
-            //TODO: check that transplant organ will be saved
+            //TODO: check if donorOrganQuery saved 
             _patientOrganQueriesRepository.Update(patientOrganQuery);
 
-            //TODO: send email to clinic that query status has been changed
+            //TODO: send email to clinic/patient/donor that query status has been changed
         }
     }
 }

@@ -38,7 +38,7 @@ namespace BusinessLayer.Services.Implementations
         private IList<PatientOrganQuery> SortQueue(IList<PatientOrganQuery> organQueries)
         {
             return organQueries
-                .OrderBy(x => x.Priority)
+                .OrderByDescending(x => x.Priority)
                 .ThenBy(x => x.Id)
                 .ToList();
         }

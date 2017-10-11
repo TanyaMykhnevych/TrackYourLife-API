@@ -1,4 +1,6 @@
-﻿using BusinessLayer.Services.Abstractions;
+﻿using BusinessLayer.Models.ViewModels;
+using BusinessLayer.Models.ViewModels.Patient;
+using BusinessLayer.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -15,6 +17,26 @@ namespace TrackYourLife.API.Controllers
             IPatientOrganRequestService patientOrganRequestService)
         {
             _patientOrganRequestService = patientOrganRequestService;
+        }
+
+        [HttpGet]
+        public IActionResult GetPatientRequest(int patientRequestId)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpPost]
+        public IActionResult CreatePatientRequest(PatientOrganRequestViewModel model)
+        {
+            //TODO: create patient account, send credentials by email
+            //TODO: create PatientOrganQuery entity
+            throw new NotImplementedException();
+        }
+
+        [HttpPost]
+        public IActionResult AssignToDonorRequest(PatientToDonorViewModel model)
+        {
+            throw new NotImplementedException();
         }
     }
 }

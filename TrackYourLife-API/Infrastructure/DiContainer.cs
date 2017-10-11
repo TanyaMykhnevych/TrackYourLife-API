@@ -29,6 +29,7 @@ namespace TrackYourLife.API.Infrastructure
             services.AddTransient<IClinicsService, ClinicsService>();
             services.AddTransient<IPatientOrganRequestService, PatientOrganRequestService>();
             services.AddTransient<IPatientQueueService, PatientQueueService>();
+            services.AddTransient<IOrganTransportService, OrganTransportService>();
         }
     }
 }

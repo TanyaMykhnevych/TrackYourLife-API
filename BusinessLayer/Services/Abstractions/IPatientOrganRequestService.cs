@@ -10,6 +10,6 @@ namespace BusinessLayer.Services.Abstractions
 
         void ChangePatientOrganQueryStatus(int patientOrganQueryId, PatientQueryStatuses status);
 
-        void SetTransplantOrganToPatient(int patientOrganQueryId, TransplantOrgan transplantOrgan);
+        void AssignToDonorOrganQuery(int patientOrganQueryId, int donorOrganQueryId);
     }
 }

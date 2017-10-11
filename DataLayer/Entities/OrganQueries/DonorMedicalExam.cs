@@ -8,7 +8,7 @@ namespace DataLayer.Entities.OrganQueries
     {
         public int Id { get; set; }
 
-        public DateTime When { get; set; }
+        public DateTime ScheduledAt { get; set; }
         
         /// <summary>
         /// Where examination will be passed
@@ -16,10 +16,10 @@ namespace DataLayer.Entities.OrganQueries
         public int ClinicId { get; set; }
         public Clinic Clinic { get; set; }
         
-        //TODO: need to implement
+        //TODO: need to implement enum
         public int Status { get; set; }
 
-        public string Message { get; set; }
+        public string Results { get; set; }
 
         public int DonorOrganQueryId { get; set; }
         public DonorOrganQuery DonorOrganQuery { get; set; }
