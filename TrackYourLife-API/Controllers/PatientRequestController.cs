@@ -22,21 +22,26 @@ namespace TrackYourLife.API.Controllers
         [HttpGet]
         public IActionResult GetPatientRequest(int patientRequestId)
         {
-            throw new NotImplementedException();
+            //TODO: maybe need to use ViewModel
+            return Json(_patientOrganRequestService.GetById(patientRequestId));
         }
 
+        /// <summary>
+        /// Creates User/UserInfo for donor and sends email to donor
+        /// Creates new PatientOrganQuery for patient
+        /// </summary>
         [HttpPost]
         public IActionResult CreatePatientRequest(PatientOrganRequestViewModel model)
         {
-            //TODO: create patient account, send credentials by email
-            //TODO: create PatientOrganQuery entity
-            throw new NotImplementedException();
+            _patientOrganRequestService.AddPatientOrganQueryToQueue(model);
+            return Ok();
         }
 
         [HttpPost]
         public IActionResult AssignToDonorRequest(PatientToDonorViewModel model)
         {
-            throw new NotImplementedException();
+            _patientOrganRequestService.AssignToDonorOrganQuery(model.PatientOrganQueryId, model.DonorOrganQueryId);
+            return Ok();
         }
     }
 }

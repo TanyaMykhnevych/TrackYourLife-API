@@ -14,6 +14,10 @@ namespace TrackYourLife.API.Controllers
             _transportService = transportService;
         }
 
+        /// <summary>
+        /// Creates OrganDeliveryInfo and links it to TransplantOrgan 
+        /// (to TransplantOrgan of DonorOrganRequest which assigned to current PatientOrganRequest)
+        /// </summary>
         [HttpPost]
         public IActionResult ScheduleDelivery(ScheduleDeliveryViewModel model)
         {
@@ -21,6 +25,9 @@ namespace TrackYourLife.API.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Adds new delivery snapshot to OrganDeliveryInfo
+        /// </summary>
         [HttpPost]
         public IActionResult AttachOrganDeliverySnapshot(OrganStateSnapshotViewModel model)
         {

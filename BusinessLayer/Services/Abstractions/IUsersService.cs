@@ -9,5 +9,7 @@ namespace BusinessLayer.Services.Abstractions
         Task<User> GetUserByCredentialsAsync(string username, string password);
 
         User RegisterUserAsDonor(UserInfo userInfo);
+
+        User RegisterUserAsPatient(UserInfo donorInfo);
     }
 }

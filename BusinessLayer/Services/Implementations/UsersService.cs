@@ -32,14 +32,26 @@ namespace BusinessLayer.Services.Implementations
 
         public User RegisterUserAsDonor(UserInfo userInfo)
         {
+            Role patientRole = _rolesRepository.GetRoleByName(RolesConstants.Donor);
+            //TODO: send email about registration
+            return RegisterUser(userInfo, patientRole);
+        }
+
+        public User RegisterUserAsPatient(UserInfo userInfo)
+        {
+            Role patientRole = _rolesRepository.GetRoleByName(RolesConstants.Patient);
+            //TODO: send email about registration
+            return RegisterUser(userInfo, patientRole);
+        }
+
+        private User RegisterUser(UserInfo userInfo, Role role)
+        {
             //TODO: need to determine user
             string createdBy = "Default";
             DateTime created = DateTime.UtcNow;
 
             userInfo.Created = created;
             userInfo.CreatedBy = createdBy;
-
-            Role donorRole = _rolesRepository.GetRoleByName(RolesConstants.Donor);
 
             string password = PasswordHasher.GeneratePassword();
             string passwordHash = PasswordHasher.GetPasswordHash(password);
@@ -54,7 +66,7 @@ namespace BusinessLayer.Services.Implementations
                 {
                     new UserRole
                     {
-                        RoleId = donorRole.Id,
+                        RoleId = role.Id,
                         Created = created,
                         CreatedBy = createdBy
                     }

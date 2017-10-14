@@ -1,5 +1,7 @@
 ﻿using BusinessLayer.Models.Enums;
+using BusinessLayer.Models.ViewModels;
 using BusinessLayer.Services.Abstractions;
+using DataLayer.Entities;
 using DataLayer.Entities.Organ;
 using DataLayer.Entities.OrganQueries;
 using DataLayer.Repositories.Abstractions;
@@ -14,15 +16,18 @@ namespace BusinessLayer.Services.Implementations
         private readonly IDonorOrganRequestService _donorOrganRequestService;
         private readonly IPatientOrganQueriesRepository _patientOrganQueriesRepository;
         private readonly IOrganInfoService _organInfoService;
+        private readonly IUsersService _usersService;
 
         public PatientOrganRequestService(
             IPatientOrganQueriesRepository patientOrganQueriesRepository,
             IOrganInfoService organInfoService,
-            IDonorOrganRequestService donorOrganRequestService)
+            IDonorOrganRequestService donorOrganRequestService,
+            IUsersService usersService)
         {
             _patientOrganQueriesRepository = patientOrganQueriesRepository;
             _organInfoService = organInfoService;
             _donorOrganRequestService = donorOrganRequestService;
+            _usersService = usersService;
         }
 
         public PatientOrganQuery GetById(int patientOrganRequestId)
@@ -30,20 +35,43 @@ namespace BusinessLayer.Services.Implementations
             return _patientOrganQueriesRepository.GetById(patientOrganRequestId);
         }
 
-        public void AddPatientOrganQueryToQueue(PatientOrganQuery patientOrganQuery)
+        public void AddPatientOrganQueryToQueue(PatientOrganRequestViewModel model)
         {
-            bool isOrganInfoExist = _organInfoService.IfOrganInfoExists(patientOrganQuery.OrganInfoId);
+
+            bool isOrganInfoExist = _organInfoService.IfOrganInfoExists(model.OrganInfoId);
             if (!isOrganInfoExist)
             {
-                throw new ArgumentException(nameof(patientOrganQuery.OrganInfoId));
+                throw new ArgumentException(nameof(model.OrganInfoId));
             }
 
-            if (!Enum.IsDefined(typeof(PatientQueryPriority), patientOrganQuery.Priority))
+            if (!Enum.IsDefined(typeof(PatientQueryPriority), model.QueryPriority))
             {
-                patientOrganQuery.Priority = (int)PatientQueryPriority.Normal;
+                model.QueryPriority = PatientQueryPriority.Normal;
             }
 
-            patientOrganQuery.Status = (int)PatientQueryStatuses.AwaitingForDonor;
+            var donorInfo = new UserInfo()
+            {
+                FirstName = model.FirstName,
+                SecondName = model.SecondName,
+                Country = model.Country,
+                City = model.City,
+                AddressLine1 = model.AddressLine1,
+                AddressLine2 = model.AddressLine2,
+                Email = model.Email,
+                PhoneNumber = model.PhoneNumber,
+                ZipCode = model.ZipCode
+            };
+            //TODO: use transaction
+            var user = _usersService.RegisterUserAsPatient(donorInfo);
+
+            var patientOrganQuery = new PatientOrganQuery()
+            {
+                OrganInfoId = model.OrganInfoId,
+                PatientInfoId = user.UserInfo.UserInfoId,
+                Priority = (int)model.QueryPriority,
+                Message = model.AdditionalInfo,
+                Status = (int)PatientQueryStatuses.AwaitingForDonor
+            };
 
             _patientOrganQueriesRepository.Save(patientOrganQuery);
 

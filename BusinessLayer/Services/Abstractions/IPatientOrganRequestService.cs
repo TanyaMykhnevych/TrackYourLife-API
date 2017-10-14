@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Models.Enums;
+using BusinessLayer.Models.ViewModels;
 using DataLayer.Entities.Organ;
 using DataLayer.Entities.OrganQueries;
 
@@ -8,7 +9,7 @@ namespace BusinessLayer.Services.Abstractions
     {
         PatientOrganQuery GetById(int patientOrganRequestId);
 
-        void AddPatientOrganQueryToQueue(PatientOrganQuery patientOrganQuery);
+        void AddPatientOrganQueryToQueue(PatientOrganRequestViewModel patientOrganQueryViewModel);
 
         void ChangePatientOrganQueryStatus(int patientOrganQueryId, PatientQueryStatuses status);
 
