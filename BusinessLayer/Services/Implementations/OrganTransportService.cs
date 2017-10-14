@@ -11,17 +11,20 @@ namespace BusinessLayer.Services.Implementations
     public class OrganTransportService : IOrganTransportService
     {
         private readonly IOrganDeliveryRepository _organDeliveryRepository;
+        private readonly IOrganDeliverySnapshotsRepository _deliverySnapshotsRepository;
         private readonly ITransplantOrgansService _transplantOrgansService;
         private readonly IPatientOrganRequestService _patientOrganRequestService;
         private readonly IDonorOrganRequestService _donorOrganRequestService;
 
         public OrganTransportService(
             IOrganDeliveryRepository organDeliveryRepository,
+            IOrganDeliverySnapshotsRepository deliverySnapshotsRepository,
             ITransplantOrgansService transplantOrgansService,
             IPatientOrganRequestService patientOrganRequestService,
             IDonorOrganRequestService donorOrganRequestService)
         {
             _organDeliveryRepository = organDeliveryRepository;
+            _deliverySnapshotsRepository = deliverySnapshotsRepository;
             _transplantOrgansService = transplantOrgansService;
             _patientOrganRequestService = patientOrganRequestService;
             _donorOrganRequestService = donorOrganRequestService;
@@ -46,6 +49,20 @@ namespace BusinessLayer.Services.Implementations
 
             //TODO: check that deliveryInfo is saved
             _transplantOrgansService.Update(donorOrgan);
+        }
+
+        public void AddOrganDeliverySnapshot(OrganStateSnapshotViewModel model)
+        {
+            var snapshot = new OrganDataSnapshot()
+            {
+                OrganDeliveryId = model.OrganDeliveryInfoId,
+                Temperature = model.Temperature,
+                Time = model.Time,
+                Longitude = model.Longitude,
+                Altitude = model.Altitude
+            };
+
+            _deliverySnapshotsRepository.Add(snapshot);
         }
     }
 }

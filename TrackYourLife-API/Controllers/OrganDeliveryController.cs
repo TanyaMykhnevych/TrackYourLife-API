@@ -22,10 +22,10 @@ namespace TrackYourLife.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult AttachOrganDataSnapshot(OrganStateSnapshotViewModel model)
+        public IActionResult AttachOrganDeliverySnapshot(OrganStateSnapshotViewModel model)
         {
-            //TODO: create and attach entity to OrganDeliveryInfo
-            throw new NotImplementedException();
+            _transportService.AddOrganDeliverySnapshot(model);
+            return Ok();
         }
     }
 }

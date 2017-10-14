@@ -20,6 +20,7 @@ namespace TrackYourLife.API.Infrastructure
             services.AddTransient<IClinicsRepository, ClinicsRepository>();
             services.AddTransient<IMedicalExamsRepository, MedicalExamsRepository>();
             services.AddTransient<IOrganDeliveryRepository, OrganDeliveryRepository>();
+            services.AddTransient<IOrganDeliverySnapshotsRepository, OrganDeliverySnapshotsRepository>();
 
 
             // Business Layer

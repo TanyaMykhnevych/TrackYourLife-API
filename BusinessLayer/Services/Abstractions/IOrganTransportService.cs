@@ -8,5 +8,7 @@ namespace BusinessLayer.Services.Abstractions
     public interface IOrganTransportService
     {
         void ScheduleOrganDelivery(ScheduleDeliveryViewModel model);
+
+        void AddOrganDeliverySnapshot(OrganStateSnapshotViewModel model);
     }
 }
