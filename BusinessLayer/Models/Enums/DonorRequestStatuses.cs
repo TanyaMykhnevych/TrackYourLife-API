@@ -10,9 +10,9 @@ namespace BusinessLayer.Models.Enums
 
         ScheduledMedicalExamination = 200,
         FailedMedicalExamination = 300,
-        NeedToScheduleTimeForTransplanting = 400,
+        NeedToScheduleTimeForOrganRetrieving = 400,
 
-        AwaitingTransplanting = 500,
+        AwaitingOrganRetrieving = 500,
 
         FinishedSuccessfully = 600
     }

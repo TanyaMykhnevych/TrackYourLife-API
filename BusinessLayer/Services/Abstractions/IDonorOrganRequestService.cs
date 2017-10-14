@@ -12,10 +12,14 @@ namespace BusinessLayer.Services.Abstractions
     {
         DonorOrganQuery GetById(int id);
 
-        void RegisterDonorOrganRequest(PatientOrganRequestViewModel request);
+        void RegisterDonorOrganRequest(DonorOrganRequestViewModel request);
+
+        //TODO: maybe move to MedicalExamsService
+        void ScheduleMedicalExam(ScheduleMedicalExamViewModel model);
+
+        //TODO: maybe move to MedicalExamsService
+        void UpdateMedicalExamResults(MedicalExamResultViewModel model);
 
         void ChangeStatusTo(int donorRequestId, DonorRequestStatuses status);
-
-        void ChangeStatusAndFillTransplantOrgan(int donorRequestId, TransplantOrgan transplantOrgan);
     }
 }
