@@ -22,8 +22,8 @@ namespace TrackYourLife.API.Controllers
             var queue = _patientQueueService.GetPengingQueue();
             return Json(queue);
         }
-
-        public IActionResult GetPendingQueue(int organInfoId)
+        
+        public IActionResult GetPendingQueueByOrgan(int organInfoId)
         {
             var queue = _patientQueueService.GetPengingQueueByOrgan(organInfoId);
             return Json(queue);

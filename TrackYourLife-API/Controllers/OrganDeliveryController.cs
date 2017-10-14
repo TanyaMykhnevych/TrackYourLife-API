@@ -17,8 +17,8 @@ namespace TrackYourLife.API.Controllers
         [HttpPost]
         public IActionResult ScheduleDelivery(ScheduleDeliveryViewModel model)
         {
-            //TODO: create and attach entity to OrganDeliveryInfo
-            throw new NotImplementedException();
+            _transportService.ScheduleOrganDelivery(model);
+            return Ok();
         }
 
         [HttpPost]

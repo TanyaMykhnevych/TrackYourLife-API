@@ -16,5 +16,7 @@ namespace BusinessLayer.Models.ViewModels.Delivery
         public int DonorId { get; set; }
 
         public int PatientId { get; set; }
+
+        public int PatientOrganRequestId { get; set; }
     }
 }

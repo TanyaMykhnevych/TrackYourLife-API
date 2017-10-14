@@ -25,6 +25,11 @@ namespace BusinessLayer.Services.Implementations
             _donorOrganRequestService = donorOrganRequestService;
         }
 
+        public PatientOrganQuery GetById(int patientOrganRequestId)
+        {
+            return _patientOrganQueriesRepository.GetById(patientOrganRequestId);
+        }
+
         public void AddPatientOrganQueryToQueue(PatientOrganQuery patientOrganQuery)
         {
             bool isOrganInfoExist = _organInfoService.IfOrganInfoExists(patientOrganQuery.OrganInfoId);

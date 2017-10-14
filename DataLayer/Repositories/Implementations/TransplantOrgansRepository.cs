@@ -1,9 +1,8 @@
 ﻿using DataLayer.Repositories.Abstractions;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using DataLayer.Entities.Organ;
 using DataLayer.DbContext;
+using System.Linq;
 
 namespace DataLayer.Repositories.Implementations
 {
@@ -16,13 +15,30 @@ namespace DataLayer.Repositories.Implementations
             _appDbContext = appDbContext;
         }
 
-        public void Save(TransplantOrgan transplantOrgan)
+        public TransplantOrgan GetById(int transplantOrganId)
         {
-            //TODO: determine current user
+            return _appDbContext
+                .TransplantOrgans
+                .SingleOrDefault(x => x.Id == transplantOrganId);
+        }
+
+        public TransplantOrgan Save(TransplantOrgan transplantOrgan)
+        {
             transplantOrgan.CreatedBy = "Default";
             transplantOrgan.Created = DateTime.UtcNow;
 
-            _appDbContext.TransplantOrgans.Add(transplantOrgan);
+            var entity = _appDbContext.TransplantOrgans.Add(transplantOrgan).Entity;
+            _appDbContext.SaveChanges();
+
+            return entity;
+        }
+
+        public void Update(TransplantOrgan transplantOrgan)
+        {
+            transplantOrgan.Updated = DateTime.UtcNow;
+            transplantOrgan.UpdatedBy = "Default";
+
+            _appDbContext.TransplantOrgans.Update(transplantOrgan);
             _appDbContext.SaveChanges();
         }
     }

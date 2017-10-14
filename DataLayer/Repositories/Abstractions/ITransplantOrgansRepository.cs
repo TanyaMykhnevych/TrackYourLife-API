@@ -7,6 +7,10 @@ namespace DataLayer.Repositories.Abstractions
 {
     public interface ITransplantOrgansRepository
     {
-        void Save(TransplantOrgan transplantOrgan);
+        TransplantOrgan GetById(int transplantOrganId);
+
+        TransplantOrgan Save(TransplantOrgan transplantOrgan);
+
+        void Update(TransplantOrgan transplantOrgan);
     }
 }

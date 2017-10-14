@@ -3,6 +3,7 @@ using DataLayer.Entities.OrganQueries;
 using DataLayer.DbContext;
 using System.Linq;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataLayer.Repositories.Implementations
 {
@@ -35,7 +36,10 @@ namespace DataLayer.Repositories.Implementations
 
         public PatientOrganQuery GetById(int patientOrganQueryId)
         {
-            return _appDbContext.PatientOrganQueries.SingleOrDefault(x => x.Id == patientOrganQueryId);
+            return _appDbContext
+                .PatientOrganQueries
+                .Include(x => x.DonorOrganQuery)
+                .SingleOrDefault(x => x.Id == patientOrganQueryId);
         }
 
         public PatientOrganQuery Save(PatientOrganQuery patientOrganQuery)

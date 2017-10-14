@@ -7,6 +7,10 @@ namespace BusinessLayer.Services.Abstractions
 {
     public interface ITransplantOrgansService
     {
-        void Save(TransplantOrgan transplantOrgan);
+        TransplantOrgan GetById(int transplantOrganId);
+
+        TransplantOrgan Save(TransplantOrgan transplantOrgan);
+
+        void Update(TransplantOrgan transplantOrgan);
     }
 }

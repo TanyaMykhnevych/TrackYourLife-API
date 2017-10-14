@@ -16,9 +16,19 @@ namespace BusinessLayer.Services.Implementations
             _transplantOrgansRepository = transplantOrgansRepository;
         }
 
-        public void Save(TransplantOrgan transplantOrgan)
+        public TransplantOrgan GetById(int transplantOrganId)
         {
-            _transplantOrgansRepository.Save(transplantOrgan);
+            return _transplantOrgansRepository.GetById(transplantOrganId);
+        }
+
+        public TransplantOrgan Save(TransplantOrgan transplantOrgan)
+        {
+            return _transplantOrgansRepository.Save(transplantOrgan);
+        }
+
+        public void Update(TransplantOrgan transplantOrgan)
+        {
+            _transplantOrgansRepository.Update(transplantOrgan);
         }
     }
 }
