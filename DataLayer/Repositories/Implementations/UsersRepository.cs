@@ -20,8 +20,9 @@ namespace DataLayer.Repositories.Implementations
         {
             return _dbContext.Users
                 .Include(u => u.UserRoles)
-                    .ThenInclude(u => u.Role)
-                .SingleOrDefaultAsync(u => u.PasswordHash.Equals(passwordHash));
+                    .ThenInclude(ur => ur.Role)
+                .SingleOrDefaultAsync(u => u.Username.Equals(username, StringComparison.CurrentCultureIgnoreCase)
+                                        && u.PasswordHash.Equals(passwordHash));
         }
 
         public User SaveUser(User user)

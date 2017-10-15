@@ -9,6 +9,11 @@ namespace Common.Utils
     {
         public static string GetPasswordHash(string password)
         {
+            if (string.IsNullOrEmpty(password))
+            {
+                return string.Empty;
+            }
+
             byte[] bytes = Encoding.Unicode.GetBytes(password);
             SHA256Managed hashstring = new SHA256Managed();
             byte[] hash = hashstring.ComputeHash(bytes);

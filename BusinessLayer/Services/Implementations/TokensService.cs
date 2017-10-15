@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.Models;
 using BusinessLayer.Models.DTOs;
 using BusinessLayer.Services.Abstractions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -26,7 +27,8 @@ namespace BusinessLayer.Services.Implementations
             return new GeneratedTokenDTO
             {
                 AccessToken = encodedJwt,
-                Username = identity.Name
+                TokenType = JwtBearerDefaults.AuthenticationScheme,
+                ExpiresIn = (int)expires.TotalSeconds
             };
         }
 

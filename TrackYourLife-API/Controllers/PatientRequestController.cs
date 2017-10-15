@@ -1,14 +1,12 @@
 ﻿using BusinessLayer.Models.ViewModels;
 using BusinessLayer.Models.ViewModels.Patient;
 using BusinessLayer.Services.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace TrackYourLife.API.Controllers
 {
+    [Authorize]
     public class PatientRequestController : Controller
     {
         private readonly IPatientOrganRequestService _patientOrganRequestService;
@@ -37,6 +35,9 @@ namespace TrackYourLife.API.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Links DonorQuery to PatientQuery
+        /// </summary>
         [HttpPost]
         public IActionResult AssignToDonorRequest(PatientToDonorViewModel model)
         {

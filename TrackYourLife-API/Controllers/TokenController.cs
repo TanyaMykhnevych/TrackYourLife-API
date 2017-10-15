@@ -35,7 +35,7 @@ namespace TrackYourLife.API.Controllers
             var password = Request.Form["password"];
 
             User person = await _usersService.GetUserByCredentialsAsync(username, password);
-            if (person != null)
+            if (person == null)
             {
                 Response.StatusCode = 400;
                 await Response.WriteAsync("Invalid username or password.");
@@ -44,14 +44,9 @@ namespace TrackYourLife.API.Controllers
 
             ClaimsIdentity identity = person.GetIdentity();
             var accessToken = _tokensService.GenerateTokenForIdentity(identity, TimeSpan.FromMinutes(AuthOptions.LIFETIME));
-            var response = new
-            {
-                accessToken,
-                username = identity.Name
-            };
 
             Response.ContentType = "application/json";
-            string serializedResponse = JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented });
+            string serializedResponse = JsonConvert.SerializeObject(accessToken, new JsonSerializerSettings { Formatting = Formatting.Indented });
             await Response.WriteAsync(serializedResponse);
         }
     }

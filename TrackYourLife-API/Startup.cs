@@ -6,6 +6,8 @@ using TrackYourLife.API.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using BusinessLayer.Models;
+using Microsoft.AspNetCore.Authorization;
+using DataLayer.DbContext;
 
 namespace TrackYourLife.API
 {
@@ -22,6 +24,9 @@ namespace TrackYourLife.API
         public void ConfigureServices(IServiceCollection services)
         {
             DiContainer.AddCustomServices(services);
+
+            DbInitializer.Seed();
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
                     {
@@ -40,6 +45,14 @@ namespace TrackYourLife.API
                             ValidateIssuerSigningKey = true
                         };
                     });
+
+            // This is for the [Authorize] attributes.
+            services.AddAuthorization(auth => {
+                auth.DefaultPolicy = new AuthorizationPolicyBuilder()
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser()
+                    .Build();
+            });
 
             services.AddMvc();
         }

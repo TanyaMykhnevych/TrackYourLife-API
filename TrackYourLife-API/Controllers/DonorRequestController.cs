@@ -1,10 +1,12 @@
 ﻿using BusinessLayer.Models.Enums;
 using BusinessLayer.Models.ViewModels;
 using BusinessLayer.Services.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TrackYourLife.API.Controllers
 {
+    [Authorize]
     public class DonorRequestController : Controller
     {
         private readonly IDonorOrganRequestService _donorRequestService;
