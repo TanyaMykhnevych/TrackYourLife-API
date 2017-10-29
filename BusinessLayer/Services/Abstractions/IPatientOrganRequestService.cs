@@ -2,6 +2,7 @@
 using BusinessLayer.Models.ViewModels;
 using DataLayer.Entities.Organ;
 using DataLayer.Entities.OrganQueries;
+using System.Threading.Tasks;
 
 namespace BusinessLayer.Services.Abstractions
 {
@@ -9,7 +10,7 @@ namespace BusinessLayer.Services.Abstractions
     {
         PatientOrganQuery GetById(int patientOrganRequestId);
 
-        void AddPatientOrganQueryToQueue(PatientOrganRequestViewModel patientOrganQueryViewModel);
+        Task AddPatientOrganQueryToQueueAsync(PatientOrganRequestViewModel patientOrganQueryViewModel);
 
         void ChangePatientOrganQueryStatus(int patientOrganQueryId, PatientQueryStatuses status);
 

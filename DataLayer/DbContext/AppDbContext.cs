@@ -6,15 +6,13 @@ using DataLayer.Entities.OrganQueries;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace DataLayer.DbContext
 {
-    public class AppDbContext : Microsoft.EntityFrameworkCore.DbContext
+    public class AppDbContext : IdentityDbContext<AppUser>
     {
         public DbSet<UserInfo> UserInfos { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<Role> Roles { get; set; }
-        public DbSet<UserRole> UsersToRoles { get; set; }
 
         public DbSet<OrganInfo> OrganInfos { get; set; }
         public DbSet<TransplantOrgan> TransplantOrgans { get; set; }
@@ -42,13 +40,10 @@ namespace DataLayer.DbContext
             RemoveCascadeDeletingGlobally(modelBuilder);
 
 
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<AppUser>()
                 .HasOne(p => p.UserInfo)
-                .WithOne(i => i.User)
-                .HasForeignKey<UserInfo>(b => b.UserId);
-
-            modelBuilder.Entity<UserRole>()
-                .HasKey(ur => new { ur.RoleId, ur.UserId });
+                .WithOne(i => i.AppUser)
+                .HasForeignKey<UserInfo>(b => b.AppUserId);
 
             modelBuilder.Entity<OrganDeliveryInfo>()
                 .HasOne(ot => ot.Donor)

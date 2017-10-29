@@ -9,15 +9,14 @@ namespace TrackYourLife.API.Extensions
 {
     public static class UserExtensions
     {
-        public static ClaimsIdentity GetIdentity(this User user)
+        public static ClaimsIdentity GetIdentity(this AppUser user, string userRoles)
         {
             if (user == null) return null;
-
-            string rolesString = string.Join(", ", user.UserRoles.Select(x => x.Role.Name));
+            
             var claims = new List<Claim>
                 {
-                    new Claim(ClaimsIdentity.DefaultNameClaimType, user.Username),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, rolesString)
+                    new Claim(ClaimsIdentity.DefaultNameClaimType, user.UserName),
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, userRoles)
                 };
             ClaimsIdentity claimsIdentity =
                 new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);

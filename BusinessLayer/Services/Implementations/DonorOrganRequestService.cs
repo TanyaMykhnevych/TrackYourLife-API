@@ -1,11 +1,13 @@
 ﻿using BusinessLayer.Models.Enums;
 using BusinessLayer.Models.ViewModels;
 using BusinessLayer.Services.Abstractions;
+using Common.Constants;
 using DataLayer.Entities;
 using DataLayer.Entities.Identity;
 using DataLayer.Entities.Organ;
 using DataLayer.Entities.OrganQueries;
 using DataLayer.Repositories.Abstractions;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,23 +21,23 @@ namespace BusinessLayer.Services.Implementations
         private readonly IDonorOrganRequestRepository _donorOrganRequestRepository;
         private readonly IMedicalExamsRepository _medicalExamsRepository;
         private readonly IOrganInfoService _organInfoService;
-        private readonly IUsersService _usersService;
         private readonly IClinicsService _clinicsService;
+        private readonly UserManager<AppUser> _userManager;
         private readonly ITransplantOrgansService _transplantOrgansService;
 
         public DonorOrganRequestService(
             IOrganInfoService organInfoService,
-            IUsersService usersService,
             IClinicsService clinicsService,
             ITransplantOrgansService transplantOrgansService,
             IDonorOrganRequestRepository donorOrganRequestRepository,
+            UserManager<AppUser> userManager,
             IMedicalExamsRepository medicalExamsRepository)
         {
             _donorOrganRequestRepository = donorOrganRequestRepository;
             _medicalExamsRepository = medicalExamsRepository;
             _organInfoService = organInfoService;
-            _usersService = usersService;
             _clinicsService = clinicsService;
+            _userManager = userManager;
             _transplantOrgansService = transplantOrgansService;
         }
 
@@ -61,7 +63,7 @@ namespace BusinessLayer.Services.Implementations
             RegisterDonorOrganRequestInner(request);
         }
 
-        private void RegisterDonorOrganRequestInner(DonorOrganRequestViewModel request)
+        private async void RegisterDonorOrganRequestInner(DonorOrganRequestViewModel request)
         {
             //TODO: use transaction here
 
@@ -79,10 +81,35 @@ namespace BusinessLayer.Services.Implementations
                 PhoneNumber = request.PhoneNumber
             };
 
-            User user;
+            AppUser user;
             try
             {
-                user = _usersService.RegisterUserAsDonor(userInfo);
+                user = new AppUser()
+                {
+                    Email = request.Email,
+                    UserName = request.Email,
+                    Created = DateTime.UtcNow,
+                    CreatedBy = "CurrentUser",
+                    EmailConfirmed = true,
+                    PhoneNumber = request.PhoneNumber,
+                    PhoneNumberConfirmed = true,
+                    UserInfo = userInfo
+                };
+                var result = await _userManager.CreateAsync(user);
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user, RolesConstants.Donor);
+
+                    var donorOrganRequest = new DonorOrganQuery
+                    {
+                        DonorInfoId = user.UserInfo.UserInfoId,
+                        OrganInfoId = request.OrganInfoId,
+                        Message = request.Message,
+                        Status = (int)DonorRequestStatuses.PendingMedicalExamination
+                    };
+
+                    _donorOrganRequestRepository.Save(donorOrganRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -90,16 +117,6 @@ namespace BusinessLayer.Services.Implementations
                 Debug.WriteLine(ex.Message);
                 throw;
             }
-
-            var donorOrganRequest = new DonorOrganQuery
-            {
-                DonorInfoId = user.UserInfo.UserInfoId,
-                OrganInfoId = request.OrganInfoId,
-                Message = request.Message,
-                Status = (int)DonorRequestStatuses.PendingMedicalExamination
-            };
-
-            _donorOrganRequestRepository.Save(donorOrganRequest);
         }
 
         public void ScheduleMedicalExam(ScheduleMedicalExamViewModel model)

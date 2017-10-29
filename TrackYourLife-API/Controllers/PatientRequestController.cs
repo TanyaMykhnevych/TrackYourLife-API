@@ -3,6 +3,7 @@ using BusinessLayer.Models.ViewModels.Patient;
 using BusinessLayer.Services.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace TrackYourLife.API.Controllers
 {
@@ -29,9 +30,9 @@ namespace TrackYourLife.API.Controllers
         /// Creates new PatientOrganQuery for patient
         /// </summary>
         [HttpPost]
-        public IActionResult CreatePatientRequest(PatientOrganRequestViewModel model)
+        public async Task<IActionResult> CreatePatientRequest(PatientOrganRequestViewModel model)
         {
-            _patientOrganRequestService.AddPatientOrganQueryToQueue(model);
+            await _patientOrganRequestService.AddPatientOrganQueryToQueueAsync(model);
             return Ok();
         }
 

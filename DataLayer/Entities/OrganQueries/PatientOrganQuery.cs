@@ -1,11 +1,12 @@
-﻿using DataLayer.Entities.Organ;
+﻿using DataLayer.Entities.Base;
+using DataLayer.Entities.Organ;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace DataLayer.Entities.OrganQueries
 {
-    public class PatientOrganQuery
+    public class PatientOrganQuery : BaseEntity
     {
         public int Id { get; set; }
 

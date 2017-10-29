@@ -21,7 +21,7 @@ namespace DataLayer.Entities
 
         public string PhoneNumber { get; set; }
 
-        public int UserId { get; set; }
-        public virtual User User { get; set; }
+        public string AppUserId { get; set; }
+        public virtual AppUser AppUser { get; set; }
     }
 }

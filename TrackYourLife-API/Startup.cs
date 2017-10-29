@@ -8,6 +8,11 @@ using Microsoft.IdentityModel.Tokens;
 using BusinessLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using DataLayer.DbContext;
+using DataLayer.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
+using System;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace TrackYourLife.API
 {
@@ -25,7 +30,7 @@ namespace TrackYourLife.API
         {
             DiContainer.AddCustomServices(services);
 
-            DbInitializer.Seed();
+            services.AddScoped<IDbInitializer, DbInitializer>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
@@ -35,7 +40,7 @@ namespace TrackYourLife.API
                         {
                             ValidateIssuer = true,
                             ValidIssuer = AuthOptions.ISSUER,
-                            
+
                             ValidateAudience = false,
                             // ValidAudience = AuthOptions.AUDIENCE,
 
@@ -47,7 +52,8 @@ namespace TrackYourLife.API
                     });
 
             // This is for the [Authorize] attributes.
-            services.AddAuthorization(auth => {
+            services.AddAuthorization(auth =>
+            {
                 auth.DefaultPolicy = new AuthorizationPolicyBuilder()
                     .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
                     .RequireAuthenticatedUser()
@@ -58,7 +64,7 @@ namespace TrackYourLife.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {

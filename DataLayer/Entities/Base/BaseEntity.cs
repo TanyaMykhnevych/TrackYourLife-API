@@ -2,7 +2,7 @@
 
 namespace DataLayer.Entities.Base
 {
-    public class BaseEntity
+    public class BaseEntity : IBaseEntity
     {
         public string CreatedBy { get; set; }
         public DateTime Created { get; set; }

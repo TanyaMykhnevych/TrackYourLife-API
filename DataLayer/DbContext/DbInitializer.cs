@@ -3,6 +3,8 @@ using Common.Utils;
 using DataLayer.Entities;
 using DataLayer.Entities.Identity;
 using DataLayer.Entities.Organ;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,21 +12,35 @@ using System.Text;
 
 namespace DataLayer.DbContext
 {
-    public static class DbInitializer
+    public class DbInitializer : IDbInitializer
     {
-        public static void Seed()
-        {
-            AppDbContext dbContext = new AppDbContext();
+        private readonly AppDbContext _dbContext;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-            FillClinics(dbContext);
-            FillRoles(dbContext);
-            FillUsers(dbContext);
-            FillOrganInfos(dbContext);
+        public DbInitializer(
+            AppDbContext context,
+            UserManager<AppUser> userManager,
+            RoleManager<IdentityRole> roleManager)
+        {
+            _dbContext = context;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
-        private static void FillClinics(AppDbContext dbContext)
+        public void Initialize()
         {
-            if (!dbContext.Clinics.Any())
+            _dbContext.Database.EnsureCreated();
+
+            FillClinics();
+            FillRoles();
+            FillUsers();
+            FillOrganInfos();
+        }
+
+        private void FillClinics()
+        {
+            if (!_dbContext.Clinics.Any())
             {
                 var clinics = new List<Clinic>
                 {
@@ -73,175 +89,102 @@ namespace DataLayer.DbContext
                         Country = "Ukraine"
                     },
                 };
-                dbContext.Clinics.AddRange(clinics);
-                dbContext.SaveChanges();
+                _dbContext.Clinics.AddRange(clinics);
+                _dbContext.SaveChanges();
             }
         }
 
-        private static void FillRoles(AppDbContext dbContext)
+        private async void FillRoles()
         {
-            if (!dbContext.Roles.Any())
+            if (!_dbContext.Roles.Any())
             {
-                string createdBy = "Seed";
-                DateTime created = DateTime.UtcNow;
-                var roles = new List<Role>
-                {
-                    new Role
-                    {
-                        Name = RolesConstants.Administrator,
-                        Created = created,
-                        CreatedBy = createdBy
-                    },
-                    new Role
-                    {
-                        Name = RolesConstants.Donor,
-                        Created = created,
-                        CreatedBy = createdBy
-                    },
-                    new Role
-                    {
-                        Name = RolesConstants.Patient,
-                        Created = created,
-                        CreatedBy = createdBy
-                    },
-                    new Role
-                    {
-                        Name = RolesConstants.MedicalEmployee,
-                        Created = created,
-                        CreatedBy = createdBy
-                    }
-                };
-
-                dbContext.Roles.AddRange(roles);
-                dbContext.SaveChanges();
+                // TODO: add claims to roles
+                await _roleManager.CreateAsync(new IdentityRole(RolesConstants.Administrator));
+                await _roleManager.CreateAsync(new IdentityRole(RolesConstants.Donor));
+                await _roleManager.CreateAsync(new IdentityRole(RolesConstants.Patient));
+                await _roleManager.CreateAsync(new IdentityRole(RolesConstants.MedicalEmployee));
             }
         }
 
-        private static void FillUsers(AppDbContext dbContext)
+        private async void FillUsers()
         {
-            string createdBy = "Seed";
+
+            //Create the default Admin account and apply the Administrator role
+            string password = "Test123!";
+
             DateTime created = DateTime.UtcNow;
-            if (!dbContext.Users.Any())
+            string createdBy = "Seed";
+
+            string adminEmail = "admin1@test.com";
+            string patientEmail = "patient1@test.com";
+            string donorEmail = "donor1@test.com";
+            string medEmployeeEmail = "medEmployee1@test.com";
+
+            UserInfo adminUserInfo = new UserInfo
             {
-                Role adminRole = dbContext.Roles.SingleOrDefault(x => x.Name == RolesConstants.Administrator);
-                Role patientRole = dbContext.Roles.SingleOrDefault(x => x.Name == RolesConstants.Patient);
-                Role donorRole = dbContext.Roles.SingleOrDefault(x => x.Name == RolesConstants.Donor);
-                Role medEmployeeRole = dbContext.Roles.SingleOrDefault(x => x.Name == RolesConstants.MedicalEmployee);
+                Email = adminEmail,
+                Created = created,
+                CreatedBy = createdBy
+            };
+            await _userManager.CreateAsync(new AppUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true, UserInfo = adminUserInfo }, password);
+            await _userManager.AddToRoleAsync(await _userManager.FindByNameAsync(adminEmail), RolesConstants.Administrator);
 
-                string adminPassHash = PasswordHasher.GetPasswordHash("Test123!");
-                string patientPassHash = PasswordHasher.GetPasswordHash("Test123!");
-                string donorPassHash = PasswordHasher.GetPasswordHash("Test123!");
-                string medEmployeePassHash = PasswordHasher.GetPasswordHash("Test123!");
+            UserInfo patientUserInfo = new UserInfo
+            {
+                Email = patientEmail,
+                ZipCode = "60000",
+                Country = "Ukraine",
+                City = "Kharkiv",
+                FirstName = "First name 1",
+                SecondName = "Second name 1",
+                AddressLine1 = "Test address line 1 1",
+                AddressLine2 = "Test address line 2 1",
+                PhoneNumber = "+380991234567",
+                Created = created,
+                CreatedBy = createdBy
+            };
+            await _userManager.CreateAsync(new AppUser { UserName = patientEmail, Email = patientEmail, EmailConfirmed = true, UserInfo = patientUserInfo }, password);
+            await _userManager.AddToRoleAsync(await _userManager.FindByNameAsync(patientEmail), RolesConstants.Patient);
 
-                UserInfo adminUserInfo = new UserInfo
-                {
-                    Email = "admin1@test.com",
-                    Created = created,
-                    CreatedBy = createdBy
-                };
-                UserInfo patientUserInfo = new UserInfo
-                {
-                    Email = "patient1@test.com",
-                    ZipCode = "60000",
-                    Country = "Ukraine",
-                    City = "Kharkiv",
-                    FirstName = "First name 1",
-                    SecondName = "Second name 1",
-                    AddressLine1 = "Test address line 1 1",
-                    AddressLine2 = "Test address line 2 1",
-                    PhoneNumber = "+380991234567",
-                    Created = created,
-                    CreatedBy = createdBy
-                };
-                UserInfo donorUserInfo = new UserInfo
-                {
-                    Email = "donor1@test.com",
-                    ZipCode = "60000",
-                    Country = "Ukraine",
-                    City = "Kharkiv",
-                    FirstName = "First name 1 2",
-                    SecondName = "Second name 1 2",
-                    AddressLine1 = "Test address line 1 2",
-                    AddressLine2 = "Test address line 2 2",
-                    PhoneNumber = "+380991234890",
-                    Created = created,
-                    CreatedBy = createdBy
-                };
-                UserInfo medEmployeeUserInfo = new UserInfo
-                {
-                    Email = "medEmployee1@test.com",
-                    ZipCode = "60000",
-                    Country = "Ukraine",
-                    City = "Kharkiv",
-                    FirstName = "First name 1 3",
-                    SecondName = "Second name 1 3",
-                    AddressLine1 = "Test address line 1 3",
-                    AddressLine2 = "Test address line 2 3",
-                    PhoneNumber = "+380991245628",
-                    Created = created,
-                    CreatedBy = createdBy
-                };
 
-                var users = new List<User>
-                {
-                    new User
-                    {
-                        Username = "admin1@test.com",
-                        UserRoles = new List<UserRole>
-                        {
-                            new UserRole {Created = created, CreatedBy = createdBy, RoleId = adminRole.Id}
-                        },
-                        PasswordHash = adminPassHash,
-                        UserInfo = adminUserInfo,
-                        Created = created,
-                        CreatedBy = createdBy
-                    },
-                    new User
-                    {
-                        Username = "patient1@test.com",
-                        UserRoles = new List<UserRole>
-                        {
-                            new UserRole {Created = created, CreatedBy = createdBy, RoleId = patientRole.Id}
-                        },
-                        PasswordHash = patientPassHash,
-                        UserInfo = patientUserInfo,
-                        Created = created,
-                        CreatedBy = createdBy
-                    },
-                    new User
-                    {
-                        Username = "donor1@test.com",
-                        UserRoles = new List<UserRole>
-                        {
-                            new UserRole {Created = created, CreatedBy = createdBy, RoleId = donorRole.Id}
-                        },
-                        PasswordHash = donorPassHash,
-                        UserInfo = donorUserInfo,
-                        Created = created,
-                        CreatedBy = createdBy
-                    },
-                    new User
-                    {
-                        Username = "medEmployee1@test.com",
-                        UserRoles = new List<UserRole>
-                        {
-                            new UserRole {Created = created, CreatedBy = createdBy, RoleId = medEmployeeRole.Id}
-                        },
-                        PasswordHash = medEmployeePassHash,
-                        UserInfo = medEmployeeUserInfo,
-                        Created = created,
-                        CreatedBy = createdBy
-                    }
-                };
+            UserInfo donorUserInfo = new UserInfo
+            {
+                Email = "donor1@test.com",
+                ZipCode = "60000",
+                Country = "Ukraine",
+                City = "Kharkiv",
+                FirstName = "First name 1 2",
+                SecondName = "Second name 1 2",
+                AddressLine1 = "Test address line 1 2",
+                AddressLine2 = "Test address line 2 2",
+                PhoneNumber = "+380991234890",
+                Created = created,
+                CreatedBy = createdBy
+            };
+            await _userManager.CreateAsync(new AppUser { UserName = donorEmail, Email = donorEmail, EmailConfirmed = true, UserInfo = donorUserInfo }, password);
+            await _userManager.AddToRoleAsync(await _userManager.FindByNameAsync(donorEmail), RolesConstants.Donor);
 
-                dbContext.Users.AddRange(users);
-                dbContext.SaveChanges();
-            }
+            UserInfo medEmployeeUserInfo = new UserInfo
+            {
+                Email = medEmployeeEmail,
+                ZipCode = "60000",
+                Country = "Ukraine",
+                City = "Kharkiv",
+                FirstName = "First name 1 3",
+                SecondName = "Second name 1 3",
+                AddressLine1 = "Test address line 1 3",
+                AddressLine2 = "Test address line 2 3",
+                PhoneNumber = "+380991245628",
+                Created = created,
+                CreatedBy = createdBy
+            };
+            await _userManager.CreateAsync(new AppUser { UserName = medEmployeeEmail, Email = medEmployeeEmail, EmailConfirmed = true, UserInfo = medEmployeeUserInfo }, password);
+            await _userManager.AddToRoleAsync(await _userManager.FindByNameAsync(medEmployeeEmail), RolesConstants.MedicalEmployee);
         }
 
-        private static void FillOrganInfos(AppDbContext dbContext)
+        private void FillOrganInfos()
         {
-            if (!dbContext.OrganInfos.Any())
+            if (!_dbContext.OrganInfos.Any())
             {
                 var organs = new List<OrganInfo>
                 {
@@ -259,8 +202,8 @@ namespace DataLayer.DbContext
                      }
                 };
 
-                dbContext.OrganInfos.AddRange(organs);
-                dbContext.SaveChanges();
+                _dbContext.OrganInfos.AddRange(organs);
+                _dbContext.SaveChanges();
             }
         }
     }

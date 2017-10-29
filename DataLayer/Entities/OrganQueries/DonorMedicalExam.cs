@@ -1,10 +1,11 @@
-﻿using System;
+﻿using DataLayer.Entities.Base;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace DataLayer.Entities.OrganQueries
 {
-    public class DonorMedicalExam
+    public class DonorMedicalExam : BaseEntity
     {
         public int Id { get; set; }
 

@@ -1,10 +1,11 @@
-﻿using System;
+﻿using DataLayer.Entities.Base;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace DataLayer.Entities
 {
-    public class Clinic
+    public class Clinic : BaseEntity
     {
         public int Id { get; set; }
 

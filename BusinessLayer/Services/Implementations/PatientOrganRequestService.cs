@@ -1,13 +1,17 @@
 ﻿using BusinessLayer.Models.Enums;
 using BusinessLayer.Models.ViewModels;
 using BusinessLayer.Services.Abstractions;
+using Common.Constants;
 using DataLayer.Entities;
+using DataLayer.Entities.Identity;
 using DataLayer.Entities.Organ;
 using DataLayer.Entities.OrganQueries;
 using DataLayer.Repositories.Abstractions;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BusinessLayer.Services.Implementations
 {
@@ -16,18 +20,18 @@ namespace BusinessLayer.Services.Implementations
         private readonly IDonorOrganRequestService _donorOrganRequestService;
         private readonly IPatientOrganQueriesRepository _patientOrganQueriesRepository;
         private readonly IOrganInfoService _organInfoService;
-        private readonly IUsersService _usersService;
+        private readonly UserManager<AppUser> _userManager;
 
         public PatientOrganRequestService(
             IPatientOrganQueriesRepository patientOrganQueriesRepository,
             IOrganInfoService organInfoService,
             IDonorOrganRequestService donorOrganRequestService,
-            IUsersService usersService)
+            UserManager<AppUser> userManager)
         {
             _patientOrganQueriesRepository = patientOrganQueriesRepository;
             _organInfoService = organInfoService;
             _donorOrganRequestService = donorOrganRequestService;
-            _usersService = usersService;
+            _userManager = userManager;
         }
 
         public PatientOrganQuery GetById(int patientOrganRequestId)
@@ -35,7 +39,7 @@ namespace BusinessLayer.Services.Implementations
             return _patientOrganQueriesRepository.GetById(patientOrganRequestId);
         }
 
-        public void AddPatientOrganQueryToQueue(PatientOrganRequestViewModel model)
+        public async Task AddPatientOrganQueryToQueueAsync(PatientOrganRequestViewModel model)
         {
 
             bool isOrganInfoExist = _organInfoService.IfOrganInfoExists(model.OrganInfoId);
@@ -49,7 +53,7 @@ namespace BusinessLayer.Services.Implementations
                 model.QueryPriority = PatientQueryPriority.Normal;
             }
 
-            var donorInfo = new UserInfo()
+            var patientInfo = new UserInfo()
             {
                 FirstName = model.FirstName,
                 SecondName = model.SecondName,
@@ -61,21 +65,37 @@ namespace BusinessLayer.Services.Implementations
                 PhoneNumber = model.PhoneNumber,
                 ZipCode = model.ZipCode
             };
+
             //TODO: use transaction
-            var user = _usersService.RegisterUserAsPatient(donorInfo);
-
-            var patientOrganQuery = new PatientOrganQuery()
+            AppUser user = new AppUser()
             {
-                OrganInfoId = model.OrganInfoId,
-                PatientInfoId = user.UserInfo.UserInfoId,
-                Priority = (int)model.QueryPriority,
-                Message = model.AdditionalInfo,
-                Status = (int)PatientQueryStatuses.AwaitingForDonor
+                Email = model.Email,
+                UserName = model.Email,
+                Created = DateTime.UtcNow,
+                CreatedBy = "CurrentUser",
+                EmailConfirmed = true,
+                PhoneNumber = model.PhoneNumber,
+                PhoneNumberConfirmed = true,
+                UserInfo = patientInfo
             };
+            var result = await _userManager.CreateAsync(user);
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, RolesConstants.Patient);
 
-            _patientOrganQueriesRepository.Save(patientOrganQuery);
+                var patientOrganQuery = new PatientOrganQuery()
+                {
+                    OrganInfoId = model.OrganInfoId,
+                    PatientInfoId = user.UserInfo.UserInfoId,
+                    Priority = (int)model.QueryPriority,
+                    Message = model.AdditionalInfo,
+                    Status = (int)PatientQueryStatuses.AwaitingForDonor
+                };
 
-            //TODO: send email to clinic that query has been added
+                _patientOrganQueriesRepository.Save(patientOrganQuery);
+
+                //TODO: send email to clinic that query has been added
+            }
         }
 
         public void ChangePatientOrganQueryStatus(int patientOrganQueryId, PatientQueryStatuses status)
