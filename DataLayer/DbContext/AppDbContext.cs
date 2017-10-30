@@ -7,11 +7,19 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Common.Constants;
+using Microsoft.AspNetCore.Identity;
 
 namespace DataLayer.DbContext
 {
     public class AppDbContext : IdentityDbContext<AppUser>
     {
+        public AppDbContext() { }
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
+
+        }
+
         public DbSet<UserInfo> UserInfos { get; set; }
 
         public DbSet<OrganInfo> OrganInfos { get; set; }
@@ -29,8 +37,7 @@ namespace DataLayer.DbContext
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //TODO: replace to 'appsettings.json' and retrieve
-            optionsBuilder.UseSqlServer(@"Server=.;Database=TrackYourLife;Trusted_Connection=True;");
+            optionsBuilder.UseSqlServer(ConfigurationConstants.DbConnection);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

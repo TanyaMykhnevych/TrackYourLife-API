@@ -28,10 +28,6 @@ namespace TrackYourLife.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            DiContainer.AddCustomServices(services);
-
-            services.AddScoped<IDbInitializer, DbInitializer>();
-
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
                     {
@@ -60,7 +56,13 @@ namespace TrackYourLife.API
                     .Build();
             });
 
+            services.AddCors();
+
             services.AddMvc();
+
+            DiContainer.AddCustomServices(services);
+
+            services.AddScoped<IDbInitializer, DbInitializer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,6 +72,12 @@ namespace TrackYourLife.API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(builder => builder
+                .WithOrigins("http://localhost:4200")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
 
             app.UseAuthentication();
             app.UseMvc();

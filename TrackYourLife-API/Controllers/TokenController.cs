@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.Models;
 using BusinessLayer.Services.Abstractions;
 using DataLayer.Entities.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,11 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using TrackYourLife.API.Extensions;
+using TrackYourLife.API.ViewModels;
 
 namespace TrackYourLife.API.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class TokenController : Controller
     {
         private readonly ITokensService _tokensService;
@@ -29,13 +31,10 @@ namespace TrackYourLife.API.Controllers
 
 
         [HttpPost]
-        public async Task Token()
+        [AllowAnonymous]
+        public async Task Token([FromBody]GetTokenViewModel model)
         {
-            var username = Request.Form["username"];
-            var password = Request.Form["password"];
-
-
-            AppUser user = await _userManager.FindByEmailAsync(username);
+            AppUser user = await _userManager.FindByEmailAsync(model.Username);
             if (user == null)
             {
                 Response.StatusCode = 401;
@@ -43,7 +42,7 @@ namespace TrackYourLife.API.Controllers
                 return;
             }
 
-            var isPasswordValid = await _userManager.CheckPasswordAsync(user, password);
+            var isPasswordValid = await _userManager.CheckPasswordAsync(user, model.Password);
             if (!isPasswordValid)
             {
                 Response.StatusCode = 401;

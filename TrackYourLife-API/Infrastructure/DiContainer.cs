@@ -1,8 +1,12 @@
 ﻿using BusinessLayer.Services.Abstractions;
 using BusinessLayer.Services.Implementations;
+using Common.Constants;
 using DataLayer.DbContext;
+using DataLayer.Entities.Identity;
 using DataLayer.Repositories.Abstractions;
 using DataLayer.Repositories.Implementations;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace TrackYourLife.API.Infrastructure
@@ -12,7 +16,12 @@ namespace TrackYourLife.API.Infrastructure
         public static void AddCustomServices(IServiceCollection services)
         {
             // Data Layer
-            services.AddDbContext<AppDbContext>();
+            services.AddDbContext<AppDbContext>(
+                opt => opt.UseSqlServer(ConfigurationConstants.DbConnection));
+
+            services.AddIdentity<AppUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>();
+
             services.AddTransient<IDonorOrganRequestRepository, DonorOrganRequestRepository>();
             services.AddTransient<IOrganInfoRepository, OrganInfoRepository>();
             services.AddTransient<IClinicsRepository, ClinicsRepository>();

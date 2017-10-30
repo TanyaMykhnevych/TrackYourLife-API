@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore;
+﻿using DataLayer.DbContext;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
 namespace TrackYourLife.API
@@ -7,7 +8,9 @@ namespace TrackYourLife.API
     {
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            BuildWebHost(args)
+                .Seed()
+                .Run();
         }
 
         public static IWebHost BuildWebHost(string[] args) =>

@@ -3,15 +3,34 @@ using Common.Utils;
 using DataLayer.Entities;
 using DataLayer.Entities.Identity;
 using DataLayer.Entities.Organ;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DataLayer.DbContext
 {
+    public static class WebHostDbExtensions
+    {
+        public static IWebHost Seed(this IWebHost webhost)
+        {
+            using (var scope = webhost.Services.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                // alternatively resolve UserManager instead and pass that if only think you want to seed are the users
+                using (var dbInit = scope.ServiceProvider.GetRequiredService<IDbInitializer>())
+                {
+                    dbInit.InitializeAsync().GetAwaiter().GetResult();
+                }
+            }
+            return webhost;
+        }
+    }
+
     public class DbInitializer : IDbInitializer
     {
         private readonly AppDbContext _dbContext;
@@ -28,17 +47,15 @@ namespace DataLayer.DbContext
             _roleManager = roleManager;
         }
 
-        public void Initialize()
+        public async Task InitializeAsync()
         {
-            _dbContext.Database.EnsureCreated();
-
-            FillClinics();
-            FillRoles();
-            FillUsers();
-            FillOrganInfos();
+            await FillClinicsAsync();
+            await FillRolesAsync();
+            await FillUsersAsync();
+            await FillOrganInfosAsync();
         }
 
-        private void FillClinics()
+        private async Task FillClinicsAsync()
         {
             if (!_dbContext.Clinics.Any())
             {
@@ -89,12 +106,12 @@ namespace DataLayer.DbContext
                         Country = "Ukraine"
                     },
                 };
-                _dbContext.Clinics.AddRange(clinics);
-                _dbContext.SaveChanges();
+                await _dbContext.Clinics.AddRangeAsync(clinics);
+                await _dbContext.SaveChangesAsync();
             }
         }
 
-        private async void FillRoles()
+        private async Task FillRolesAsync()
         {
             if (!_dbContext.Roles.Any())
             {
@@ -106,8 +123,12 @@ namespace DataLayer.DbContext
             }
         }
 
-        private async void FillUsers()
+        private async Task FillUsersAsync()
         {
+            if (_dbContext.Users.Any())
+            {
+                return;
+            }
 
             //Create the default Admin account and apply the Administrator role
             string password = "Test123!";
@@ -126,8 +147,8 @@ namespace DataLayer.DbContext
                 Created = created,
                 CreatedBy = createdBy
             };
-            await _userManager.CreateAsync(new AppUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true, UserInfo = adminUserInfo }, password);
-            await _userManager.AddToRoleAsync(await _userManager.FindByNameAsync(adminEmail), RolesConstants.Administrator);
+            var res = await _userManager.CreateAsync(new AppUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true, UserInfo = adminUserInfo }, password);
+            res = await _userManager.AddToRoleAsync(await _userManager.FindByNameAsync(adminEmail), RolesConstants.Administrator);
 
             UserInfo patientUserInfo = new UserInfo
             {
@@ -143,8 +164,8 @@ namespace DataLayer.DbContext
                 Created = created,
                 CreatedBy = createdBy
             };
-            await _userManager.CreateAsync(new AppUser { UserName = patientEmail, Email = patientEmail, EmailConfirmed = true, UserInfo = patientUserInfo }, password);
-            await _userManager.AddToRoleAsync(await _userManager.FindByNameAsync(patientEmail), RolesConstants.Patient);
+            res = await _userManager.CreateAsync(new AppUser { UserName = patientEmail, Email = patientEmail, EmailConfirmed = true, UserInfo = patientUserInfo }, password);
+            res = await _userManager.AddToRoleAsync(await _userManager.FindByNameAsync(patientEmail), RolesConstants.Patient);
 
 
             UserInfo donorUserInfo = new UserInfo
@@ -161,8 +182,8 @@ namespace DataLayer.DbContext
                 Created = created,
                 CreatedBy = createdBy
             };
-            await _userManager.CreateAsync(new AppUser { UserName = donorEmail, Email = donorEmail, EmailConfirmed = true, UserInfo = donorUserInfo }, password);
-            await _userManager.AddToRoleAsync(await _userManager.FindByNameAsync(donorEmail), RolesConstants.Donor);
+            res = await _userManager.CreateAsync(new AppUser { UserName = donorEmail, Email = donorEmail, EmailConfirmed = true, UserInfo = donorUserInfo }, password);
+            res = await _userManager.AddToRoleAsync(await _userManager.FindByNameAsync(donorEmail), RolesConstants.Donor);
 
             UserInfo medEmployeeUserInfo = new UserInfo
             {
@@ -178,11 +199,11 @@ namespace DataLayer.DbContext
                 Created = created,
                 CreatedBy = createdBy
             };
-            await _userManager.CreateAsync(new AppUser { UserName = medEmployeeEmail, Email = medEmployeeEmail, EmailConfirmed = true, UserInfo = medEmployeeUserInfo }, password);
-            await _userManager.AddToRoleAsync(await _userManager.FindByNameAsync(medEmployeeEmail), RolesConstants.MedicalEmployee);
+            res = await _userManager.CreateAsync(new AppUser { UserName = medEmployeeEmail, Email = medEmployeeEmail, EmailConfirmed = true, UserInfo = medEmployeeUserInfo }, password);
+            res = await _userManager.AddToRoleAsync(await _userManager.FindByNameAsync(medEmployeeEmail), RolesConstants.MedicalEmployee);
         }
 
-        private void FillOrganInfos()
+        private async Task FillOrganInfosAsync()
         {
             if (!_dbContext.OrganInfos.Any())
             {
@@ -202,9 +223,16 @@ namespace DataLayer.DbContext
                      }
                 };
 
-                _dbContext.OrganInfos.AddRange(organs);
-                _dbContext.SaveChanges();
+                await _dbContext.OrganInfos.AddRangeAsync(organs);
+                await _dbContext.SaveChangesAsync();
             }
+        }
+
+        public void Dispose()
+        {
+            this._dbContext?.Dispose();
+            this._userManager?.Dispose();
+            this._roleManager?.Dispose();
         }
     }
 }
