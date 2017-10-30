@@ -1,4 +1,5 @@
 ﻿using Common.Constants;
+using Common.Enums;
 using Common.Utils;
 using DataLayer.Entities;
 using DataLayer.Entities.Identity;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -51,6 +53,7 @@ namespace DataLayer.DbContext
         {
             await FillClinicsAsync();
             await FillRolesAsync();
+            await FillRolesClaimsAsync();
             await FillUsersAsync();
             await FillOrganInfosAsync();
         }
@@ -120,6 +123,75 @@ namespace DataLayer.DbContext
                 await _roleManager.CreateAsync(new IdentityRole(RolesConstants.Donor));
                 await _roleManager.CreateAsync(new IdentityRole(RolesConstants.Patient));
                 await _roleManager.CreateAsync(new IdentityRole(RolesConstants.MedicalEmployee));
+            }
+        }
+
+        private async Task FillRolesClaimsAsync()
+        {
+            if (!_dbContext.RoleClaims.Any())
+            {
+                var viewDonorRequestList = new Claim("View Donor Request List", AppClaimTypes.ViewDonorRequestList.ToString());
+                var viewDonorRequest = new Claim("View Donor Request", AppClaimTypes.ViewDonorRequest.ToString());
+                var editDonorRequest = new Claim("Edit Donor Request", AppClaimTypes.EditDonorRequest.ToString());
+                var changeDonorRequestStatus = new Claim("Change Donor Request Status", AppClaimTypes.ChangeDonorRequestStatus.ToString());
+
+                var viewOrganRequestList = new Claim("View Organ Request List", AppClaimTypes.ViewOrganRequestList.ToString());
+                var viewOrganRequest = new Claim("View Organ Request", AppClaimTypes.ViewOrganRequest.ToString());
+                var editOrganRequest = new Claim("Edit Organ Request", AppClaimTypes.EditOrganRequest.ToString());
+                var createOrganRequest = new Claim("Create Organ Request", AppClaimTypes.CreateOrganRequest.ToString());
+
+                var connectDonorAndOrganRequests = new Claim("Connect Donor And Organ Requests", AppClaimTypes.ConnectDonorAndOrganRequests.ToString());
+
+                var addNewOrgan = new Claim("Add New Organ", AppClaimTypes.AddNewOrgan.ToString());
+                var addNewMedicalEmployee = new Claim("Add New Medical Employee", AppClaimTypes.AddNewMedicalEmployee.ToString());
+
+                var addOrganInfo = new Claim("Add Organ Info", AppClaimTypes.AddOrganInfo.ToString());
+                var registerNewPatient = new Claim("Register New Patient", AppClaimTypes.RegisterNewPatient.ToString());
+                var addClinic = new Claim("Add Clinic", AppClaimTypes.AddClinic.ToString());
+
+                var viewOrganTransportData = new Claim("View Organ Transport Data", AppClaimTypes.ViewOrganTransportData.ToString());
+
+                var adminRole = await _roleManager.FindByNameAsync(RolesConstants.Administrator);
+                await _roleManager.AddClaimAsync(adminRole, viewDonorRequestList);
+                await _roleManager.AddClaimAsync(adminRole, viewDonorRequest);
+                await _roleManager.AddClaimAsync(adminRole, editDonorRequest);
+                await _roleManager.AddClaimAsync(adminRole, changeDonorRequestStatus);
+                await _roleManager.AddClaimAsync(adminRole, viewOrganRequestList);
+                await _roleManager.AddClaimAsync(adminRole, viewOrganRequest);
+                await _roleManager.AddClaimAsync(adminRole, editOrganRequest);
+                await _roleManager.AddClaimAsync(adminRole, createOrganRequest);
+                await _roleManager.AddClaimAsync(adminRole, connectDonorAndOrganRequests);
+                await _roleManager.AddClaimAsync(adminRole, addNewOrgan);
+                await _roleManager.AddClaimAsync(adminRole, addNewMedicalEmployee);
+                await _roleManager.AddClaimAsync(adminRole, addOrganInfo);
+                await _roleManager.AddClaimAsync(adminRole, registerNewPatient);
+                await _roleManager.AddClaimAsync(adminRole, addClinic);
+
+
+                var patientRole = await _roleManager.FindByNameAsync(RolesConstants.Patient);
+                await _roleManager.AddClaimAsync(patientRole, viewOrganRequest);
+                await _roleManager.AddClaimAsync(patientRole, viewOrganTransportData);
+
+                var donorRole = await _roleManager.FindByNameAsync(RolesConstants.Donor);
+                await _roleManager.AddClaimAsync(donorRole, viewDonorRequest);
+                await _roleManager.AddClaimAsync(donorRole, viewOrganTransportData);
+
+                var medEmployeeRole = await _roleManager.FindByNameAsync(RolesConstants.MedicalEmployee);
+                await _roleManager.AddClaimAsync(medEmployeeRole, viewDonorRequestList);
+                await _roleManager.AddClaimAsync(medEmployeeRole, viewDonorRequest);
+                await _roleManager.AddClaimAsync(medEmployeeRole, editDonorRequest);
+                await _roleManager.AddClaimAsync(medEmployeeRole, changeDonorRequestStatus);
+
+                await _roleManager.AddClaimAsync(medEmployeeRole, viewOrganRequestList);
+                await _roleManager.AddClaimAsync(medEmployeeRole, viewOrganRequest);
+                await _roleManager.AddClaimAsync(medEmployeeRole, editDonorRequest);
+                await _roleManager.AddClaimAsync(medEmployeeRole, createOrganRequest);
+
+                await _roleManager.AddClaimAsync(medEmployeeRole, connectDonorAndOrganRequests);
+
+                await _roleManager.AddClaimAsync(medEmployeeRole, addNewOrgan);
+                await _roleManager.AddClaimAsync(medEmployeeRole, registerNewPatient);
+                await _roleManager.AddClaimAsync(medEmployeeRole, viewOrganTransportData);
             }
         }
 

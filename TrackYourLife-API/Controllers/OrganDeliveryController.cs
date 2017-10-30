@@ -5,6 +5,7 @@ using System;
 
 namespace TrackYourLife.API.Controllers
 {
+    [Route("api/[controller]/[action]/{id?}")]
     public class OrganDeliveryController : Controller
     {
         private readonly IOrganTransportService _transportService;

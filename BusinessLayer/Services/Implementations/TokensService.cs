@@ -14,13 +14,7 @@ namespace BusinessLayer.Services.Implementations
         public GeneratedTokenDTO GenerateTokenForIdentity(ClaimsIdentity identity, TimeSpan expires)
         {
             var now = DateTime.UtcNow;
-            var jwt = new JwtSecurityToken(
-                    issuer: AuthOptions.ISSUER,
-                    audience: AuthOptions.AUDIENCE,
-                    notBefore: now,
-                    claims: identity.Claims,
-                    expires: now.Add(expires),
-                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+            var jwt = new JwtSecurityToken(new JwtHeader(new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256)), new JwtPayload(identity.Claims));
 
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 

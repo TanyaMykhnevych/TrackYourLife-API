@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace TrackYourLife.API.Controllers
 {
+    [Route("api/[controller]/[action]/{id?}")]
     public class PatientQueueController : Controller
     {
         private readonly IPatientQueueService _patientQueueService;

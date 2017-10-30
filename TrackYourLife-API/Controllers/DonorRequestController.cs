@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace TrackYourLife.API.Controllers
 {
     [Authorize]
+    [Route("api/[controller]/[action]/{id?}")]
     public class DonorRequestController : Controller
     {
         private readonly IDonorOrganRequestService _donorRequestService;

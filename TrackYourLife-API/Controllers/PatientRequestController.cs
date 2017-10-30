@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace TrackYourLife.API.Controllers
 {
     [Authorize]
+    [Route("api/[controller]/[action]/{id?}")]
     public class PatientRequestController : Controller
     {
         private readonly IPatientOrganRequestService _patientOrganRequestService;

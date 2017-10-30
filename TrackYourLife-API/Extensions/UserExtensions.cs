@@ -1,6 +1,7 @@
 ﻿using DataLayer.Entities.Identity;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -15,7 +16,8 @@ namespace TrackYourLife.API.Extensions
             
             var claims = new List<Claim>
                 {
-                    new Claim(ClaimsIdentity.DefaultNameClaimType, user.UserName),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
                     new Claim(ClaimsIdentity.DefaultRoleClaimType, userRoles)
                 };
             ClaimsIdentity claimsIdentity =
