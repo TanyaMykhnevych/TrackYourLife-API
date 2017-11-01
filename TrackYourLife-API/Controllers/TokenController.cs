@@ -1,16 +1,14 @@
-﻿using BusinessLayer.Models;
-using BusinessLayer.Services.Abstractions;
+﻿using Common.Constants;
 using DataLayer.Entities.Identity;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
-using TrackYourLife.API.Extensions;
 using TrackYourLife.API.ViewModels;
 
 namespace TrackYourLife.API.Controllers
@@ -18,45 +16,56 @@ namespace TrackYourLife.API.Controllers
     [Route("api/[controller]")]
     public class TokenController : Controller
     {
-        private readonly ITokensService _tokensService;
+        //private readonly ITokensService _tokensService;
+        private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
 
         public TokenController(
-            ITokensService tokensService,
-            UserManager<AppUser> userManager)
+            SignInManager<AppUser> signInManager, UserManager<AppUser> userManager)
         {
-            _tokensService = tokensService;
+            _signInManager = signInManager;
             _userManager = userManager;
         }
 
-
-        [HttpPost]
         [AllowAnonymous]
-        public async Task Token([FromBody]GetTokenViewModel model)
+        [HttpPost]
+        public async Task<IActionResult> GenerateToken([FromBody] GetTokenViewModel model)
         {
-            AppUser user = await _userManager.FindByEmailAsync(model.Username);
-            if (user == null)
+            if (ModelState.IsValid)
             {
-                Response.StatusCode = 401;
-                await Response.WriteAsync("Invalid username.");
-                return;
+                var user = await _userManager.FindByEmailAsync(model.Username);
+
+                if (user != null)
+                {
+                    var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+                    if (result.Succeeded)
+                    {
+                        var claims = new[]
+                        {
+                          new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                          new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                          new Claim(ClaimTypes.Name, user.Email)
+                        };
+
+                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("LONG_LONG_HARD_KEY_1234567890"));
+                        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                        var token = new JwtSecurityToken(
+                              issuer: JwtConfigConstants.Issuer,
+                              claims: claims,
+                              expires: DateTime.Now.AddMinutes(30),
+                              signingCredentials: creds);
+
+                        return Ok(new {
+                            accessToken = new JwtSecurityTokenHandler().WriteToken(token),
+                            expiresIn = 30 * 60,
+                            tokenType = "Bearer"
+                        });
+                    }
+                }
             }
 
-            var isPasswordValid = await _userManager.CheckPasswordAsync(user, model.Password);
-            if (!isPasswordValid)
-            {
-                Response.StatusCode = 401;
-                await Response.WriteAsync("Invalid password.");
-                return;
-            }
-
-            IList<string> roles = await _userManager.GetRolesAsync(user);
-            ClaimsIdentity identity = user.GetIdentity(string.Join(", ", roles));
-            var accessToken = _tokensService.GenerateTokenForIdentity(identity, TimeSpan.FromMinutes(AuthOptions.LIFETIME));
-
-            Response.ContentType = "application/json";
-            string serializedResponse = JsonConvert.SerializeObject(accessToken, new JsonSerializerSettings { Formatting = Formatting.Indented });
-            await Response.WriteAsync(serializedResponse);
+            return BadRequest("Could not create token");
         }
     }
 }

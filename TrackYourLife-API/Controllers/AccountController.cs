@@ -1,4 +1,6 @@
-﻿using DataLayer.Entities.Identity;
+﻿using Common.Constants;
+using DataLayer.Entities.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +14,7 @@ using TrackYourLife.API.ViewModels.Common;
 namespace TrackYourLife.API.Controllers
 {
     [Route("api/[controller]/[action]/{id?}")]
-    public class AccountController : Controller
+    public class AccountController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -24,30 +26,28 @@ namespace TrackYourLife.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> GetUserInfo()
         {
-            string username = HttpContext.User.Identity.Name;
-            var user = await _userManager.FindByNameAsync(username);
-            var roleNames = await _userManager.GetRolesAsync(user);
-            var roleName = roleNames.FirstOrDefault();
-            var role = await _roleManager.FindByNameAsync(roleName);
-
-            var claims = await _roleManager.GetClaimsAsync(role);
-            var claimValues = claims.Select(x => Convert.ToInt32(x.Value));
-
-            var viewModel = new UserInfoViewModel
+            var response = await ContentExecuteAsync<UserInfoViewModel>(async () =>
             {
-                Id = user.Id,
-                Username = user.UserName,
-                RoleName = roleName,
-                Claims = claimValues.ToArray()
-            };
+                string username = HttpContext.User.Identity.Name;
+                var user = await _userManager.FindByNameAsync(username);
 
-            var response = new ResponseWrapper<UserInfoViewModel>
-            {
-                Content = viewModel
-            };
+                var roleName = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+                var role = await _roleManager.FindByNameAsync(roleName);
 
+                var claims = await _roleManager.GetClaimsAsync(role);
+                var claimValues = claims.Select(x => Convert.ToInt32(x.Value));
+
+                return new UserInfoViewModel
+                {
+                    Id = user.Id,
+                    Username = user.UserName,
+                    RoleName = roleName,
+                    Claims = claimValues.ToArray()
+                };
+            });
             return Json(response);
         }
     }

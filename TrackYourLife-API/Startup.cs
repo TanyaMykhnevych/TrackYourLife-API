@@ -13,6 +13,13 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using IdentityServer4.AccessTokenValidation;
+using System.Collections.Generic;
+using IdentityServer4.Test;
+using IdentityServer4.Models;
+using System.Security.Claims;
+using System.Text;
+using Common.Constants;
 
 namespace TrackYourLife.API
 {
@@ -28,34 +35,6 @@ namespace TrackYourLife.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer(options =>
-                    {
-                        options.RequireHttpsMetadata = false;
-                        options.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            ValidateIssuer = true,
-                            ValidIssuer = AuthOptions.ISSUER,
-
-                            ValidateAudience = false,
-                            // ValidAudience = AuthOptions.AUDIENCE,
-
-                            ValidateLifetime = true,
-
-                            IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
-                            ValidateIssuerSigningKey = true
-                        };
-                    });
-
-            // This is for the [Authorize] attributes.
-            services.AddAuthorization(auth =>
-            {
-                auth.DefaultPolicy = new AuthorizationPolicyBuilder()
-                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-                    .RequireAuthenticatedUser()
-                    .Build();
-            });
-
             services.AddCors();
 
             services.AddMvc();
@@ -63,6 +42,20 @@ namespace TrackYourLife.API
             DiContainer.AddCustomServices(services);
 
             services.AddScoped<IDbInitializer, DbInitializer>();
+
+            services.AddAuthentication()
+                  .AddJwtBearer(cfg =>
+                  {
+                      cfg.RequireHttpsMetadata = false;
+                      cfg.SaveToken = true;
+
+                      cfg.TokenValidationParameters = new TokenValidationParameters()
+                      {
+                          ValidIssuer = JwtConfigConstants.Issuer,
+                          ValidateAudience = false,
+                          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("LONG_LONG_HARD_KEY_1234567890"))
+                      };
+                  });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,7 +72,9 @@ namespace TrackYourLife.API
                 .AllowAnyHeader()
                 .AllowCredentials());
 
+            app.UseStaticFiles();
             app.UseAuthentication();
+
             app.UseMvc();
         }
     }

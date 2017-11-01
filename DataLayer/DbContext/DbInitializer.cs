@@ -130,26 +130,26 @@ namespace DataLayer.DbContext
         {
             if (!_dbContext.RoleClaims.Any())
             {
-                var viewDonorRequestList = new Claim("View Donor Request List", AppClaimTypes.ViewDonorRequestList.ToString());
-                var viewDonorRequest = new Claim("View Donor Request", AppClaimTypes.ViewDonorRequest.ToString());
-                var editDonorRequest = new Claim("Edit Donor Request", AppClaimTypes.EditDonorRequest.ToString());
-                var changeDonorRequestStatus = new Claim("Change Donor Request Status", AppClaimTypes.ChangeDonorRequestStatus.ToString());
+                var viewDonorRequestList = new Claim("View Donor Request List", ((int)AppClaimTypes.ViewDonorRequestList).ToString());
+                var viewDonorRequest = new Claim("View Donor Request", ((int)AppClaimTypes.ViewDonorRequest).ToString());
+                var editDonorRequest = new Claim("Edit Donor Request", ((int)AppClaimTypes.EditDonorRequest).ToString());
+                var changeDonorRequestStatus = new Claim("Change Donor Request Status", ((int)AppClaimTypes.ChangeDonorRequestStatus).ToString());
 
-                var viewOrganRequestList = new Claim("View Organ Request List", AppClaimTypes.ViewOrganRequestList.ToString());
-                var viewOrganRequest = new Claim("View Organ Request", AppClaimTypes.ViewOrganRequest.ToString());
-                var editOrganRequest = new Claim("Edit Organ Request", AppClaimTypes.EditOrganRequest.ToString());
-                var createOrganRequest = new Claim("Create Organ Request", AppClaimTypes.CreateOrganRequest.ToString());
+                var viewOrganRequestList = new Claim("View Organ Request List", ((int)AppClaimTypes.ViewOrganRequestList).ToString());
+                var viewOrganRequest = new Claim("View Organ Request", ((int)AppClaimTypes.ViewOrganRequest).ToString());
+                var editOrganRequest = new Claim("Edit Organ Request", ((int)AppClaimTypes.EditOrganRequest).ToString());
+                var createOrganRequest = new Claim("Create Organ Request", ((int)AppClaimTypes.CreateOrganRequest).ToString());
 
-                var connectDonorAndOrganRequests = new Claim("Connect Donor And Organ Requests", AppClaimTypes.ConnectDonorAndOrganRequests.ToString());
+                var connectDonorAndOrganRequests = new Claim("Connect Donor And Organ Requests", ((int)AppClaimTypes.ConnectDonorAndOrganRequests).ToString());
 
-                var addNewOrgan = new Claim("Add New Organ", AppClaimTypes.AddNewOrgan.ToString());
-                var addNewMedicalEmployee = new Claim("Add New Medical Employee", AppClaimTypes.AddNewMedicalEmployee.ToString());
+                var addNewOrgan = new Claim("Add New Organ", ((int)AppClaimTypes.AddNewOrgan).ToString());
+                var addNewMedicalEmployee = new Claim("Add New Medical Employee", ((int)AppClaimTypes.AddNewMedicalEmployee).ToString());
 
-                var addOrganInfo = new Claim("Add Organ Info", AppClaimTypes.AddOrganInfo.ToString());
-                var registerNewPatient = new Claim("Register New Patient", AppClaimTypes.RegisterNewPatient.ToString());
-                var addClinic = new Claim("Add Clinic", AppClaimTypes.AddClinic.ToString());
+                var addOrganInfo = new Claim("Add Organ Info", ((int)AppClaimTypes.AddOrganInfo).ToString());
+                var registerNewPatient = new Claim("Register New Patient", ((int)AppClaimTypes.RegisterNewPatient).ToString());
+                var addClinic = new Claim("Add Clinic", ((int)AppClaimTypes.AddClinic).ToString());
 
-                var viewOrganTransportData = new Claim("View Organ Transport Data", AppClaimTypes.ViewOrganTransportData.ToString());
+                var viewOrganTransportData = new Claim("View Organ Transport Data", ((int)AppClaimTypes.ViewOrganTransportData).ToString());
 
                 var adminRole = await _roleManager.FindByNameAsync(RolesConstants.Administrator);
                 await _roleManager.AddClaimAsync(adminRole, viewDonorRequestList);
