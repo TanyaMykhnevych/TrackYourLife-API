@@ -52,6 +52,12 @@ namespace DataLayer.Repositories.Implementations
 
         public void Update(PatientOrganQuery patientOrganQuery)
         {
+            var oldEntity = GetById(patientOrganQuery.Id);
+            _appDbContext.Entry(oldEntity).State = EntityState.Detached;
+
+            patientOrganQuery.Created = oldEntity.Created;
+            patientOrganQuery.CreatedBy = oldEntity.CreatedBy;
+
             _appDbContext.PatientOrganQueries.Update(patientOrganQuery);
             _appDbContext.SaveChanges();
         }

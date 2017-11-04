@@ -1,6 +1,7 @@
 ﻿using DataLayer.DbContext;
 using DataLayer.Entities.OrganQueries;
 using DataLayer.Repositories.Abstractions;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
@@ -33,6 +34,11 @@ namespace DataLayer.Repositories.Implementations
 
         public void Update(DonorOrganQuery donorOrganRequest)
         {
+            var oldEntity = GetById(donorOrganRequest.Id);
+            _appDbContext.Entry(oldEntity).State = EntityState.Detached;
+
+            donorOrganRequest.Created = oldEntity.Created;
+            donorOrganRequest.CreatedBy = oldEntity.CreatedBy;
             donorOrganRequest.Updated = DateTime.UtcNow;
             donorOrganRequest.UpdatedBy = "Default";
 

@@ -8,9 +8,10 @@ namespace TrackYourLife.API.ViewModels
 {
     public class GetTokenViewModel
     {
-        [JsonProperty("username")]
         public string Username { get; set; }
 
         public string Password { get; set; }
+
+        public bool RememberMe { get; set; }
     }
 }

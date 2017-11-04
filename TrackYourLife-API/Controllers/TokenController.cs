@@ -53,7 +53,7 @@ namespace TrackYourLife.API.Controllers
                         var token = new JwtSecurityToken(
                               issuer: JwtConfigConstants.Issuer,
                               claims: claims,
-                              expires: DateTime.Now.AddMinutes(30),
+                              expires: model.RememberMe ? DateTime.Now.AddMonths(1) : DateTime.Now.AddDays(1),
                               signingCredentials: creds);
 
                         return Ok(new {
@@ -63,6 +63,8 @@ namespace TrackYourLife.API.Controllers
                         });
                     }
                 }
+
+                return Unauthorized();
             }
 
             return BadRequest("Could not create token");

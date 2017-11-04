@@ -3,6 +3,7 @@ using System;
 using DataLayer.Entities.Organ;
 using DataLayer.DbContext;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataLayer.Repositories.Implementations
 {
@@ -35,6 +36,11 @@ namespace DataLayer.Repositories.Implementations
 
         public void Update(TransplantOrgan transplantOrgan)
         {
+            var oldEntity = GetById(transplantOrgan.Id);
+            _appDbContext.Entry(oldEntity).State = EntityState.Detached;
+
+            transplantOrgan.Created = oldEntity.Created;
+            transplantOrgan.CreatedBy = oldEntity.CreatedBy;
             transplantOrgan.Updated = DateTime.UtcNow;
             transplantOrgan.UpdatedBy = "Default";
 
