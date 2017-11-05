@@ -1,5 +1,6 @@
 ﻿using DataLayer.Entities.Base;
 using DataLayer.Entities.Identity;
+using System;
 
 namespace DataLayer.Entities
 {
@@ -12,6 +13,10 @@ namespace DataLayer.Entities
         public string FirstName { get; set; }
 
         public string SecondName { get; set; }
+
+        public DateTime? BirthDate { get; set; }
+
+        public string Notes { get; set; }
 
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
