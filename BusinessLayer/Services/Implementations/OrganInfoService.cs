@@ -3,6 +3,8 @@ using DataLayer.Repositories.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using DataLayer.Entities.Organ;
+using System.Threading.Tasks;
 
 namespace BusinessLayer.Services.Implementations
 {
@@ -13,6 +15,11 @@ namespace BusinessLayer.Services.Implementations
         public OrganInfoService(IOrganInfoRepository organInfoRepository)
         {
             _organInfoRepository = organInfoRepository;
+        }
+
+        public async Task<IList<OrganInfo>> GetOrganInfosAsync()
+        {
+            return await _organInfoRepository.GetAllAsync();
         }
 
         public bool IfOrganInfoExists(int organInfoId)

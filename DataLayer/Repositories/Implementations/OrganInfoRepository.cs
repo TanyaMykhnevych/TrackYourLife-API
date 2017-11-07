@@ -4,6 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using DataLayer.Entities.Organ;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataLayer.Repositories.Implementations
 {
@@ -14,6 +17,11 @@ namespace DataLayer.Repositories.Implementations
         public OrganInfoRepository(AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;
+        }
+
+        public async Task<IList<OrganInfo>> GetAllAsync()
+        {
+            return await _appDbContext.OrganInfos.ToListAsync();
         }
 
         public bool IfOrganInfoExist(int organInfoId)

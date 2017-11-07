@@ -17,18 +17,25 @@ namespace TrackYourLife.API.Infrastructure
         public static void AddCustomServices(IServiceCollection services)
         {
             // App Services
-            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(ConfigurationConstants.DbConnection));
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(ConfigurationConstants.DbConnection), ServiceLifetime.Scoped);
 
-            services.AddIdentity<AppUser, IdentityRole>()
-                .AddEntityFrameworkStores<AppDbContext>();
+            services.AddIdentity<AppUser, IdentityRole>(conf =>
+            {
+                conf.Password.RequiredLength = 6;
+                conf.Password.RequireDigit = false;
+                conf.Password.RequireLowercase = false;
+                conf.Password.RequireUppercase = false;
+                conf.Password.RequireNonAlphanumeric = false;
+            }).AddEntityFrameworkStores<AppDbContext>();
 
             // Data Layer
 
-            services.AddTransient<IDonorOrganRequestRepository, DonorOrganRequestRepository>();
+            services.AddScoped<IDonorOrganRequestRepository, DonorOrganRequestRepository>();
             services.AddTransient<IOrganInfoRepository, OrganInfoRepository>();
             services.AddTransient<IClinicsRepository, ClinicsRepository>();
             services.AddTransient<IMedicalExamsRepository, MedicalExamsRepository>();
             services.AddTransient<IOrganDeliveryRepository, OrganDeliveryRepository>();
+            services.AddTransient<ITransplantOrgansRepository, TransplantOrgansRepository>();
             services.AddTransient<IOrganDeliverySnapshotsRepository, OrganDeliverySnapshotsRepository>();
 
 

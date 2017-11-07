@@ -1,13 +1,23 @@
-﻿namespace BusinessLayer.Models.ViewModels
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace BusinessLayer.Models.ViewModels
 {
     public class DonorOrganRequestViewModel
     {
         // Contacts
+        [Required]
+        [EmailAddress]
         public string Email { get; set; }
 
-        public string FirstName { get; set; }
+        [Required]
+        [MinLength(6)]
+        public string Password { get; set; }
 
+        [Required]
+        public string FirstName { get; set; }
         public string SecondName { get; set; }
+        public DateTime BirthDate { get; set; }
 
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }

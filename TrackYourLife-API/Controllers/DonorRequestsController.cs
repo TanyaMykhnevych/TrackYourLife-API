@@ -1,27 +1,29 @@
 ﻿using BusinessLayer.Models.Enums;
 using BusinessLayer.Models.ViewModels;
 using BusinessLayer.Services.Abstractions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TrackYourLife.API.Controllers
 {
-    [Authorize]
     [Route("api/[controller]/[action]/{id?}")]
-    public class DonorRequestController : Controller
+    public class DonorRequestsController : ControllerBase
     {
         private readonly IDonorOrganRequestService _donorRequestService;
 
-        public DonorRequestController(IDonorOrganRequestService donorRequestService)
+        public DonorRequestsController(IDonorOrganRequestService donorRequestService)
         {
             _donorRequestService = donorRequestService;
         }
+
         /// <summary>
         /// Returns DonorRequestInfo by ID
         /// </summary>
         /// <param name="donorRequestId"></param>
         /// <returns></returns>
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult GetDonorRequestInfo(int donorRequestId)
         {
             // maybe need to use viewmodel
@@ -33,14 +35,16 @@ namespace TrackYourLife.API.Controllers
         ///  Saves DonorOrganQuery entity
         ///  Sends email to medical employee (about creating new request)
         /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
         [HttpPost]
-        public IActionResult CreateDonorRequest(DonorOrganRequestViewModel model)
+        public IActionResult CreateDonorRequest([FromBody]DonorOrganRequestViewModel model)
         {
             //TODO: maybe need to convert viewmodel to DTO
-            _donorRequestService.RegisterDonorOrganRequest(model);
-            return Ok();
+            var response = this.Execute(() =>
+            {
+                _donorRequestService.RegisterDonorOrganRequest(model);
+            });
+
+            return Ok(response);
         }
 
         /// <summary>
@@ -48,7 +52,8 @@ namespace TrackYourLife.API.Controllers
         /// Sends emails to Donor and to clinic;
         /// </summary>
         [HttpPost]
-        public IActionResult ScheduleMedicalExam(ScheduleMedicalExamViewModel model)
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult ScheduleMedicalExam([FromBody]ScheduleMedicalExamViewModel model)
         {
             _donorRequestService.ScheduleMedicalExam(model);
             return Ok();
@@ -59,7 +64,8 @@ namespace TrackYourLife.API.Controllers
         /// Updates DonorMedicalExam entity;
         /// </summary>
         [HttpPost]
-        public IActionResult SetMedicalExamResults(MedicalExamResultViewModel model)
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult SetMedicalExamResults([FromBody]MedicalExamResultViewModel model)
         {
             _donorRequestService.UpdateMedicalExamResults(model);
             return Ok();
@@ -71,6 +77,7 @@ namespace TrackYourLife.API.Controllers
         /// <param name="donorOrganQueryId"></param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult TimeForRetrievingHasBeenScheduled(int donorOrganQueryId)
         {
             _donorRequestService.ChangeStatusTo(donorOrganQueryId, DonorRequestStatuses.AwaitingOrganRetrieving);
@@ -83,6 +90,7 @@ namespace TrackYourLife.API.Controllers
         /// <param name="donorOrganQueryId"></param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult FinishDonorRequest(int donorOrganQueryId)
         {
             _donorRequestService.ChangeStatusTo(donorOrganQueryId, DonorRequestStatuses.FinishedSuccessfully);

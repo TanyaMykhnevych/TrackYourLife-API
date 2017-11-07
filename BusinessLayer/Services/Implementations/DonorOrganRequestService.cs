@@ -63,7 +63,7 @@ namespace BusinessLayer.Services.Implementations
             RegisterDonorOrganRequestInner(request);
         }
 
-        private async void RegisterDonorOrganRequestInner(DonorOrganRequestViewModel request)
+        private void RegisterDonorOrganRequestInner(DonorOrganRequestViewModel request)
         {
             //TODO: use transaction here
 
@@ -78,7 +78,8 @@ namespace BusinessLayer.Services.Implementations
                 City = request.City,
                 Country = request.Country,
                 ZipCode = request.ZipCode,
-                PhoneNumber = request.PhoneNumber
+                PhoneNumber = request.PhoneNumber,
+                BirthDate = request.BirthDate
             };
 
             AppUser user;
@@ -95,10 +96,10 @@ namespace BusinessLayer.Services.Implementations
                     PhoneNumberConfirmed = true,
                     UserInfo = userInfo
                 };
-                var result = await _userManager.CreateAsync(user);
+                var result = _userManager.CreateAsync(user, request.Password).Result;
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, RolesConstants.Donor);
+                    _userManager.AddToRoleAsync(user, RolesConstants.Donor).Wait();
 
                     var donorOrganRequest = new DonorOrganQuery
                     {
@@ -110,12 +111,16 @@ namespace BusinessLayer.Services.Implementations
 
                     _donorOrganRequestRepository.Save(donorOrganRequest);
                 }
+                else
+                {
+                    throw new ArgumentException(result.Errors.First().Description);
+                }
             }
             catch (Exception ex)
             {
                 //TODO: Log
                 Debug.WriteLine(ex.Message);
-                throw;
+                throw ex;
             }
         }
 

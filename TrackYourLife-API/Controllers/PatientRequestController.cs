@@ -9,12 +9,11 @@ namespace TrackYourLife.API.Controllers
 {
     [Authorize]
     [Route("api/[controller]/[action]/{id?}")]
-    public class PatientRequestController : Controller
+    public class PatientRequestController : ControllerBase
     {
         private readonly IPatientOrganRequestService _patientOrganRequestService;
 
-        public PatientRequestController(
-            IPatientOrganRequestService patientOrganRequestService)
+        public PatientRequestController(IPatientOrganRequestService patientOrganRequestService)
         {
             _patientOrganRequestService = patientOrganRequestService;
         }
