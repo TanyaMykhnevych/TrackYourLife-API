@@ -8,8 +8,14 @@ namespace BusinessLayer.Services.Abstractions
 {
     public interface IOrganInfoService
     {
-        bool IfOrganInfoExists(int organInfoId);
-
         Task<IList<OrganInfo>> GetOrganInfosAsync();
+
+        Task<OrganInfo> GetOrganInfoByIdAsync(int id);
+
+        Task<OrganInfo> AddOrganInfoAsync(OrganInfo organInfo);
+
+        Task<OrganInfo> UpdateOrganInfoAsync(OrganInfo organInfo);
+
+        bool IfOrganInfoExists(int organInfoId);
     }
 }

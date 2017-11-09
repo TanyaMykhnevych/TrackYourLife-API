@@ -22,9 +22,24 @@ namespace BusinessLayer.Services.Implementations
             return await _organInfoRepository.GetAllAsync();
         }
 
+        public Task<OrganInfo> GetOrganInfoByIdAsync(int id)
+        {
+            return _organInfoRepository.GetByIdAsync(id);
+        }
+
         public bool IfOrganInfoExists(int organInfoId)
         {
             return _organInfoRepository.IfOrganInfoExist(organInfoId);
+        }
+
+        public Task<OrganInfo> AddOrganInfoAsync(OrganInfo organInfo)
+        {
+            return _organInfoRepository.AddAsync(organInfo);
+        }
+
+        public Task<OrganInfo> UpdateOrganInfoAsync(OrganInfo organInfo)
+        {
+            return _organInfoRepository.UpdateAsync(organInfo);
         }
     }
 }
