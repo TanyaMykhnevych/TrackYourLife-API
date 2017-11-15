@@ -16,7 +16,6 @@ namespace TrackYourLife.API.Controllers
     [Route("api/[controller]")]
     public class TokenController : Controller
     {
-        //private readonly ITokensService _tokensService;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
 
@@ -29,7 +28,7 @@ namespace TrackYourLife.API.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> GenerateToken([FromBody] GetTokenViewModel model)
+        public async Task<IActionResult> GenerateToken(GetTokenViewModel model)
         {
             if (ModelState.IsValid)
             {

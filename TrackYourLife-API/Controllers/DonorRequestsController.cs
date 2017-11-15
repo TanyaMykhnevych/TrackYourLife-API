@@ -36,7 +36,7 @@ namespace TrackYourLife.API.Controllers
         ///  Sends email to medical employee (about creating new request)
         /// </summary>
         [HttpPost]
-        public IActionResult CreateDonorRequest([FromBody]DonorOrganRequestViewModel model)
+        public IActionResult CreateDonorRequest(DonorOrganRequestViewModel model)
         {
             //TODO: maybe need to convert viewmodel to DTO
             var response = this.Execute(() =>
@@ -53,7 +53,7 @@ namespace TrackYourLife.API.Controllers
         /// </summary>
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public IActionResult ScheduleMedicalExam([FromBody]ScheduleMedicalExamViewModel model)
+        public IActionResult ScheduleMedicalExam(ScheduleMedicalExamViewModel model)
         {
             _donorRequestService.ScheduleMedicalExam(model);
             return Ok();
@@ -65,7 +65,7 @@ namespace TrackYourLife.API.Controllers
         /// </summary>
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public IActionResult SetMedicalExamResults([FromBody]MedicalExamResultViewModel model)
+        public IActionResult SetMedicalExamResults(MedicalExamResultViewModel model)
         {
             _donorRequestService.UpdateMedicalExamResults(model);
             return Ok();

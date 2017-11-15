@@ -49,7 +49,7 @@ namespace TrackYourLife.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddClinic([FromBody]EditClinicViewModel model)
+        public async Task<IActionResult> AddClinic(EditClinicViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -77,7 +77,7 @@ namespace TrackYourLife.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> EditClinic([FromBody]EditClinicViewModel model)
+        public async Task<IActionResult> EditClinic(EditClinicViewModel model)
         {
             if (!ModelState.IsValid)
             {

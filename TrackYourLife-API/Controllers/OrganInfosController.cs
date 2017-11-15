@@ -62,7 +62,7 @@ namespace TrackYourLife.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddOrganInfo([FromBody]EditOrganInfoViewModel model)
+        public async Task<IActionResult> AddOrganInfo(EditOrganInfoViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -85,7 +85,7 @@ namespace TrackYourLife.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> EditOrganInfo([FromBody]EditOrganInfoViewModel model)
+        public async Task<IActionResult> EditOrganInfo(EditOrganInfoViewModel model)
         {
             if (!ModelState.IsValid)
             {
