@@ -1,13 +1,14 @@
 ﻿using BusinessLayer.Models.ViewModels;
 using BusinessLayer.Models.ViewModels.Patient;
 using BusinessLayer.Services.Abstractions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace TrackYourLife.API.Controllers
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]/[action]/{id?}")]
     public class PatientRequestController : ControllerBase
     {
@@ -30,10 +31,14 @@ namespace TrackYourLife.API.Controllers
         /// Creates new PatientOrganQuery for patient
         /// </summary>
         [HttpPost]
-        public async Task<IActionResult> CreatePatientRequest(PatientOrganRequestViewModel model)
+        public IActionResult CreatePatientRequest(PatientOrganRequestViewModel model)
         {
-            await _patientOrganRequestService.AddPatientOrganQueryToQueueAsync(model);
-            return Ok();
+            var result = Execute(() =>
+            {
+                _patientOrganRequestService.AddPatientOrganQueryToQueue(model);
+            });
+
+            return Ok(result);
         }
 
         /// <summary>

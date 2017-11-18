@@ -2,32 +2,34 @@
 using BusinessLayer.Models.ViewModels;
 using BusinessLayer.Services.Abstractions;
 using Common.Constants;
+using Common.Utils;
 using DataLayer.Entities;
 using DataLayer.Entities.Identity;
-using DataLayer.Entities.Organ;
 using DataLayer.Entities.OrganQueries;
 using DataLayer.Repositories.Abstractions;
 using Microsoft.AspNetCore.Identity;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BusinessLayer.Services.Implementations
 {
     public class PatientOrganRequestService : IPatientOrganRequestService
     {
+        private const string UserCreationFailedErrorMessage = "Error while creating a user";
+
         private readonly IDonorOrganRequestService _donorOrganRequestService;
         private readonly IPatientOrganQueriesRepository _patientOrganQueriesRepository;
         private readonly IOrganInfoService _organInfoService;
+        private readonly IUserInfoService _userInfoService;
         private readonly UserManager<AppUser> _userManager;
 
         public PatientOrganRequestService(
             IPatientOrganQueriesRepository patientOrganQueriesRepository,
             IOrganInfoService organInfoService,
+            IUserInfoService userInfoService,
             IDonorOrganRequestService donorOrganRequestService,
             UserManager<AppUser> userManager)
         {
+            _userInfoService = userInfoService;
             _patientOrganQueriesRepository = patientOrganQueriesRepository;
             _organInfoService = organInfoService;
             _donorOrganRequestService = donorOrganRequestService;
@@ -39,7 +41,7 @@ namespace BusinessLayer.Services.Implementations
             return _patientOrganQueriesRepository.GetById(patientOrganRequestId);
         }
 
-        public async Task AddPatientOrganQueryToQueueAsync(PatientOrganRequestViewModel model)
+        public void AddPatientOrganQueryToQueue(PatientOrganRequestViewModel model)
         {
 
             bool isOrganInfoExist = _organInfoService.IfOrganInfoExists(model.OrganInfoId);
@@ -53,6 +55,31 @@ namespace BusinessLayer.Services.Implementations
                 model.QueryPriority = PatientQueryPriority.Normal;
             }
 
+            AppUser user = _userManager.FindByEmailAsync(model.Email).Result;
+            if (user == null)
+            {
+                user = CreatePatient(model);
+            }
+
+            var patientInfo = _userInfoService.GetUserInfoByUserIdAsync(user.Id).Result;
+
+            var patientOrganQuery = new PatientOrganQuery()
+            {
+                OrganInfoId = model.OrganInfoId,
+                PatientInfoId = patientInfo.UserInfoId,
+                Priority = (int)model.QueryPriority,
+                Message = model.AdditionalInfo,
+                Status = (int)PatientQueryStatuses.AwaitingForDonor
+            };
+
+            _patientOrganQueriesRepository.Save(patientOrganQuery);
+
+            //TODO: send email to patient email with credentials
+            //TODO: send email to clinic that query has been added
+        }
+
+        private AppUser CreatePatient(PatientOrganRequestViewModel model)
+        {
             var patientInfo = new UserInfo()
             {
                 FirstName = model.FirstName,
@@ -78,23 +105,27 @@ namespace BusinessLayer.Services.Implementations
                 PhoneNumberConfirmed = true,
                 UserInfo = patientInfo
             };
-            var result = await _userManager.CreateAsync(user);
+
+            var password = PasswordHasher.GeneratePassword();
+            var result = _userManager.CreateAsync(user, password).Result;
+
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, RolesConstants.Patient);
+                result = _userManager.AddToRoleAsync(user, RolesConstants.Patient).Result;
+            }
+            else
+            {
+                throw new InvalidOperationException(UserCreationFailedErrorMessage);
+            }
 
-                var patientOrganQuery = new PatientOrganQuery()
-                {
-                    OrganInfoId = model.OrganInfoId,
-                    PatientInfoId = user.UserInfo.UserInfoId,
-                    Priority = (int)model.QueryPriority,
-                    Message = model.AdditionalInfo,
-                    Status = (int)PatientQueryStatuses.AwaitingForDonor
-                };
-
-                _patientOrganQueriesRepository.Save(patientOrganQuery);
-
-                //TODO: send email to clinic that query has been added
+            if (result.Succeeded)
+            {
+                return user;
+            }
+            else
+            {
+                result = _userManager.DeleteAsync(user).Result;
+                throw new InvalidOperationException(UserCreationFailedErrorMessage);
             }
         }
 

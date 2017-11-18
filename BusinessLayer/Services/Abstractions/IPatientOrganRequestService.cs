@@ -10,7 +10,7 @@ namespace BusinessLayer.Services.Abstractions
     {
         PatientOrganQuery GetById(int patientOrganRequestId);
 
-        Task AddPatientOrganQueryToQueueAsync(PatientOrganRequestViewModel patientOrganQueryViewModel);
+        void AddPatientOrganQueryToQueue(PatientOrganRequestViewModel patientOrganQueryViewModel);
 
         void ChangePatientOrganQueryStatus(int patientOrganQueryId, PatientQueryStatuses status);
 
