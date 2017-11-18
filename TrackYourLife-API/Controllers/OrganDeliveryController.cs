@@ -1,7 +1,6 @@
 ﻿using BusinessLayer.Models.ViewModels.Delivery;
 using BusinessLayer.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
-using System;
 
 namespace TrackYourLife.API.Controllers
 {
@@ -22,8 +21,12 @@ namespace TrackYourLife.API.Controllers
         [HttpPost]
         public IActionResult ScheduleDelivery(ScheduleDeliveryViewModel model)
         {
-            _transportService.ScheduleOrganDelivery(model);
-            return Ok();
+            var result = this.Execute(() =>
+            {
+                _transportService.ScheduleOrganDelivery(model);
+            });
+
+            return Json(result);
         }
 
         /// <summary>
@@ -32,8 +35,12 @@ namespace TrackYourLife.API.Controllers
         [HttpPost]
         public IActionResult AttachOrganDeliverySnapshot(OrganStateSnapshotViewModel model)
         {
-            _transportService.AddOrganDeliverySnapshot(model);
-            return Ok();
+            var result = this.Execute(() =>
+            {
+                _transportService.AddOrganDeliverySnapshot(model);
+            });
+
+            return Json(result);
         }
     }
 }

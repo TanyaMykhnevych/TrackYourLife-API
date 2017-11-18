@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DataLayer.Entities.OrganQueries;
+﻿using DataLayer.Entities.OrganQueries;
 
 namespace DataLayer.Repositories.Abstractions
 {
-    public interface IDonorOrganRequestRepository
+    public interface IDonorOrganRequestRepository : IRepositoryBase<DonorOrganQuery>
     {
-        DonorOrganQuery Save(DonorOrganQuery donorOrganRequest);
-
-        void Update(DonorOrganQuery request);
-
         DonorOrganQuery GetById(int donorRequestId);
     }
 }

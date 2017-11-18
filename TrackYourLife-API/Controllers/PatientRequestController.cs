@@ -4,7 +4,6 @@ using BusinessLayer.Services.Abstractions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace TrackYourLife.API.Controllers
 {
@@ -20,10 +19,16 @@ namespace TrackYourLife.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetPatientRequest(int patientRequestId)
+        public IActionResult GetPatientRequest(int id)
         {
             //TODO: maybe need to use ViewModel
-            return Json(_patientOrganRequestService.GetById(patientRequestId));
+            var result = ContentExecute(() =>
+            {
+                int patientRequestId = id;
+                return _patientOrganRequestService.GetById(patientRequestId);
+            });
+
+            return Json(result);
         }
 
         /// <summary>
@@ -38,7 +43,7 @@ namespace TrackYourLife.API.Controllers
                 _patientOrganRequestService.AddPatientOrganQueryToQueue(model);
             });
 
-            return Ok(result);
+            return Json(result);
         }
 
         /// <summary>
@@ -47,8 +52,12 @@ namespace TrackYourLife.API.Controllers
         [HttpPost]
         public IActionResult AssignToDonorRequest(PatientToDonorViewModel model)
         {
-            _patientOrganRequestService.AssignToDonorOrganQuery(model.PatientOrganQueryId, model.DonorOrganQueryId);
-            return Ok();
+            var result = Execute(() =>
+            {
+                _patientOrganRequestService.AssignToDonorOrganQuery(model.PatientOrganQueryId, model.DonorOrganQueryId);
+            });
+
+            return Json(result);
         }
     }
 }

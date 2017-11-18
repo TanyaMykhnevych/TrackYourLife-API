@@ -16,14 +16,14 @@ namespace BusinessLayer.Services.Implementations
             _clinicsRepository = clinicsRepository;
         }
 
-        public Task<IList<Clinic>> GetAllClinicsAsync()
+        public IList<Clinic> GetAllClinics()
         {
-            return _clinicsRepository.GetAllAsync();
+            return _clinicsRepository.GetAll();
         }
 
-        public Task<Clinic> GetClinicByIdAsync(int id)
+        public Clinic GetClinicById(int id)
         {
-            return _clinicsRepository.GetByIdAsync(id);
+            return _clinicsRepository.GetById(id);
         }
 
         public Clinic GetFirst()
@@ -31,14 +31,14 @@ namespace BusinessLayer.Services.Implementations
             return _clinicsRepository.GetFirst();
         }
 
-        public async Task<Clinic> AddClinicAsync(Clinic clinic)
+        public Clinic AddClinic(Clinic clinic)
         {
-            return await _clinicsRepository.AddAsync(clinic);
+            return _clinicsRepository.Add(clinic);
         }
 
-        public Task<Clinic> UpdateClinicAsync(Clinic clinic)
+        public Clinic UpdateClinic(Clinic clinic)
         {
-            return _clinicsRepository.UpdateAsync(clinic);
+            return _clinicsRepository.Update(clinic);
         }
     }
 }

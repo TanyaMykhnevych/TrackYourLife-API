@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
-using System.Threading.Tasks;
 using TrackYourLife.API.ViewModels.Clinics;
 
 namespace TrackYourLife.API.Controllers
@@ -21,11 +20,11 @@ namespace TrackYourLife.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetClinics()
+        public IActionResult GetClinics()
         {
-            var result = await ContentExecuteAsync<ClinicListViewModel>(async () =>
+            var result = ContentExecute<ClinicListViewModel>(() =>
             {
-                var clinics = await _clinicsService.GetAllClinicsAsync();
+                var clinics = _clinicsService.GetAllClinics();
                 var clinicListItems = clinics.Select(x => new ClinicListItemViewModel(x));
                 return new ClinicListViewModel()
                 {
@@ -37,11 +36,11 @@ namespace TrackYourLife.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetClinicById(int id)
+        public IActionResult GetClinicById(int id)
         {
-            var result = await ContentExecuteAsync<Clinic>(async () =>
+            var result = ContentExecute<Clinic>(() =>
             {
-                var clinic = await _clinicsService.GetClinicByIdAsync(id);
+                var clinic = _clinicsService.GetClinicById(id);
                 return clinic;
             });
 
@@ -49,14 +48,14 @@ namespace TrackYourLife.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddClinic(EditClinicViewModel model)
+        public IActionResult AddClinic(EditClinicViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 // TODO: ne ok
             }
 
-            var result = await ContentExecuteAsync<ClinicDetailsViewModel>(async () =>
+            var result = ContentExecute<ClinicDetailsViewModel>(() =>
             {
                 var clinic = new Clinic
                 {
@@ -69,7 +68,7 @@ namespace TrackYourLife.API.Controllers
                     Altitude = model.Altitude,
                     Longitude = model.Longitude
                 };
-                var newClinic = await _clinicsService.AddClinicAsync(clinic);
+                var newClinic = _clinicsService.AddClinic(clinic);
                 return new ClinicDetailsViewModel(newClinic);
             });
 
@@ -77,14 +76,14 @@ namespace TrackYourLife.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> EditClinic(EditClinicViewModel model)
+        public IActionResult EditClinic(EditClinicViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 // TODO: ne ok
             }
 
-            var result = await ContentExecuteAsync<ClinicDetailsViewModel>(async () =>
+            var result = ContentExecute<ClinicDetailsViewModel>(() =>
             {
                 var clinic = new Clinic
                 {
@@ -98,7 +97,7 @@ namespace TrackYourLife.API.Controllers
                     Altitude = model.Altitude,
                     Longitude = model.Longitude
                 };
-                var newClinic = await _clinicsService.UpdateClinicAsync(clinic);
+                var newClinic = _clinicsService.UpdateClinic(clinic);
                 return new ClinicDetailsViewModel(newClinic);
             });
 

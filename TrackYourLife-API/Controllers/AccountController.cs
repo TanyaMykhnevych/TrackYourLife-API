@@ -1,15 +1,12 @@
-﻿using Common.Constants;
-using DataLayer.Entities.Identity;
+﻿using DataLayer.Entities.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TrackYourLife.API.ViewModels;
-using TrackYourLife.API.ViewModels.Common;
 
 namespace TrackYourLife.API.Controllers
 {

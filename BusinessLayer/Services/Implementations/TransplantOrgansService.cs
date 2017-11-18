@@ -1,7 +1,4 @@
 ﻿using BusinessLayer.Services.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using DataLayer.Entities.Organ;
 using DataLayer.Repositories.Abstractions;
 
@@ -23,7 +20,7 @@ namespace BusinessLayer.Services.Implementations
 
         public TransplantOrgan Save(TransplantOrgan transplantOrgan)
         {
-            return _transplantOrgansRepository.Save(transplantOrgan);
+            return _transplantOrgansRepository.Add(transplantOrgan);
         }
 
         public void Update(TransplantOrgan transplantOrgan)

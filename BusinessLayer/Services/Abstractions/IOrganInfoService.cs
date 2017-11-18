@@ -1,20 +1,17 @@
 ﻿using DataLayer.Entities.Organ;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BusinessLayer.Services.Abstractions
 {
     public interface IOrganInfoService
     {
-        Task<IList<OrganInfo>> GetOrganInfosAsync();
+        IList<OrganInfo> GetOrganInfos();
 
-        Task<OrganInfo> GetOrganInfoByIdAsync(int id);
+        OrganInfo GetOrganInfoById(int id);
 
-        Task<OrganInfo> AddOrganInfoAsync(OrganInfo organInfo);
+        OrganInfo AddOrganInfo(OrganInfo organInfo);
 
-        Task<OrganInfo> UpdateOrganInfoAsync(OrganInfo organInfo);
+        OrganInfo UpdateOrganInfo(OrganInfo organInfo);
 
         bool IfOrganInfoExists(int organInfoId);
     }

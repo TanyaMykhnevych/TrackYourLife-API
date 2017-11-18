@@ -1,9 +1,5 @@
 ﻿using BusinessLayer.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace TrackYourLife.API.Controllers
 {
@@ -20,14 +16,25 @@ namespace TrackYourLife.API.Controllers
 
         public IActionResult GetPendingQueue()
         {
-            var queue = _patientQueueService.GetPengingQueue();
-            return Json(queue);
+            var result = ContentExecute(() =>
+            {
+                var queue = _patientQueueService.GetPengingQueue();
+                return queue;
+            });
+
+            return Json(result);
         }
         
-        public IActionResult GetPendingQueueByOrgan(int organInfoId)
+        public IActionResult GetPendingQueueByOrgan(int id)
         {
-            var queue = _patientQueueService.GetPengingQueueByOrgan(organInfoId);
-            return Json(queue);
+            var result = ContentExecute(() =>
+            {
+                int organInfoId = id;
+                var queue = _patientQueueService.GetPengingQueueByOrgan(organInfoId);
+                return queue;
+            });
+
+            return Json(result);
         }
     }
 }

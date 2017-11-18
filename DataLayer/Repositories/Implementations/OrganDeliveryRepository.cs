@@ -1,18 +1,14 @@
 ﻿using DataLayer.DbContext;
 using DataLayer.Repositories.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using DataLayer.Entities.OrganDelivery;
 
 namespace DataLayer.Repositories.Implementations
 {
-    public class OrganDeliveryRepository : IOrganDeliveryRepository
+    public class OrganDeliveryRepository : RepositoryBase<OrganDeliveryInfo>, IOrganDeliveryRepository
     {
-        private readonly AppDbContext _dbContext;
-
         public OrganDeliveryRepository(AppDbContext dbContext)
+            : base(dbContext, dbContext.OrganDeliveryInfos)
         {
-            _dbContext = dbContext;
         }
     }
 }

@@ -61,7 +61,7 @@ namespace BusinessLayer.Services.Implementations
                 user = CreatePatient(model);
             }
 
-            var patientInfo = _userInfoService.GetUserInfoByUserIdAsync(user.Id).Result;
+            var patientInfo = _userInfoService.GetUserInfoByUserId(user.Id);
 
             var patientOrganQuery = new PatientOrganQuery()
             {
@@ -72,7 +72,7 @@ namespace BusinessLayer.Services.Implementations
                 Status = (int)PatientQueryStatuses.AwaitingForDonor
             };
 
-            _patientOrganQueriesRepository.Save(patientOrganQuery);
+            _patientOrganQueriesRepository.Add(patientOrganQuery);
 
             //TODO: send email to patient email with credentials
             //TODO: send email to clinic that query has been added
@@ -92,8 +92,7 @@ namespace BusinessLayer.Services.Implementations
                 PhoneNumber = model.PhoneNumber,
                 ZipCode = model.ZipCode
             };
-
-            //TODO: use transaction
+            
             AppUser user = new AppUser()
             {
                 Email = model.Email,
@@ -118,15 +117,13 @@ namespace BusinessLayer.Services.Implementations
                 throw new InvalidOperationException(UserCreationFailedErrorMessage);
             }
 
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                return user;
-            }
-            else
-            {
-                result = _userManager.DeleteAsync(user).Result;
+                _userManager.DeleteAsync(user).Wait();
                 throw new InvalidOperationException(UserCreationFailedErrorMessage);
             }
+
+            return user;
         }
 
         public void ChangePatientOrganQueryStatus(int patientOrganQueryId, PatientQueryStatuses status)

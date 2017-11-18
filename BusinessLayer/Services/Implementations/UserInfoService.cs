@@ -1,9 +1,5 @@
 ﻿using BusinessLayer.Services.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using DataLayer.Entities;
-using System.Threading.Tasks;
 using DataLayer.Repositories.Abstractions;
 
 namespace BusinessLayer.Services.Implementations
@@ -17,14 +13,14 @@ namespace BusinessLayer.Services.Implementations
             _userInfoRepository = userInfoRepository;
         }
 
-        public Task<UserInfo> GetUserInfoByIdAsync(int id)
+        public UserInfo GetUserInfoById(int id)
         {
-            return _userInfoRepository.GetSingleByAsync(x => x.UserInfoId == id);
+            return _userInfoRepository.GetSingleByPredicate(x => x.UserInfoId == id);
         }
 
-        public Task<UserInfo> GetUserInfoByUserIdAsync(string id)
+        public UserInfo GetUserInfoByUserId(string id)
         {
-            return _userInfoRepository.GetSingleByAsync(x => x.AppUserId == id);
+            return _userInfoRepository.GetSingleByPredicate(x => x.AppUserId == id);
         }
     }
 }

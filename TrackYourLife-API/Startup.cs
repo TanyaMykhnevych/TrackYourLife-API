@@ -20,6 +20,8 @@ using IdentityServer4.Models;
 using System.Security.Claims;
 using System.Text;
 using Common.Constants;
+using Common.Utils;
+using Microsoft.AspNetCore.Http;
 
 namespace TrackYourLife.API
 {
@@ -74,6 +76,12 @@ namespace TrackYourLife.API
 
             app.UseStaticFiles();
             app.UseAuthentication();
+            
+            app.Use(async (context, next) =>
+            {
+                CurrentUserHolder.CurrentUser = context?.User?.Identity?.Name;
+                await next.Invoke();
+            });
 
             app.UseMvc();
         }

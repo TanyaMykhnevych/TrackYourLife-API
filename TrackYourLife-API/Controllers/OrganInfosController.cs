@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
-using System.Threading.Tasks;
 using TrackYourLife.API.ViewModels.OrganInfos;
 
 namespace TrackYourLife.API.Controllers
@@ -23,11 +22,11 @@ namespace TrackYourLife.API.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> GetAllOrganInfos()
+        public IActionResult GetAllOrganInfos()
         {
-            var result = await ContentExecuteAsync(async () =>
+            var result = ContentExecute(() =>
             {
-                return await _organInfoService.GetOrganInfosAsync();
+                return _organInfoService.GetOrganInfos();
             });
 
             return Json(result);
@@ -35,11 +34,11 @@ namespace TrackYourLife.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetOrganInfoList()
+        public IActionResult GetOrganInfoList()
         {
-            var result = await ContentExecuteAsync<OrganInfoListViewModel>(async () =>
+            var result = ContentExecute<OrganInfoListViewModel>(() =>
             {
-                var organInfos = await _organInfoService.GetOrganInfosAsync();
+                var organInfos = _organInfoService.GetOrganInfos();
                 var organInfoViewModels = organInfos.Select(o => new OrganInfoListItemViewModel(o)).ToList();
                 return new OrganInfoListViewModel
                 {
@@ -51,25 +50,25 @@ namespace TrackYourLife.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetOrganInfoById(int id)
+        public IActionResult GetOrganInfoById(int id)
         {
-            var result = await ContentExecuteAsync(async () =>
+            var result = ContentExecute(() =>
             {
-                return await _organInfoService.GetOrganInfoByIdAsync(id);
+                return _organInfoService.GetOrganInfoById(id);
             });
 
             return Json(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddOrganInfo(EditOrganInfoViewModel model)
+        public IActionResult AddOrganInfo(EditOrganInfoViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 // TODO: ne ok
             }
 
-            var result = await ContentExecuteAsync<OrganInfoDetailsViewModel>(async () =>
+            var result = ContentExecute<OrganInfoDetailsViewModel>(() =>
             {
                 var organInfo = new OrganInfo
                 {
@@ -77,7 +76,7 @@ namespace TrackYourLife.API.Controllers
                     Description = model.Description,
                     OutsideHumanPossibleTime = model.OutsideHumanPossibleTime
                 };
-                var newOrganInfo = await _organInfoService.AddOrganInfoAsync(organInfo);
+                var newOrganInfo = _organInfoService.AddOrganInfo(organInfo);
                 return new OrganInfoDetailsViewModel(newOrganInfo);
             });
 
@@ -85,14 +84,14 @@ namespace TrackYourLife.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> EditOrganInfo(EditOrganInfoViewModel model)
+        public IActionResult EditOrganInfo(EditOrganInfoViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 // TODO: ne ok
             }
 
-            var result = await ContentExecuteAsync<OrganInfoDetailsViewModel>(async () =>
+            var result = ContentExecute<OrganInfoDetailsViewModel>(() =>
             {
                 var organInfo = new OrganInfo
                 {
@@ -101,7 +100,7 @@ namespace TrackYourLife.API.Controllers
                     Description = model.Description,
                     OutsideHumanPossibleTime = model.OutsideHumanPossibleTime
                 };
-                var editedOrganInfo = await _organInfoService.UpdateOrganInfoAsync(organInfo);
+                var editedOrganInfo = _organInfoService.UpdateOrganInfo(organInfo);
                 return new OrganInfoDetailsViewModel(editedOrganInfo);
             });
 

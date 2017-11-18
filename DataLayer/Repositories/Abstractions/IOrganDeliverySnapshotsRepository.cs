@@ -5,8 +5,7 @@ using DataLayer.Entities.OrganDelivery;
 
 namespace DataLayer.Repositories.Abstractions
 {
-    public interface IOrganDeliverySnapshotsRepository
+    public interface IOrganDeliverySnapshotsRepository : IRepositoryBase<OrganDataSnapshot>
     {
-        OrganDataSnapshot Add(OrganDataSnapshot snapshot);
     }
 }

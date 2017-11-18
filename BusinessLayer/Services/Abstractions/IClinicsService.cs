@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using DataLayer.Entities;
 
 namespace BusinessLayer.Services.Abstractions
 {
     public interface IClinicsService
     {
-        Task<IList<Clinic>> GetAllClinicsAsync();
+        IList<Clinic> GetAllClinics();
 
-        Task<Clinic> GetClinicByIdAsync(int id);
+        Clinic GetClinicById(int id);
 
         Clinic GetFirst();
 
-        Task<Clinic> AddClinicAsync(Clinic clinic);
+        Clinic AddClinic(Clinic clinic);
 
-        Task<Clinic> UpdateClinicAsync(Clinic clinic);
+        Clinic UpdateClinic(Clinic clinic);
     }
 }

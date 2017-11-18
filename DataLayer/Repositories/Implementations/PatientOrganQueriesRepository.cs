@@ -1,65 +1,33 @@
 ﻿using DataLayer.Repositories.Abstractions;
 using DataLayer.Entities.OrganQueries;
 using DataLayer.DbContext;
-using System.Linq;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataLayer.Repositories.Implementations
 {
-    public class PatientOrganQueriesRepository : IPatientOrganQueriesRepository
+    public class PatientOrganQueriesRepository : RepositoryBase<PatientOrganQuery>, IPatientOrganQueriesRepository
     {
-        private readonly AppDbContext _appDbContext;
-
         public PatientOrganQueriesRepository(AppDbContext appDbContext)
+            : base(appDbContext, appDbContext.PatientOrganQueries)
         {
-            _appDbContext = appDbContext;
         }
 
         public IList<PatientOrganQuery> GetAllPending()
         {
-            return _appDbContext
-                .PatientOrganQueries
-                //TODO: use valud from enum
-                .Where(x => x.Status == 100)
-                .ToList();
+            //TODO: use valud from enum
+            return GetAll(x => x.Status == 100);
         }
 
         public IList<PatientOrganQuery> GetPendingByOrganInfo(int organInfoId)
         {
-            return _appDbContext
-                .PatientOrganQueries
-                //TODO: use valud from enum
-                .Where(x => x.OrganInfoId == organInfoId && x.Status == 100)
-                .ToList();
+            //TODO: use valud from enum
+            return GetAll(x => x.OrganInfoId == organInfoId && x.Status == 100);
         }
 
         public PatientOrganQuery GetById(int patientOrganQueryId)
         {
-            return _appDbContext
-                .PatientOrganQueries
-                .Include(x => x.DonorOrganQuery)
-                .SingleOrDefault(x => x.Id == patientOrganQueryId);
-        }
-
-        public PatientOrganQuery Save(PatientOrganQuery patientOrganQuery)
-        {
-            patientOrganQuery = _appDbContext.PatientOrganQueries.Add(patientOrganQuery).Entity;
-            _appDbContext.SaveChanges();
-
-            return patientOrganQuery;
-        }
-
-        public void Update(PatientOrganQuery patientOrganQuery)
-        {
-            var oldEntity = GetById(patientOrganQuery.Id);
-            _appDbContext.Entry(oldEntity).State = EntityState.Detached;
-
-            patientOrganQuery.Created = oldEntity.Created;
-            patientOrganQuery.CreatedBy = oldEntity.CreatedBy;
-
-            _appDbContext.PatientOrganQueries.Update(patientOrganQuery);
-            _appDbContext.SaveChanges();
+            return GetSingleByPredicate(x => x.Id == patientOrganQueryId, x => x.Include(e => e.DonorOrganQuery));
         }
     }
 }

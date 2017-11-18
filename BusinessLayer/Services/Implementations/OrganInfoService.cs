@@ -1,10 +1,7 @@
 ﻿using BusinessLayer.Services.Abstractions;
 using DataLayer.Repositories.Abstractions;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using DataLayer.Entities.Organ;
-using System.Threading.Tasks;
 
 namespace BusinessLayer.Services.Implementations
 {
@@ -17,14 +14,14 @@ namespace BusinessLayer.Services.Implementations
             _organInfoRepository = organInfoRepository;
         }
 
-        public async Task<IList<OrganInfo>> GetOrganInfosAsync()
+        public IList<OrganInfo> GetOrganInfos()
         {
-            return await _organInfoRepository.GetAllAsync();
+            return _organInfoRepository.GetAll();
         }
 
-        public Task<OrganInfo> GetOrganInfoByIdAsync(int id)
+        public OrganInfo GetOrganInfoById(int id)
         {
-            return _organInfoRepository.GetByIdAsync(id);
+            return _organInfoRepository.GetById(id);
         }
 
         public bool IfOrganInfoExists(int organInfoId)
@@ -32,14 +29,14 @@ namespace BusinessLayer.Services.Implementations
             return _organInfoRepository.IfOrganInfoExist(organInfoId);
         }
 
-        public Task<OrganInfo> AddOrganInfoAsync(OrganInfo organInfo)
+        public OrganInfo AddOrganInfo(OrganInfo organInfo)
         {
-            return _organInfoRepository.AddAsync(organInfo);
+            return _organInfoRepository.Add(organInfo);
         }
 
-        public Task<OrganInfo> UpdateOrganInfoAsync(OrganInfo organInfo)
+        public OrganInfo UpdateOrganInfo(OrganInfo organInfo)
         {
-            return _organInfoRepository.UpdateAsync(organInfo);
+            return _organInfoRepository.Update(organInfo);
         }
     }
 }

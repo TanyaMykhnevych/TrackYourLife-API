@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
+using Common.Utils;
 
 namespace BusinessLayer.Services.Implementations
 {
@@ -39,6 +39,13 @@ namespace BusinessLayer.Services.Implementations
             _clinicsService = clinicsService;
             _userManager = userManager;
             _transplantOrgansService = transplantOrgansService;
+        }
+
+        public IList<DonorOrganQuery> GetDonorRequestsByUsername(string userName)
+        {
+            var user = _userManager.FindByNameAsync(userName).Result;
+
+            return _donorOrganRequestRepository.GetAll(dr => dr.DonorInfo.AppUserId == user.Id);
         }
 
         public DonorOrganQuery GetById(int id)
@@ -90,7 +97,7 @@ namespace BusinessLayer.Services.Implementations
                     Email = request.Email,
                     UserName = request.Email,
                     Created = DateTime.UtcNow,
-                    CreatedBy = "CurrentUser",
+                    CreatedBy = CurrentUserHolder.GetCurrentUserName(),
                     EmailConfirmed = true,
                     PhoneNumber = request.PhoneNumber,
                     PhoneNumberConfirmed = true,
@@ -106,10 +113,10 @@ namespace BusinessLayer.Services.Implementations
                         DonorInfoId = user.UserInfo.UserInfoId,
                         OrganInfoId = request.OrganInfoId,
                         Message = request.Message,
-                        Status = (int)DonorRequestStatuses.PendingMedicalExamination
+                        Status = (int) DonorRequestStatuses.PendingMedicalExamination
                     };
 
-                    _donorOrganRequestRepository.Save(donorOrganRequest);
+                    _donorOrganRequestRepository.Add(donorOrganRequest);
                 }
                 else
                 {
@@ -148,10 +155,10 @@ namespace BusinessLayer.Services.Implementations
                 ClinicId = model.ClinicId,
                 DonorOrganQueryId = model.DonorOrganQueryId,
                 ScheduledAt = model.ScheduledDateTime,
-                Status = (int)MedicalExamStatuses.Scheduled
+                Status = (int) MedicalExamStatuses.Scheduled
             };
 
-            donorOrganRequest.Status = (int)DonorRequestStatuses.ScheduledMedicalExamination;
+            donorOrganRequest.Status = (int) DonorRequestStatuses.ScheduledMedicalExamination;
 
             //TODO: better use transaction
             _medicalExamsRepository.Add(medicalExamEntity);
@@ -188,19 +195,19 @@ namespace BusinessLayer.Services.Implementations
                 {
                     UserInfoId = donorOrganQuery.DonorInfoId,
                     OrganInfoId = donorOrganQuery.OrganInfoId,
-                    Status = (int)TransplantOrganStatuses.ScheduledRetrieving,
+                    Status = (int) TransplantOrganStatuses.ScheduledRetrieving,
                     Created = DateTime.UtcNow,
-                    CreatedBy = "Default"
+                    CreatedBy = CurrentUserHolder.GetCurrentUserName()
                 };
             }
-            
-            donorOrganQuery.Status = (int)(model.MedicalExamStatus == MedicalExamStatuses.Pass
+
+            donorOrganQuery.Status = (int) (model.MedicalExamStatus == MedicalExamStatuses.Pass
                 ? DonorRequestStatuses.NeedToScheduleTimeForOrganRetrieving
                 : DonorRequestStatuses.FailedMedicalExamination);
 
             var exam = donorOrganQuery.DonorMedicalExams.LastOrDefault();
             exam.Results = model.MedicalExamResults;
-            exam.Status = (int)model.MedicalExamStatus;
+            exam.Status = (int) model.MedicalExamStatus;
 
             //TODO: use transaction here
             _medicalExamsRepository.Update(exam);
@@ -215,7 +222,7 @@ namespace BusinessLayer.Services.Implementations
                 throw new ArgumentNullException(nameof(request));
             }
 
-            request.Status = (int)status;
+            request.Status = (int) status;
 
             _donorOrganRequestRepository.Update(request);
         }

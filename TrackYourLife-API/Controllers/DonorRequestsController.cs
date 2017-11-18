@@ -1,9 +1,12 @@
-﻿using BusinessLayer.Models.Enums;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using BusinessLayer.Models.Enums;
 using BusinessLayer.Models.ViewModels;
 using BusinessLayer.Services.Abstractions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TrackYourLife.API.ViewModels.DonorRequests;
 
 namespace TrackYourLife.API.Controllers
 {
@@ -20,14 +23,59 @@ namespace TrackYourLife.API.Controllers
         /// <summary>
         /// Returns DonorRequestInfo by ID
         /// </summary>
-        /// <param name="donorRequestId"></param>
-        /// <returns></returns>
         [HttpGet]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public IActionResult GetDonorRequestInfo(int donorRequestId)
+        public IActionResult GetDonorRequestInfo(int id)
         {
-            // maybe need to use viewmodel
-            return Json(_donorRequestService.GetById(donorRequestId));
+            var response = ContentExecute(() =>
+            {
+                int donorRequestId = id;
+                return _donorRequestService.GetById(donorRequestId);
+            });
+
+            return Json(response);
+        }
+
+
+        /// <summary>
+        /// Returns Donor Requests List
+        /// </summary>
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult GetDonorRequestList()
+        {
+            var response = ContentExecute(() =>
+            {
+                var userName = User.Identity.Name;
+                var donorRequests = _donorRequestService.GetDonorRequestsByUsername(userName);
+                var donorRequestListItems = donorRequests.Select(dr => new DonorRequestListItemViewModel(dr)).ToList();
+                return new DonorRequestListViewModel(donorRequestListItems);
+            });
+
+            return Json(response);
+        }
+
+        /// <summary>
+        /// Returns Donor Requests List
+        /// </summary>
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult GetDonorRequestDetails(int id)
+        {
+            var response = ContentExecute<DonorRequestDetailsViewModel>(() =>
+            {
+                int donorRequestId = id;
+                var userName = User.Identity.Name;
+                var donorRequests = _donorRequestService.GetDonorRequestsByUsername(userName);
+                if (!donorRequests.Any(x => x.Id == donorRequestId))
+                {
+                    return null;
+                }
+                var donorRequest = donorRequests.Single(x => x.Id == donorRequestId);
+                return new DonorRequestDetailsViewModel(donorRequest);
+            });
+
+            return Json(response);
         }
 
         /// <summary>
@@ -39,7 +87,7 @@ namespace TrackYourLife.API.Controllers
         public IActionResult CreateDonorRequest(DonorOrganRequestViewModel model)
         {
             //TODO: maybe need to convert viewmodel to DTO
-            var response = this.Execute(() =>
+            var response = Execute(() =>
             {
                 _donorRequestService.RegisterDonorOrganRequest(model);
             });
@@ -55,8 +103,12 @@ namespace TrackYourLife.API.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult ScheduleMedicalExam(ScheduleMedicalExamViewModel model)
         {
-            _donorRequestService.ScheduleMedicalExam(model);
-            return Ok();
+            var result = Execute(() =>
+            {
+                _donorRequestService.ScheduleMedicalExam(model);
+            });
+
+            return Json(result);
         }
 
         /// <summary>
@@ -67,34 +119,44 @@ namespace TrackYourLife.API.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult SetMedicalExamResults(MedicalExamResultViewModel model)
         {
-            _donorRequestService.UpdateMedicalExamResults(model);
-            return Ok();
+            var result = Execute(() =>
+            {
+                _donorRequestService.UpdateMedicalExamResults(model);
+            });
+
+            return Json(result);
         }
 
         /// <summary>
         /// Just changes donorOrganQuery status to AwaitingOrganRetrieving
         /// </summary>
-        /// <param name="donorOrganQueryId"></param>
-        /// <returns></returns>
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public IActionResult TimeForRetrievingHasBeenScheduled(int donorOrganQueryId)
+        public IActionResult TimeForRetrievingHasBeenScheduled(int id)
         {
-            _donorRequestService.ChangeStatusTo(donorOrganQueryId, DonorRequestStatuses.AwaitingOrganRetrieving);
-            return Ok();
+            var result = Execute(() =>
+            {
+                int donorOrganQueryId = id;
+                _donorRequestService.ChangeStatusTo(donorOrganQueryId, DonorRequestStatuses.AwaitingOrganRetrieving);
+            });
+
+            return Json(result);
         }
 
         /// <summary>
         /// Just changes donorOrganQuery status to FinishedSuccessfully
         /// </summary>
-        /// <param name="donorOrganQueryId"></param>
-        /// <returns></returns>
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public IActionResult FinishDonorRequest(int donorOrganQueryId)
+        public IActionResult FinishDonorRequest(int id)
         {
-            _donorRequestService.ChangeStatusTo(donorOrganQueryId, DonorRequestStatuses.FinishedSuccessfully);
-            return Ok();
+            var result = Execute(() =>
+            {
+                int donorOrganQueryId = id;
+                _donorRequestService.ChangeStatusTo(donorOrganQueryId, DonorRequestStatuses.FinishedSuccessfully);
+            });
+
+            return Json(result);
         }
     }
 }

@@ -7,8 +7,7 @@ using System.Linq.Expressions;
 
 namespace DataLayer.Repositories.Abstractions
 {
-    public interface IUserInfoRepository
+    public interface IUserInfoRepository : IRepositoryBase<UserInfo>
     {
-        Task<UserInfo> GetSingleByAsync(Expression<Func<UserInfo, bool>> predicate);
     }
 }

@@ -2,13 +2,9 @@
 
 namespace DataLayer.Repositories.Abstractions
 {
-    public interface IMedicalExamsRepository
+    public interface IMedicalExamsRepository : IRepositoryBase<DonorMedicalExam>
     {
         DonorMedicalExam GetById(int id);
-
-        DonorMedicalExam Add(DonorMedicalExam entity);
-
-        void Update(DonorMedicalExam entity);
 
         void Delete(int id);
     }

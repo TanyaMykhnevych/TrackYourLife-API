@@ -1,15 +1,15 @@
 ﻿using BusinessLayer.Models.Enums;
 using BusinessLayer.Models.ViewModels;
-using DataLayer.Entities.Organ;
 using DataLayer.Entities.OrganQueries;
-using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace BusinessLayer.Services.Abstractions
 {
     public interface IDonorOrganRequestService
     {
+        IList<DonorOrganQuery> GetDonorRequestsByUsername(string userName);
+
         DonorOrganQuery GetById(int id);
 
         void RegisterDonorOrganRequest(DonorOrganRequestViewModel request);
