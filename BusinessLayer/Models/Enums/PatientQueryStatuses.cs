@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BusinessLayer.Models.Enums
 {
-    public enum PatientQueryStatuses
+    public enum PatientRequestStatuses
     {
         AwaitingForDonor = 100,
 

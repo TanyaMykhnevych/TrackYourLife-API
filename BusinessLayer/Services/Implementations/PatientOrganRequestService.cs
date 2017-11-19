@@ -69,7 +69,7 @@ namespace BusinessLayer.Services.Implementations
                 PatientInfoId = patientInfo.UserInfoId,
                 Priority = (int)model.QueryPriority,
                 Message = model.AdditionalInfo,
-                Status = (int)PatientQueryStatuses.AwaitingForDonor
+                Status = (int)PatientRequestStatuses.AwaitingForDonor
             };
 
             _patientOrganQueriesRepository.Add(patientOrganQuery);
@@ -126,7 +126,7 @@ namespace BusinessLayer.Services.Implementations
             return user;
         }
 
-        public void ChangePatientOrganQueryStatus(int patientOrganQueryId, PatientQueryStatuses status)
+        public void ChangePatientOrganQueryStatus(int patientOrganQueryId, PatientRequestStatuses status)
         {
             PatientOrganQuery patientOrganQuery = _patientOrganQueriesRepository.GetById(patientOrganQueryId);
             if (patientOrganQuery == null)
@@ -139,7 +139,7 @@ namespace BusinessLayer.Services.Implementations
                 patientOrganQuery.Priority = (int)PatientQueryPriority.Normal;
             }
 
-            patientOrganQuery.Status = (int)PatientQueryStatuses.AwaitingForDonor;
+            patientOrganQuery.Status = (int)PatientRequestStatuses.AwaitingForDonor;
 
             _patientOrganQueriesRepository.Update(patientOrganQuery);
 
@@ -162,7 +162,7 @@ namespace BusinessLayer.Services.Implementations
             }
 
             patientOrganQuery.DonorOrganQuery = donorOrganQuery;
-            patientOrganQuery.Status = (int)PatientQueryStatuses.AwaitingForTransplanting;
+            patientOrganQuery.Status = (int)PatientRequestStatuses.AwaitingForTransplanting;
 
             //TODO: check if donorOrganQuery saved 
             _patientOrganQueriesRepository.Update(patientOrganQuery);
