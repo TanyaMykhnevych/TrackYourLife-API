@@ -1,8 +1,12 @@
-﻿using BusinessLayer.Models.ViewModels;
+﻿using System;
+using BusinessLayer.Models.ViewModels;
 using BusinessLayer.Models.ViewModels.Patient;
 using BusinessLayer.Services.Abstractions;
+using Common.Constants;
+using Common.Entities.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TrackYourLife.API.Controllers
@@ -12,10 +16,13 @@ namespace TrackYourLife.API.Controllers
     public class PatientRequestController : ControllerBase
     {
         private readonly IPatientOrganRequestService _patientOrganRequestService;
+        private readonly UserManager<AppUser> _userManager;
 
-        public PatientRequestController(IPatientOrganRequestService patientOrganRequestService)
+        public PatientRequestController(IPatientOrganRequestService patientOrganRequestService,
+            UserManager<AppUser> userManager)
         {
             _patientOrganRequestService = patientOrganRequestService;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -40,6 +47,13 @@ namespace TrackYourLife.API.Controllers
         {
             var result = Execute(() =>
             {
+                var user = _userManager.FindByNameAsync(User.Identity.Name).Result;
+                var isMedEmployee = _userManager.IsInRoleAsync(user, RolesConstants.MedicalEmployee).Result;
+                if (!isMedEmployee)
+                {
+                    throw new UnauthorizedAccessException("You have not appropriate rights to access this action");
+                }
+
                 _patientOrganRequestService.AddPatientOrganQueryToQueue(model);
             });
 

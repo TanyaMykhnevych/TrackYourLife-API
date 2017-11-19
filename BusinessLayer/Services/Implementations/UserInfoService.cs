@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using BusinessLayer.Models.ViewModels;
 using BusinessLayer.Models.ViewModels.Donor;
 using BusinessLayer.Services.Abstractions;
 using Common.Constants;
@@ -13,6 +14,8 @@ namespace BusinessLayer.Services.Implementations
 {
     public class UserInfoService : IUserInfoService
     {
+        private const string UserCreationFailedErrorMessage = "Error while creating a user";
+
         private readonly IUserInfoRepository _userInfoRepository;
         private readonly UserManager<AppUser> _userManager;
 
@@ -63,14 +66,68 @@ namespace BusinessLayer.Services.Implementations
             var result = _userManager.CreateAsync(user, request.Password).Result;
             if (result.Succeeded)
             {
-                _userManager.AddToRoleAsync(user, RolesConstants.Donor).Wait();
+                result = _userManager.AddToRoleAsync(user, RolesConstants.Donor).Result;
             }
             else
             {
                 throw new ArgumentException(result.Errors.First().Description);
             }
 
+            if (!result.Succeeded)
+            {
+                _userManager.DeleteAsync(user).Wait();
+                throw new InvalidOperationException(UserCreationFailedErrorMessage);
+            }
+
             return userInfo;
+        }
+
+        public UserInfo RegisterPatient(PatientOrganRequestViewModel model)
+        {
+            var patientInfo = new UserInfo()
+            {
+                FirstName = model.FirstName,
+                SecondName = model.SecondName,
+                Country = model.Country,
+                City = model.City,
+                AddressLine1 = model.AddressLine1,
+                AddressLine2 = model.AddressLine2,
+                Email = model.Email,
+                PhoneNumber = model.PhoneNumber,
+                ZipCode = model.ZipCode
+            };
+
+            AppUser user = new AppUser()
+            {
+                Email = model.Email,
+                UserName = model.Email,
+                Created = DateTime.UtcNow,
+                CreatedBy = "CurrentUser",
+                EmailConfirmed = true,
+                PhoneNumber = model.PhoneNumber,
+                PhoneNumberConfirmed = true,
+                UserInfo = patientInfo
+            };
+
+            var password = PasswordHasher.GeneratePassword();
+            var result = _userManager.CreateAsync(user, password).Result;
+
+            if (result.Succeeded)
+            {
+                result = _userManager.AddToRoleAsync(user, RolesConstants.Patient).Result;
+            }
+            else
+            {
+                throw new InvalidOperationException(UserCreationFailedErrorMessage);
+            }
+
+            if (!result.Succeeded)
+            {
+                _userManager.DeleteAsync(user).Wait();
+                throw new InvalidOperationException(UserCreationFailedErrorMessage);
+            }
+
+            return patientInfo;
         }
     }
 }

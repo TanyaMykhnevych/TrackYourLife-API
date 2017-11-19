@@ -1,4 +1,5 @@
-﻿using BusinessLayer.Models.ViewModels.Donor;
+﻿using BusinessLayer.Models.ViewModels;
+using BusinessLayer.Models.ViewModels.Donor;
 using Common.Entities;
 
 namespace BusinessLayer.Services.Abstractions
@@ -10,5 +11,7 @@ namespace BusinessLayer.Services.Abstractions
         UserInfo GetUserInfoByUserId(string id);
 
         UserInfo RegisterDonor(DonorRequestViewModel request);
+
+        UserInfo RegisterPatient(PatientOrganRequestViewModel model);
     }
 }
