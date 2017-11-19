@@ -1,21 +1,20 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace BusinessLayer.Models.ViewModels
+namespace BusinessLayer.Models.ViewModels.Donor
 {
-    public class DonorOrganRequestViewModel
+    public class DonorRequestViewModel
     {
         // Contacts
-        [Required]
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
         [MinLength(6)]
         public string Password { get; set; }
 
         [Required]
         public string FirstName { get; set; }
+
         public string SecondName { get; set; }
         public DateTime BirthDate { get; set; }
 
@@ -29,7 +28,7 @@ namespace BusinessLayer.Models.ViewModels
 
         // what organ
         public int OrganInfoId { get; set; }
-        
+
         public string Message { get; set; }
     }
 }

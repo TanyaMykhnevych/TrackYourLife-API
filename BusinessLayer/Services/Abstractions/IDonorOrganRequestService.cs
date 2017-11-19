@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.Models.ViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BusinessLayer.Models.ViewModels.Donor;
 using Common.Entities.OrganQueries;
 using Common.Enums;
 
@@ -16,7 +17,7 @@ namespace BusinessLayer.Services.Abstractions
 
         bool HasDonorRequest(string id, int donorRequestId);
 
-        void RegisterDonorOrganRequest(DonorOrganRequestViewModel request);
+        void RegisterDonorOrganRequest(DonorRequestViewModel request);
 
         //TODO: maybe move to MedicalExamsService
         void ScheduleMedicalExam(ScheduleMedicalExamViewModel model);

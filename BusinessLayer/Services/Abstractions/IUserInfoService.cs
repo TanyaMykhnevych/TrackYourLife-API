@@ -1,4 +1,5 @@
-﻿using Common.Entities;
+﻿using BusinessLayer.Models.ViewModels.Donor;
+using Common.Entities;
 
 namespace BusinessLayer.Services.Abstractions
 {
@@ -7,5 +8,7 @@ namespace BusinessLayer.Services.Abstractions
         UserInfo GetUserInfoById(int id);
 
         UserInfo GetUserInfoByUserId(string id);
+
+        UserInfo RegisterDonor(DonorRequestViewModel request);
     }
 }

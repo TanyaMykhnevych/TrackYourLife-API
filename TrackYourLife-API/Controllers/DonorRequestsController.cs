@@ -1,10 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using BusinessLayer.Models.ViewModels;
+using BusinessLayer.Models.ViewModels.Donor;
 using BusinessLayer.Services.Abstractions;
 using Common.Constants;
 using Common.Entities.Identity;
 using Common.Enums;
+using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -116,12 +119,27 @@ namespace TrackYourLife.API.Controllers
         ///  Sends email to medical employee (about creating new request)
         /// </summary>
         [HttpPost]
-        public IActionResult CreateDonorRequest(DonorOrganRequestViewModel model)
+        public IActionResult CreateDonorRequest(DonorRequestViewModel model)
         {
-            //TODO: maybe need to convert viewmodel to DTO
-            var response = Execute(() => { _donorRequestService.RegisterDonorOrganRequest(model); });
+            var response = Execute(() =>
+            {
+                if (User != null && User.IsAuthenticated())
+                {
+                    if (User.IsInRole(RolesConstants.Donor))
+                    {
+                        var user = _userManager.FindByNameAsync(User.Identity.Name).Result;
+                        model.Email = user.Email;
+                    }
+                    else
+                    {
+                        throw new UnauthorizedAccessException("Cannot access to this method because you are not a donor!");
+                    }
+                }
 
-            return Ok(response);
+                _donorRequestService.RegisterDonorOrganRequest(model);
+            });
+
+            return Json(response);
         }
 
         /// <summary>
@@ -132,7 +150,10 @@ namespace TrackYourLife.API.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult ScheduleMedicalExam(ScheduleMedicalExamViewModel model)
         {
-            var result = Execute(() => { _donorRequestService.ScheduleMedicalExam(model); });
+            var result = Execute(() =>
+            {
+                _donorRequestService.ScheduleMedicalExam(model);
+            });
 
             return Json(result);
         }
@@ -145,7 +166,10 @@ namespace TrackYourLife.API.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult SetMedicalExamResults(MedicalExamResultViewModel model)
         {
-            var result = Execute(() => { _donorRequestService.UpdateMedicalExamResults(model); });
+            var result = Execute(() =>
+            {
+                _donorRequestService.UpdateMedicalExamResults(model);
+            });
 
             return Json(result);
         }

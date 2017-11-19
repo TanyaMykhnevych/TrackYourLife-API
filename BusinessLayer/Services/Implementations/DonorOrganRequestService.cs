@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using BusinessLayer.Models.ViewModels.Donor;
 using Common.Entities;
 using Common.Entities.Identity;
 using Common.Entities.Organ;
@@ -76,7 +77,7 @@ namespace BusinessLayer.Services.Implementations
                 dr.DonorInfoId == userInfo.UserInfoId && dr.Id == donorRequestId);
         }
 
-        public void RegisterDonorOrganRequest(DonorOrganRequestViewModel request)
+        public void RegisterDonorOrganRequest(DonorRequestViewModel request)
         {
             if (request == null)
             {
@@ -90,68 +91,25 @@ namespace BusinessLayer.Services.Implementations
 
             //TODO: validate contacts
 
-            RegisterDonorOrganRequestInner(request);
+            var user = _userManager.FindByEmailAsync(request.Email).Result;
+            UserInfo donorUserInfo = user == null 
+                ? _userInfoService.RegisterDonor(request)
+                : _userInfoService.GetUserInfoByUserId(user.Id);
+
+            RegisterDonorOrganRequestInner(request, donorUserInfo);
         }
 
-        private void RegisterDonorOrganRequestInner(DonorOrganRequestViewModel request)
+        private void RegisterDonorOrganRequestInner(DonorRequestViewModel request, UserInfo donorUserInfo)
         {
-            //TODO: use transaction here
-
-            //TODO: use mapping
-            var userInfo = new UserInfo()
+            var donorOrganRequest = new DonorOrganQuery
             {
-                Email = request.Email,
-                FirstName = request.FirstName,
-                SecondName = request.SecondName,
-                AddressLine1 = request.AddressLine1,
-                AddressLine2 = request.AddressLine2,
-                City = request.City,
-                Country = request.Country,
-                ZipCode = request.ZipCode,
-                PhoneNumber = request.PhoneNumber,
-                BirthDate = request.BirthDate
+                DonorInfoId = donorUserInfo.UserInfoId,
+                OrganInfoId = request.OrganInfoId,
+                Message = request.Message,
+                Status = DonorRequestStatuses.PendingMedicalExamination
             };
 
-            AppUser user;
-            try
-            {
-                user = new AppUser()
-                {
-                    Email = request.Email,
-                    UserName = request.Email,
-                    Created = DateTime.UtcNow,
-                    CreatedBy = CurrentUserHolder.GetCurrentUserName(),
-                    EmailConfirmed = true,
-                    PhoneNumber = request.PhoneNumber,
-                    PhoneNumberConfirmed = true,
-                    UserInfo = userInfo
-                };
-                var result = _userManager.CreateAsync(user, request.Password).Result;
-                if (result.Succeeded)
-                {
-                    _userManager.AddToRoleAsync(user, RolesConstants.Donor).Wait();
-
-                    var donorOrganRequest = new DonorOrganQuery
-                    {
-                        DonorInfoId = user.UserInfo.UserInfoId,
-                        OrganInfoId = request.OrganInfoId,
-                        Message = request.Message,
-                        Status = DonorRequestStatuses.PendingMedicalExamination
-                    };
-
-                    _donorOrganRequestRepository.Add(donorOrganRequest);
-                }
-                else
-                {
-                    throw new ArgumentException(result.Errors.First().Description);
-                }
-            }
-            catch (Exception ex)
-            {
-                //TODO: Log
-                Debug.WriteLine(ex.Message);
-                throw ex;
-            }
+            _donorOrganRequestRepository.Add(donorOrganRequest);
         }
 
         public void ScheduleMedicalExam(ScheduleMedicalExamViewModel model)
