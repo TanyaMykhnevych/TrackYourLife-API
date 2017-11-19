@@ -1,5 +1,5 @@
-﻿using BusinessLayer.Models.Enums;
-using DataLayer.Entities.OrganQueries;
+﻿using Common.Entities.OrganQueries;
+using Common.Enums;
 
 namespace TrackYourLife.API.ViewModels.PatientRequests
 {

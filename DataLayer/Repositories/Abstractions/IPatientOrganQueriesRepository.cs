@@ -1,5 +1,5 @@
-﻿using DataLayer.Entities.OrganQueries;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Common.Entities.OrganQueries;
 
 namespace DataLayer.Repositories.Abstractions
 {

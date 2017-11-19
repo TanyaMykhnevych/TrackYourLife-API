@@ -1,17 +1,17 @@
-﻿using DataLayer.Entities.Base;
-using DataLayer.Entities.OrganDelivery;
-using DataLayer.Entities.OrganQueries;
+﻿using Common.Entities.Base;
+using Common.Entities.OrganDelivery;
+using Common.Entities.OrganQueries;
+using Common.Enums;
 
-namespace DataLayer.Entities.Organ
+namespace Common.Entities.Organ
 {
     public class TransplantOrgan : BaseEntity
     {
         public int Id { get; set; }
 
         public string AdditionalInfo { get; set; }
-
-        // enum TransplantOrganStatuses
-        public int Status { get; set; }
+        
+        public TransplantOrganStatuses Status { get; set; }
 
         public int UserInfoId { get; set; }
         public virtual UserInfo UserInfo { get; set; }

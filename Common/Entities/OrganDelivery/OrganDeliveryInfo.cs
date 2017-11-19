@@ -1,19 +1,18 @@
-﻿using DataLayer.Entities.Base;
-using DataLayer.Entities.Organ;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using Common.Entities.Base;
+using Common.Entities.Organ;
+using Common.Enums;
 
-namespace DataLayer.Entities.OrganDelivery
+namespace Common.Entities.OrganDelivery
 {
     public class OrganDeliveryInfo : BaseEntity
     {
         public int Id { get; set; }
 
         public DateTime StartTransportTime { get; set; }
-
-        //TODO: enum
-        public int Status { get; set; }
+        
+        public OrganDeliveryStatuses Status { get; set; }
 
         public int TransplantOrganId { get; set; }
         public TransplantOrgan TransplantOrgan { get; set; }

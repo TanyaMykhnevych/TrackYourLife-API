@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using DataLayer.Entities;
+using Common.Entities;
 
 namespace DataLayer.Repositories.Abstractions
 {

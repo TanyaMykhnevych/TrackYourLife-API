@@ -1,22 +1,18 @@
-﻿using DataLayer.Entities.Base;
-using DataLayer.Entities.Organ;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Common.Entities.Base;
+using Common.Entities.Organ;
+using Common.Enums;
 
-namespace DataLayer.Entities.OrganQueries
+namespace Common.Entities.OrganQueries
 {
     public class PatientOrganQuery : BaseEntity
     {
         public int Id { get; set; }
 
         public string Message { get; set; }
-
-        //TODO: need to implement enum
-        public int Status { get; set; }
-
-        // enum PatientQueryPriority
-        public int Priority { get; set; }
+        
+        public PatientRequestStatuses Status { get; set; }
+        
+        public PatientQueryPriority Priority { get; set; }
 
         public int? PatientInfoId { get; set; }
         public UserInfo PatientInfo { get; set; }

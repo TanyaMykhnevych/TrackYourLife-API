@@ -1,4 +1,4 @@
-﻿using DataLayer.Entities;
+﻿using Common.Entities;
 
 namespace TrackYourLife.API.ViewModels.Clinics
 {

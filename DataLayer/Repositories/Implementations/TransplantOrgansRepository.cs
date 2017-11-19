@@ -1,8 +1,8 @@
 ﻿using DataLayer.Repositories.Abstractions;
 using System;
-using DataLayer.Entities.Organ;
 using DataLayer.DbContext;
 using System.Linq;
+using Common.Entities.Organ;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataLayer.Repositories.Implementations

@@ -1,7 +1,7 @@
 ﻿using DataLayer.DbContext;
 using DataLayer.Repositories.Abstractions;
 using System.Linq;
-using DataLayer.Entities.Organ;
+using Common.Entities.Organ;
 
 namespace DataLayer.Repositories.Implementations
 {
@@ -19,7 +19,7 @@ namespace DataLayer.Repositories.Implementations
 
         public bool IfOrganInfoExist(int organInfoId)
         {
-            return DbSet.Any(x => x.Id == organInfoId);
+            return Any(x => x.Id == organInfoId);
         }
     }
 }

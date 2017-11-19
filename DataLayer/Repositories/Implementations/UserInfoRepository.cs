@@ -1,6 +1,6 @@
-﻿using DataLayer.DbContext;
+﻿using Common.Entities;
+using DataLayer.DbContext;
 using DataLayer.Repositories.Abstractions;
-using DataLayer.Entities;
 
 namespace DataLayer.Repositories.Implementations
 {

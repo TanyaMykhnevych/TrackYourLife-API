@@ -1,4 +1,4 @@
-﻿using DataLayer.Entities;
+﻿using Common.Entities;
 
 namespace BusinessLayer.Services.Abstractions
 {

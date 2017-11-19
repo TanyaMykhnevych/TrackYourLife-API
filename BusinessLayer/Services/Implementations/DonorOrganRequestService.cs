@@ -1,17 +1,17 @@
-﻿using BusinessLayer.Models.Enums;
-using BusinessLayer.Models.ViewModels;
+﻿using BusinessLayer.Models.ViewModels;
 using BusinessLayer.Services.Abstractions;
 using Common.Constants;
-using DataLayer.Entities;
-using DataLayer.Entities.Identity;
-using DataLayer.Entities.Organ;
-using DataLayer.Entities.OrganQueries;
 using DataLayer.Repositories.Abstractions;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Common.Entities;
+using Common.Entities.Identity;
+using Common.Entities.Organ;
+using Common.Entities.OrganQueries;
+using Common.Enums;
 using Common.Utils;
 using Microsoft.EntityFrameworkCore;
 
@@ -136,7 +136,7 @@ namespace BusinessLayer.Services.Implementations
                         DonorInfoId = user.UserInfo.UserInfoId,
                         OrganInfoId = request.OrganInfoId,
                         Message = request.Message,
-                        Status = (int) DonorRequestStatuses.PendingMedicalExamination
+                        Status = DonorRequestStatuses.PendingMedicalExamination
                     };
 
                     _donorOrganRequestRepository.Add(donorOrganRequest);
@@ -178,10 +178,10 @@ namespace BusinessLayer.Services.Implementations
                 ClinicId = model.ClinicId,
                 DonorOrganQueryId = model.DonorOrganQueryId,
                 ScheduledAt = model.ScheduledDateTime,
-                Status = (int) MedicalExamStatuses.Scheduled
+                Status = MedicalExamStatuses.Scheduled
             };
 
-            donorOrganRequest.Status = (int) DonorRequestStatuses.ScheduledMedicalExamination;
+            donorOrganRequest.Status = DonorRequestStatuses.ScheduledMedicalExamination;
 
             //TODO: better use transaction
             _medicalExamsRepository.Add(medicalExamEntity);
@@ -218,19 +218,19 @@ namespace BusinessLayer.Services.Implementations
                 {
                     UserInfoId = donorOrganQuery.DonorInfoId,
                     OrganInfoId = donorOrganQuery.OrganInfoId,
-                    Status = (int) TransplantOrganStatuses.ScheduledRetrieving,
+                    Status = TransplantOrganStatuses.ScheduledRetrieving,
                     Created = DateTime.UtcNow,
                     CreatedBy = CurrentUserHolder.GetCurrentUserName()
                 };
             }
 
-            donorOrganQuery.Status = (int) (model.MedicalExamStatus == MedicalExamStatuses.Pass
+            donorOrganQuery.Status = model.MedicalExamStatus == MedicalExamStatuses.Pass
                 ? DonorRequestStatuses.NeedToScheduleTimeForOrganRetrieving
-                : DonorRequestStatuses.FailedMedicalExamination);
+                : DonorRequestStatuses.FailedMedicalExamination;
 
             var exam = donorOrganQuery.DonorMedicalExams.LastOrDefault();
             exam.Results = model.MedicalExamResults;
-            exam.Status = (int) model.MedicalExamStatus;
+            exam.Status = model.MedicalExamStatus;
 
             //TODO: use transaction here
             _medicalExamsRepository.Update(exam);
@@ -245,7 +245,7 @@ namespace BusinessLayer.Services.Implementations
                 throw new ArgumentNullException(nameof(request));
             }
 
-            request.Status = (int) status;
+            request.Status = status;
 
             _donorOrganRequestRepository.Update(request);
         }

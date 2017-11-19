@@ -1,4 +1,4 @@
-﻿using DataLayer.Entities.Organ;
+﻿using Common.Entities.Organ;
 
 namespace DataLayer.Repositories.Abstractions
 {

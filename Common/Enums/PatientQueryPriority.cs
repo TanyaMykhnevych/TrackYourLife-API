@@ -1,4 +1,4 @@
-﻿namespace BusinessLayer.Models.Enums
+﻿namespace Common.Enums
 {
     public enum PatientQueryPriority
     {

@@ -1,9 +1,9 @@
 ﻿using BusinessLayer.Services.Abstractions;
 using System;
 using System.Collections.Generic;
-using DataLayer.Entities;
 using DataLayer.Repositories.Abstractions;
 using System.Threading.Tasks;
+using Common.Entities;
 
 namespace BusinessLayer.Services.Implementations
 {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BusinessLayer.Models.Enums
+﻿namespace Common.Enums
 {
     public enum DonorRequestStatuses
     {

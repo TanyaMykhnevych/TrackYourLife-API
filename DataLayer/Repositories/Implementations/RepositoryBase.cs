@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using DataLayer.DbContext;
-using DataLayer.Entities.Base;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Common.Entities.Base;
 using Common.Utils;
 using DataLayer.Repositories.Abstractions;
 

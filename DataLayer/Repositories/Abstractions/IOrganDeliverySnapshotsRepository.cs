@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using DataLayer.Entities.OrganDelivery;
+using Common.Entities.OrganDelivery;
 
 namespace DataLayer.Repositories.Abstractions
 {

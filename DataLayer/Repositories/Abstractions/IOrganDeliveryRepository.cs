@@ -1,4 +1,4 @@
-﻿using DataLayer.Entities.OrganDelivery;
+﻿using Common.Entities.OrganDelivery;
 
 namespace DataLayer.Repositories.Abstractions
 {

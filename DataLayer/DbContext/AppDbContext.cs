@@ -1,13 +1,13 @@
-﻿using DataLayer.Entities;
-using DataLayer.Entities.Identity;
-using DataLayer.Entities.Organ;
-using DataLayer.Entities.OrganDelivery;
-using DataLayer.Entities.OrganQueries;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Common.Constants;
+using Common.Entities;
+using Common.Entities.Identity;
+using Common.Entities.Organ;
+using Common.Entities.OrganDelivery;
+using Common.Entities.OrganQueries;
 using Microsoft.AspNetCore.Identity;
 
 namespace DataLayer.DbContext

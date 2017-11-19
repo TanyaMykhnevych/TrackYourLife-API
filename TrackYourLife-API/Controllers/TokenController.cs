@@ -1,5 +1,4 @@
 ﻿using Common.Constants;
-using DataLayer.Entities.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Common.Entities.Identity;
 using TrackYourLife.API.ViewModels;
 
 namespace TrackYourLife.API.Controllers

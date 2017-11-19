@@ -1,5 +1,5 @@
-﻿using DataLayer.Entities.Organ;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Common.Entities.Organ;
 
 namespace BusinessLayer.Services.Abstractions
 {

@@ -1,8 +1,8 @@
 ﻿using BusinessLayer.Services.Abstractions;
 using BusinessLayer.Services.Implementations;
 using Common.Constants;
+using Common.Entities.Identity;
 using DataLayer.DbContext;
-using DataLayer.Entities.Identity;
 using DataLayer.Repositories.Abstractions;
 using DataLayer.Repositories.Implementations;
 using Microsoft.AspNetCore.Authorization;

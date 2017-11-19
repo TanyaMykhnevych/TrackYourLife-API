@@ -1,9 +1,7 @@
-﻿using DataLayer.Entities.Base;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using Common.Entities.Base;
 
-namespace DataLayer.Entities.OrganDelivery
+namespace Common.Entities.OrganDelivery
 {
     public class OrganDataSnapshot : BaseEntity
     {

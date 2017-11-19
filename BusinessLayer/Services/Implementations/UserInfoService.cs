@@ -1,5 +1,5 @@
 ﻿using BusinessLayer.Services.Abstractions;
-using DataLayer.Entities;
+using Common.Entities;
 using DataLayer.Repositories.Abstractions;
 
 namespace BusinessLayer.Services.Implementations

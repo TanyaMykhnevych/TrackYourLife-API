@@ -1,7 +1,7 @@
 ﻿using BusinessLayer.Services.Abstractions;
 using DataLayer.Repositories.Abstractions;
 using System.Collections.Generic;
-using DataLayer.Entities.Organ;
+using Common.Entities.Organ;
 
 namespace BusinessLayer.Services.Implementations
 {

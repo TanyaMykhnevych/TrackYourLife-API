@@ -1,8 +1,7 @@
-﻿using BusinessLayer.Models.Enums;
-using BusinessLayer.Models.ViewModels;
-using DataLayer.Entities.Organ;
-using DataLayer.Entities.OrganQueries;
+﻿using BusinessLayer.Models.ViewModels;
 using System.Threading.Tasks;
+using Common.Entities.OrganQueries;
+using Common.Enums;
 
 namespace BusinessLayer.Services.Abstractions
 {

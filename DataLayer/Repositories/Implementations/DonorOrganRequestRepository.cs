@@ -1,5 +1,5 @@
-﻿using DataLayer.DbContext;
-using DataLayer.Entities.OrganQueries;
+﻿using Common.Entities.OrganQueries;
+using DataLayer.DbContext;
 using DataLayer.Repositories.Abstractions;
 
 namespace DataLayer.Repositories.Implementations

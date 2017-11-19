@@ -1,14 +1,14 @@
-﻿using BusinessLayer.Models.Enums;
-using BusinessLayer.Models.ViewModels;
+﻿using BusinessLayer.Models.ViewModels;
 using BusinessLayer.Services.Abstractions;
 using Common.Constants;
 using Common.Utils;
-using DataLayer.Entities;
-using DataLayer.Entities.Identity;
-using DataLayer.Entities.OrganQueries;
 using DataLayer.Repositories.Abstractions;
 using Microsoft.AspNetCore.Identity;
 using System;
+using Common.Entities;
+using Common.Entities.Identity;
+using Common.Entities.OrganQueries;
+using Common.Enums;
 
 namespace BusinessLayer.Services.Implementations
 {
@@ -67,9 +67,9 @@ namespace BusinessLayer.Services.Implementations
             {
                 OrganInfoId = model.OrganInfoId,
                 PatientInfoId = patientInfo.UserInfoId,
-                Priority = (int)model.QueryPriority,
+                Priority = model.QueryPriority,
                 Message = model.AdditionalInfo,
-                Status = (int)PatientRequestStatuses.AwaitingForDonor
+                Status = PatientRequestStatuses.AwaitingForDonor
             };
 
             _patientOrganQueriesRepository.Add(patientOrganQuery);
@@ -136,10 +136,10 @@ namespace BusinessLayer.Services.Implementations
 
             if (!Enum.IsDefined(typeof(PatientQueryPriority), patientOrganQuery.Priority))
             {
-                patientOrganQuery.Priority = (int)PatientQueryPriority.Normal;
+                patientOrganQuery.Priority = PatientQueryPriority.Normal;
             }
 
-            patientOrganQuery.Status = (int)PatientRequestStatuses.AwaitingForDonor;
+            patientOrganQuery.Status = PatientRequestStatuses.AwaitingForDonor;
 
             _patientOrganQueriesRepository.Update(patientOrganQuery);
 
@@ -162,7 +162,7 @@ namespace BusinessLayer.Services.Implementations
             }
 
             patientOrganQuery.DonorOrganQuery = donorOrganQuery;
-            patientOrganQuery.Status = (int)PatientRequestStatuses.AwaitingForTransplanting;
+            patientOrganQuery.Status = PatientRequestStatuses.AwaitingForTransplanting;
 
             //TODO: check if donorOrganQuery saved 
             _patientOrganQueriesRepository.Update(patientOrganQuery);

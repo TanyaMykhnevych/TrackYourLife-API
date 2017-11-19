@@ -1,19 +1,17 @@
-﻿using DataLayer.Entities.Base;
-using DataLayer.Entities.Organ;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using Common.Entities.Base;
+using Common.Entities.Organ;
+using Common.Enums;
 
-namespace DataLayer.Entities.OrganQueries
+namespace Common.Entities.OrganQueries
 {
     public class DonorOrganQuery : BaseEntity
     {
         public int Id { get; set; }
 
         public string Message { get; set; }
-
-        // enum DonorRequestStatuses
-        public int Status { get; set; }
+        
+        public DonorRequestStatuses Status { get; set; }
 
         public int DonorInfoId { get; set; }
         public UserInfo DonorInfo { get; set; }

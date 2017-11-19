@@ -1,6 +1,6 @@
-﻿using DataLayer.DbContext;
+﻿using Common.Entities.OrganDelivery;
+using DataLayer.DbContext;
 using DataLayer.Repositories.Abstractions;
-using DataLayer.Entities.OrganDelivery;
 
 namespace DataLayer.Repositories.Implementations
 {

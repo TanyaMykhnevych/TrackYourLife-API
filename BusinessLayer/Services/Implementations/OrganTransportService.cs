@@ -3,8 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using BusinessLayer.Models.ViewModels.Delivery;
+using Common.Entities.OrganDelivery;
 using DataLayer.Repositories.Abstractions;
-using DataLayer.Entities.OrganDelivery;
 
 namespace BusinessLayer.Services.Implementations
 {

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using DataLayer.Entities;
 using System.Linq.Expressions;
+using Common.Entities;
 
 namespace DataLayer.Repositories.Abstractions
 {

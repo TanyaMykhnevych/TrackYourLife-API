@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DataLayer.Entities.Base
+namespace Common.Entities.Base
 {
     public class BaseEntity : IBaseEntity
     {

@@ -1,8 +1,8 @@
-﻿using DataLayer.Entities.Base;
-using DataLayer.Entities.Identity;
-using System;
+﻿using System;
+using Common.Entities.Base;
+using Common.Entities.Identity;
 
-namespace DataLayer.Entities
+namespace Common.Entities
 {
     public class UserInfo : BaseEntity
     {

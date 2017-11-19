@@ -1,7 +1,8 @@
 ﻿using DataLayer.Repositories.Abstractions;
-using DataLayer.Entities.OrganQueries;
 using DataLayer.DbContext;
 using System.Collections.Generic;
+using Common.Entities.OrganQueries;
+using Common.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataLayer.Repositories.Implementations
@@ -15,14 +16,13 @@ namespace DataLayer.Repositories.Implementations
 
         public IList<PatientOrganQuery> GetAllPending()
         {
-            //TODO: use valud from enum
-            return GetAll(x => x.Status == 100);
+            return GetAll(x => x.Status == PatientRequestStatuses.AwaitingForDonor);
         }
 
         public IList<PatientOrganQuery> GetPendingByOrganInfo(int organInfoId)
         {
             //TODO: use valud from enum
-            return GetAll(x => x.OrganInfoId == organInfoId && x.Status == 100);
+            return GetAll(x => x.OrganInfoId == organInfoId && x.Status == PatientRequestStatuses.AwaitingForDonor);
         }
 
         public PatientOrganQuery GetById(int patientOrganQueryId)

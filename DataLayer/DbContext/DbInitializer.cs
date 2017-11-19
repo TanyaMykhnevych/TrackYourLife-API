@@ -1,9 +1,6 @@
 ﻿using Common.Constants;
 using Common.Enums;
 using Common.Utils;
-using DataLayer.Entities;
-using DataLayer.Entities.Identity;
-using DataLayer.Entities.Organ;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -14,6 +11,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Common.Entities;
+using Common.Entities.Identity;
+using Common.Entities.Organ;
 
 namespace DataLayer.DbContext
 {

@@ -1,9 +1,9 @@
 ﻿using BusinessLayer.Services.Abstractions;
-using DataLayer.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using Common.Entities;
 using TrackYourLife.API.ViewModels.Clinics;
 
 namespace TrackYourLife.API.Controllers

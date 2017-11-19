@@ -1,6 +1,5 @@
-﻿using DataLayer.Entities;
-using DataLayer.Entities.Organ;
-using System;
+﻿using System;
+using Common.Entities.Organ;
 
 namespace TrackYourLife.API.ViewModels.OrganInfos
 {

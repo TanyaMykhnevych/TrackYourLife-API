@@ -1,10 +1,10 @@
 ﻿using BusinessLayer.Services.Abstractions;
-using DataLayer.Entities.OrganQueries;
 using DataLayer.Repositories.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Common.Entities.OrganQueries;
 
 namespace BusinessLayer.Services.Implementations
 {

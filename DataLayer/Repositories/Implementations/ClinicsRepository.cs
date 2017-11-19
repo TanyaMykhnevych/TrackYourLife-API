@@ -1,7 +1,7 @@
 ﻿using DataLayer.Repositories.Abstractions;
-using DataLayer.Entities;
 using DataLayer.DbContext;
 using System.Linq;
+using Common.Entities;
 
 namespace DataLayer.Repositories.Implementations
 {

@@ -1,7 +1,7 @@
-﻿using BusinessLayer.Models.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Common.Enums;
 
 namespace BusinessLayer.Models.ViewModels
 {

@@ -1,4 +1,4 @@
-﻿using BusinessLayer.Models.Enums;
+﻿using Common.Enums;
 
 namespace BusinessLayer.Models.ViewModels
 {

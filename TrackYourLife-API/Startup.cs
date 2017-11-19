@@ -8,7 +8,6 @@ using Microsoft.IdentityModel.Tokens;
 using BusinessLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using DataLayer.DbContext;
-using DataLayer.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using System;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

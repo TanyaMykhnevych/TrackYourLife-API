@@ -1,8 +1,8 @@
 ﻿using System;
-using DataLayer.Entities.Base;
+using Common.Entities.Base;
 using Microsoft.AspNetCore.Identity;
 
-namespace DataLayer.Entities.Identity
+namespace Common.Entities.Identity
 {
     public class AppUser : IdentityUser, IBaseEntity
     {        

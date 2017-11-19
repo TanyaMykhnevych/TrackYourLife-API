@@ -1,9 +1,6 @@
-﻿using DataLayer.Entities.Base;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Common.Entities.Base;
 
-namespace DataLayer.Entities
+namespace Common.Entities
 {
     public class Clinic : BaseEntity
     {
