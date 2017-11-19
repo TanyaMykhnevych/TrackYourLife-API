@@ -53,11 +53,11 @@ namespace TrackYourLife.API.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult GetDonorRequestList()
         {
-            var user = _userManager.GetUserAsync(User).Result;
-            var isMedEmployee = _userManager.IsInRoleAsync(user, RolesConstants.MedicalEmployee).Result;
-
             var response = ContentExecute(() =>
             {
+                var username = User.Identity.Name;
+                var user = _userManager.FindByNameAsync(username).Result;
+                var isMedEmployee = _userManager.IsInRoleAsync(user, RolesConstants.MedicalEmployee).Result;
                 var donorRequests = isMedEmployee
                     ? _donorRequestService.GetDonorRequests()
                     : _donorRequestService.GetDonorRequestsByUsername(user.UserName);
@@ -99,7 +99,8 @@ namespace TrackYourLife.API.Controllers
 
         private bool HasRightToSeeDonorRequest(int donorRequestId)
         {
-            var user = _userManager.GetUserAsync(User).Result;
+            var username = User.Identity.Name;
+            var user = _userManager.FindByNameAsync(username).Result;
             bool hasRights = _userManager.IsInRoleAsync(user, RolesConstants.MedicalEmployee).Result;
             if (!hasRights)
             {
