@@ -8,9 +8,13 @@ namespace BusinessLayer.Services.Abstractions
 {
     public interface IDonorOrganRequestService
     {
+        IList<DonorOrganQuery> GetDonorRequests();
+
         IList<DonorOrganQuery> GetDonorRequestsByUsername(string userName);
 
         DonorOrganQuery GetById(int id);
+
+        bool HasDonorRequest(string id, int donorRequestId);
 
         void RegisterDonorOrganRequest(DonorOrganRequestViewModel request);
 

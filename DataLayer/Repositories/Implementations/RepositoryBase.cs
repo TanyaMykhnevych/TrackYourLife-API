@@ -56,6 +56,11 @@ namespace DataLayer.Repositories.Implementations
             return query.ToList();
         }
 
+        public virtual bool Any(Expression<Func<TEntity, bool>> predicate = null)
+        {
+            return predicate != null ? Queryable.Any(predicate) : Queryable.Any();
+        }
+
         public virtual TEntity Add(TEntity entity)
         {
             string currentUser = CurrentUserHolder.GetCurrentUserName();

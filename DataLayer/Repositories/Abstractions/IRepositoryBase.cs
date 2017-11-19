@@ -16,6 +16,8 @@ namespace DataLayer.Repositories.Abstractions
         IList<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate = null,
             Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null);
 
+        bool Any(Expression<Func<TEntity, bool>> predicate = null);
+
         TEntity Add(TEntity entity);
 
         TEntity Update(TEntity entity);

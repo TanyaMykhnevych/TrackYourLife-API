@@ -3,8 +3,11 @@ using System.Threading.Tasks;
 using BusinessLayer.Models.Enums;
 using BusinessLayer.Models.ViewModels;
 using BusinessLayer.Services.Abstractions;
+using Common.Constants;
+using DataLayer.Entities.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TrackYourLife.API.ViewModels.DonorRequests;
 
@@ -14,10 +17,16 @@ namespace TrackYourLife.API.Controllers
     public class DonorRequestsController : ControllerBase
     {
         private readonly IDonorOrganRequestService _donorRequestService;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public DonorRequestsController(IDonorOrganRequestService donorRequestService)
+        public DonorRequestsController(IDonorOrganRequestService donorRequestService,
+            UserManager<AppUser> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             _donorRequestService = donorRequestService;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         /// <summary>
@@ -44,10 +53,15 @@ namespace TrackYourLife.API.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult GetDonorRequestList()
         {
+            var user = _userManager.GetUserAsync(User).Result;
+            var isMedEmployee = _userManager.IsInRoleAsync(user, RolesConstants.MedicalEmployee).Result;
+
             var response = ContentExecute(() =>
             {
-                var userName = User.Identity.Name;
-                var donorRequests = _donorRequestService.GetDonorRequestsByUsername(userName);
+                var donorRequests = isMedEmployee
+                    ? _donorRequestService.GetDonorRequests()
+                    : _donorRequestService.GetDonorRequestsByUsername(user.UserName);
+
                 var donorRequestListItems = donorRequests.Select(dr => new DonorRequestListItemViewModel(dr)).ToList();
                 return new DonorRequestListViewModel(donorRequestListItems);
             });
@@ -62,20 +76,37 @@ namespace TrackYourLife.API.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult GetDonorRequestDetails(int id)
         {
+            int donorRequestId = id;
+            if (!HasRightToSeeDonorRequest(donorRequestId))
+            {
+                return Unauthorized();
+            }
+
             var response = ContentExecute<DonorRequestDetailsViewModel>(() =>
             {
-                int donorRequestId = id;
                 var userName = User.Identity.Name;
                 var donorRequests = _donorRequestService.GetDonorRequestsByUsername(userName);
-                if (!donorRequests.Any(x => x.Id == donorRequestId))
+                var donorRequest = donorRequests.SingleOrDefault(x => x.Id == donorRequestId);
+                if (donorRequest == null)
                 {
                     return null;
                 }
-                var donorRequest = donorRequests.Single(x => x.Id == donorRequestId);
                 return new DonorRequestDetailsViewModel(donorRequest);
             });
 
             return Json(response);
+        }
+
+        private bool HasRightToSeeDonorRequest(int donorRequestId)
+        {
+            var user = _userManager.GetUserAsync(User).Result;
+            bool hasRights = _userManager.IsInRoleAsync(user, RolesConstants.MedicalEmployee).Result;
+            if (!hasRights)
+            {
+                hasRights = _donorRequestService.HasDonorRequest(user.Id, donorRequestId);
+            }
+
+            return hasRights;
         }
 
         /// <summary>
@@ -87,10 +118,7 @@ namespace TrackYourLife.API.Controllers
         public IActionResult CreateDonorRequest(DonorOrganRequestViewModel model)
         {
             //TODO: maybe need to convert viewmodel to DTO
-            var response = Execute(() =>
-            {
-                _donorRequestService.RegisterDonorOrganRequest(model);
-            });
+            var response = Execute(() => { _donorRequestService.RegisterDonorOrganRequest(model); });
 
             return Ok(response);
         }
@@ -103,10 +131,7 @@ namespace TrackYourLife.API.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult ScheduleMedicalExam(ScheduleMedicalExamViewModel model)
         {
-            var result = Execute(() =>
-            {
-                _donorRequestService.ScheduleMedicalExam(model);
-            });
+            var result = Execute(() => { _donorRequestService.ScheduleMedicalExam(model); });
 
             return Json(result);
         }
@@ -119,10 +144,7 @@ namespace TrackYourLife.API.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult SetMedicalExamResults(MedicalExamResultViewModel model)
         {
-            var result = Execute(() =>
-            {
-                _donorRequestService.UpdateMedicalExamResults(model);
-            });
+            var result = Execute(() => { _donorRequestService.UpdateMedicalExamResults(model); });
 
             return Json(result);
         }

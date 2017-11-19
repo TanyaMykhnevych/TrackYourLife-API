@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Common.Utils;
+using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLayer.Services.Implementations
 {
@@ -23,12 +24,12 @@ namespace BusinessLayer.Services.Implementations
         private readonly IOrganInfoService _organInfoService;
         private readonly IClinicsService _clinicsService;
         private readonly UserManager<AppUser> _userManager;
-        private readonly ITransplantOrgansService _transplantOrgansService;
+        private readonly IUserInfoService _userInfoService;
 
         public DonorOrganRequestService(
             IOrganInfoService organInfoService,
             IClinicsService clinicsService,
-            ITransplantOrgansService transplantOrgansService,
+            IUserInfoService userInfoService,
             IDonorOrganRequestRepository donorOrganRequestRepository,
             UserManager<AppUser> userManager,
             IMedicalExamsRepository medicalExamsRepository)
@@ -38,19 +39,41 @@ namespace BusinessLayer.Services.Implementations
             _organInfoService = organInfoService;
             _clinicsService = clinicsService;
             _userManager = userManager;
-            _transplantOrgansService = transplantOrgansService;
+            _userInfoService = userInfoService;
+        }
+
+        public IList<DonorOrganQuery> GetDonorRequests()
+        {
+            return _donorOrganRequestRepository.GetAll(include: x => x.Include(dr => dr.DonorMedicalExams)
+                .Include(dr => dr.PatientOrganQuery)
+                .Include(dr => dr.OrganInfo)
+                .Include(dr => dr.TransplantOrgan));
         }
 
         public IList<DonorOrganQuery> GetDonorRequestsByUsername(string userName)
         {
             var user = _userManager.FindByNameAsync(userName).Result;
 
-            return _donorOrganRequestRepository.GetAll(dr => dr.DonorInfo.AppUserId == user.Id);
+            return _donorOrganRequestRepository.GetAll(
+                predicate: dr => dr.DonorInfo.AppUserId == user.Id,
+                include: x => x.Include(dr => dr.DonorMedicalExams)
+                    .Include(dr => dr.PatientOrganQuery)
+                    .Include(dr => dr.OrganInfo)
+                    .Include(dr => dr.TransplantOrgan));
         }
 
         public DonorOrganQuery GetById(int id)
         {
             return _donorOrganRequestRepository.GetById(id);
+        }
+
+        public bool HasDonorRequest(string id, int donorRequestId)
+        {
+            var userInfo = _userInfoService.GetUserInfoByUserId(id);
+            if (userInfo == null) return false;
+
+            return _donorOrganRequestRepository.Any(dr =>
+                dr.DonorInfoId == userInfo.UserInfoId && dr.Id == donorRequestId);
         }
 
         public void RegisterDonorOrganRequest(DonorOrganRequestViewModel request)
