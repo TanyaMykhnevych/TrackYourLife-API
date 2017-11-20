@@ -45,7 +45,8 @@ namespace BusinessLayer.Services.Implementations
 
         public IList<DonorOrganQuery> GetDonorRequests()
         {
-            return _donorOrganRequestRepository.GetAll(include: x => x.Include(dr => dr.DonorMedicalExams)
+            return _donorOrganRequestRepository.GetAll(
+                include: x => x.Include(dr => dr.DonorMedicalExams)
                 .Include(dr => dr.PatientOrganQuery)
                 .Include(dr => dr.OrganInfo)
                 .Include(dr => dr.TransplantOrgan));
@@ -54,7 +55,6 @@ namespace BusinessLayer.Services.Implementations
         public IList<DonorOrganQuery> GetDonorRequestsByUsername(string userName)
         {
             var user = _userManager.FindByNameAsync(userName).Result;
-
             return _donorOrganRequestRepository.GetAll(
                 predicate: dr => dr.DonorInfo.AppUserId == user.Id,
                 include: x => x.Include(dr => dr.DonorMedicalExams)
@@ -66,6 +66,11 @@ namespace BusinessLayer.Services.Implementations
         public DonorOrganQuery GetById(int id)
         {
             return _donorOrganRequestRepository.GetById(id);
+        }
+
+        public DonorOrganQuery GetDetailedById(int id)
+        {
+            return _donorOrganRequestRepository.GetDetailedById(id);
         }
 
         public bool HasDonorRequest(string id, int donorRequestId)
@@ -124,7 +129,7 @@ namespace BusinessLayer.Services.Implementations
 
         private void ScheduleMedicalExamInner(ScheduleMedicalExamViewModel model)
         {
-            var donorOrganRequest = _donorOrganRequestRepository.GetById(model.DonorOrganQueryId);
+            var donorOrganRequest = _donorOrganRequestRepository.GetById(model.DonorRequestId);
             if (donorOrganRequest == null)
             {
                 //TODO: handle
@@ -134,7 +139,7 @@ namespace BusinessLayer.Services.Implementations
             var medicalExamEntity = new DonorMedicalExam()
             {
                 ClinicId = model.ClinicId,
-                DonorOrganQueryId = model.DonorOrganQueryId,
+                DonorOrganQueryId = model.DonorRequestId,
                 ScheduledAt = model.ScheduledDateTime,
                 Status = MedicalExamStatuses.Scheduled
             };
@@ -183,7 +188,7 @@ namespace BusinessLayer.Services.Implementations
             }
 
             donorOrganQuery.Status = model.MedicalExamStatus == MedicalExamStatuses.Pass
-                ? DonorRequestStatuses.NeedToScheduleTimeForOrganRetrieving
+                ? DonorRequestStatuses.AwaitingForPatientRequest
                 : DonorRequestStatuses.FailedMedicalExamination;
 
             var exam = donorOrganQuery.DonorMedicalExams.LastOrDefault();

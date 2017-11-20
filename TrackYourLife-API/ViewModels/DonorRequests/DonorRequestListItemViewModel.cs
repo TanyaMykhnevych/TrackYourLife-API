@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using BusinessLayer.Models.ViewModels.MedicalExam;
 using Common.Entities.OrganQueries;
 using Common.Enums;
 
@@ -9,7 +10,7 @@ namespace TrackYourLife.API.ViewModels.DonorRequests
         public int Id { get; set; }
 
         public string Message { get; set; }
-        
+
         public DonorRequestStatuses Status { get; set; }
 
         public int DonorInfoId { get; set; }
@@ -22,19 +23,24 @@ namespace TrackYourLife.API.ViewModels.DonorRequests
 
         public int MedicalExamsCount { get; set; }
 
-        public DonorMedicalExam LastMedicalExam { get; set; }
+        public DonorMedicalExamListItemViewModel LastMedicalExam { get; set; }
 
         public DonorRequestListItemViewModel(DonorOrganQuery donorOrganQuery)
         {
             Id = donorOrganQuery.Id;
             Message = donorOrganQuery.Message;
-            Status = (DonorRequestStatuses)donorOrganQuery.Status;
+            Status = donorOrganQuery.Status;
             DonorInfoId = donorOrganQuery.DonorInfoId;
             OrganInfoId = donorOrganQuery.OrganInfoId;
             OrganInfoName = donorOrganQuery.OrganInfo.Name;
             HasLinkedPatientRequest = donorOrganQuery.PatientOrganQuery != null;
             MedicalExamsCount = donorOrganQuery.DonorMedicalExams?.Count ?? 0;
-            LastMedicalExam = donorOrganQuery.DonorMedicalExams?.LastOrDefault();
+
+            var lastMedExam = donorOrganQuery.DonorMedicalExams?.LastOrDefault();
+            if (lastMedExam != null)
+            {
+                LastMedicalExam = new DonorMedicalExamListItemViewModel(lastMedExam);
+            }
         }
     }
 }

@@ -80,37 +80,26 @@ namespace TrackYourLife.API.Controllers
         public IActionResult GetDonorRequestDetails(int id)
         {
             int donorRequestId = id;
-            if (!HasRightToSeeDonorRequest(donorRequestId))
+            var username = User.Identity.Name;
+            var user = _userManager.FindByNameAsync(username).Result;
+            bool isMedEmployee = _userManager.IsInRoleAsync(user, RolesConstants.MedicalEmployee).Result;
+            bool hasRights = isMedEmployee;
+            if (!hasRights)
+            {
+                hasRights = _donorRequestService.HasDonorRequest(user.Id, donorRequestId);
+            }
+            if (!hasRights)
             {
                 return Unauthorized();
             }
 
             var response = ContentExecute<DonorRequestDetailsViewModel>(() =>
             {
-                var userName = User.Identity.Name;
-                var donorRequests = _donorRequestService.GetDonorRequestsByUsername(userName);
-                var donorRequest = donorRequests.SingleOrDefault(x => x.Id == donorRequestId);
-                if (donorRequest == null)
-                {
-                    return null;
-                }
+                var donorRequest = _donorRequestService.GetDetailedById(donorRequestId);
                 return new DonorRequestDetailsViewModel(donorRequest);
             });
 
             return Json(response);
-        }
-
-        private bool HasRightToSeeDonorRequest(int donorRequestId)
-        {
-            var username = User.Identity.Name;
-            var user = _userManager.FindByNameAsync(username).Result;
-            bool hasRights = _userManager.IsInRoleAsync(user, RolesConstants.MedicalEmployee).Result;
-            if (!hasRights)
-            {
-                hasRights = _donorRequestService.HasDonorRequest(user.Id, donorRequestId);
-            }
-
-            return hasRights;
         }
 
         /// <summary>

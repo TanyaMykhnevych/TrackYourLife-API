@@ -6,6 +6,9 @@
 
         ScheduledMedicalExamination = 200,
         FailedMedicalExamination = 300,
+
+        AwaitingForPatientRequest = 350,
+
         NeedToScheduleTimeForOrganRetrieving = 400,
 
         AwaitingOrganRetrieving = 500,

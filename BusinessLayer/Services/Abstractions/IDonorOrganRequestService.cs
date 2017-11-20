@@ -15,6 +15,8 @@ namespace BusinessLayer.Services.Abstractions
 
         DonorOrganQuery GetById(int id);
 
+        DonorOrganQuery GetDetailedById(int id);
+
         bool HasDonorRequest(string id, int donorRequestId);
 
         void RegisterDonorOrganRequest(DonorRequestViewModel request);
