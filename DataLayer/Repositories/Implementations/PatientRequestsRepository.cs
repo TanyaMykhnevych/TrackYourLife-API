@@ -1,7 +1,7 @@
 ﻿using DataLayer.Repositories.Abstractions;
 using DataLayer.DbContext;
 using System.Collections.Generic;
-using Common.Entities.OrganQueries;
+using Common.Entities.OrganRequests;
 using Common.Enums;
 using Microsoft.EntityFrameworkCore;
 

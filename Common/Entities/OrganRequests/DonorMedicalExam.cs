@@ -2,7 +2,7 @@
 using Common.Entities.Base;
 using Common.Enums;
 
-namespace Common.Entities.OrganQueries
+namespace Common.Entities.OrganRequests
 {
     public class DonorMedicalExam : BaseEntity
     {

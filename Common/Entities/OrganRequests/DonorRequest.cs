@@ -3,7 +3,7 @@ using Common.Entities.Base;
 using Common.Entities.Organ;
 using Common.Enums;
 
-namespace Common.Entities.OrganQueries
+namespace Common.Entities.OrganRequests
 {
     public class DonorRequest : BaseEntity
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Common.Entities;
-using Common.Entities.OrganQueries;
+using Common.Entities.OrganRequests;
 using Common.Enums;
 
 namespace BusinessLayer.Models.ViewModels.MedicalExam

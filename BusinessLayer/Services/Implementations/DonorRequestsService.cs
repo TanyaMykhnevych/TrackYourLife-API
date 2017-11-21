@@ -11,7 +11,7 @@ using BusinessLayer.Models.ViewModels.Donor;
 using Common.Entities;
 using Common.Entities.Identity;
 using Common.Entities.Organ;
-using Common.Entities.OrganQueries;
+using Common.Entities.OrganRequests;
 using Common.Enums;
 using Common.Utils;
 using Microsoft.EntityFrameworkCore;

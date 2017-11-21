@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BusinessLayer.Models.ViewModels.Donor;
-using Common.Entities.OrganQueries;
+using Common.Entities.OrganRequests;
 using Common.Enums;
 
 namespace BusinessLayer.Services.Abstractions

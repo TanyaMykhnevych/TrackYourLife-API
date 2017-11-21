@@ -2,7 +2,7 @@
 using Common.Entities.Organ;
 using Common.Enums;
 
-namespace Common.Entities.OrganQueries
+namespace Common.Entities.OrganRequests
 {
     public class PatientRequest : BaseEntity
     {

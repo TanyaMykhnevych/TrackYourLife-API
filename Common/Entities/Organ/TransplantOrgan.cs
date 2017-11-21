@@ -1,6 +1,6 @@
 ﻿using Common.Entities.Base;
 using Common.Entities.OrganDelivery;
-using Common.Entities.OrganQueries;
+using Common.Entities.OrganRequests;
 using Common.Enums;
 
 namespace Common.Entities.Organ

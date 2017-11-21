@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Common.Entities.OrganQueries;
+using Common.Entities.OrganRequests;
 
 namespace BusinessLayer.Services.Abstractions
 {

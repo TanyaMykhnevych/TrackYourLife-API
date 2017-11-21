@@ -1,4 +1,4 @@
-﻿using Common.Entities.OrganQueries;
+﻿using Common.Entities.OrganRequests;
 using DataLayer.DbContext;
 using DataLayer.Repositories.Abstractions;
 using Microsoft.EntityFrameworkCore;

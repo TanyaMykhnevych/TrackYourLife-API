@@ -7,7 +7,7 @@ using Common.Entities;
 using Common.Entities.Identity;
 using Common.Entities.Organ;
 using Common.Entities.OrganDelivery;
-using Common.Entities.OrganQueries;
+using Common.Entities.OrganRequests;
 using Microsoft.AspNetCore.Identity;
 
 namespace DataLayer.DbContext

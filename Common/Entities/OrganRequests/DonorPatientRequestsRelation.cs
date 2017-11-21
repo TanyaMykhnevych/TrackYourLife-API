@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Common.Entities.Base;
+﻿using Common.Entities.Base;
 
-namespace Common.Entities.OrganQueries
+namespace Common.Entities.OrganRequests
 {
     public class DonorPatientRequestsRelation : BaseEntity
     {

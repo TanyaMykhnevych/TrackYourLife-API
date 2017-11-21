@@ -1,5 +1,5 @@
 ﻿using Common.Entities.Organ;
-using Common.Entities.OrganQueries;
+using Common.Entities.OrganRequests;
 using Common.Enums;
 
 namespace TrackYourLife.API.ViewModels.PatientRequests

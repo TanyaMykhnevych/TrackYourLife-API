@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using Common.Entities;
 using Common.Entities.Identity;
-using Common.Entities.OrganQueries;
+using Common.Entities.OrganRequests;
 using Common.Enums;
 
 namespace BusinessLayer.Services.Implementations

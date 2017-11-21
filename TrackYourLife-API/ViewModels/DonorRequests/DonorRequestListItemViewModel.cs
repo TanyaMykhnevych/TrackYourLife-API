@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using BusinessLayer.Models.ViewModels.MedicalExam;
-using Common.Entities.OrganQueries;
+using Common.Entities.OrganRequests;
 using Common.Enums;
 
 namespace TrackYourLife.API.ViewModels.DonorRequests

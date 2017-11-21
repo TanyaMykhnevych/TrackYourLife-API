@@ -1,6 +1,6 @@
 ﻿using BusinessLayer.Models.ViewModels;
 using System.Threading.Tasks;
-using Common.Entities.OrganQueries;
+using Common.Entities.OrganRequests;
 using Common.Enums;
 
 namespace BusinessLayer.Services.Abstractions
