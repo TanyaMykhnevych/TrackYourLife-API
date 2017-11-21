@@ -24,7 +24,6 @@ namespace TrackYourLife.API.ViewModels.DonorRequests
 
         //TODO: replcae with viewmodel
         public int? TransplantOrganId { get; set; }
-        public TransplantOrgan TransplantOrgan { get; set; }
 
         // TODO: replace with viewmodel
         public PatientRequest PatientOrganQuery { get; set; }
@@ -41,8 +40,7 @@ namespace TrackYourLife.API.ViewModels.DonorRequests
             OrganInfoId = query.OrganInfoId;
             OrganInfo = query.OrganInfo;
             TransplantOrganId = query.TransplantOrganId;
-            TransplantOrgan = query.TransplantOrgan;
-            PatientOrganQuery = query.PatientRequest;
+            PatientOrganQuery = query.RequestsRelation?.PatientRequest;
             DonorMedicalExams = query.DonorMedicalExams?.Select(x => new DonorMedicalExamListItemViewModel(x)).ToList();
         }
 

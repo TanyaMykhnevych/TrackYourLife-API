@@ -13,6 +13,9 @@ namespace DataLayer.Repositories.Abstractions
         TEntity GetSingleByPredicate(Expression<Func<TEntity, bool>> predicate,
             Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null);
 
+        TEntity GetLastByPredicate(Expression<Func<TEntity, bool>> predicate,
+            Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null);
+
         IList<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate = null,
             Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null);
 

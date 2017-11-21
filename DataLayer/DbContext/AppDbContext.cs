@@ -33,6 +33,8 @@ namespace DataLayer.DbContext
 
         public DbSet<DonorMedicalExam> DonorMedicalExams { get; set; }
 
+        public DbSet<RequestsRelation> RequestsRelations { get; set; }
+
         public DbSet<Clinic> Clinics { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -79,16 +81,15 @@ namespace DataLayer.DbContext
                 .HasOne(ot => ot.DonorInfo)
                 .WithMany()
                 .HasForeignKey(ot => ot.DonorInfoId);
-            
-            modelBuilder.Entity<DonorRequest>()
-                .HasOne(ot => ot.PatientRequest)
-                .WithOne()
-                .IsRequired(false);
 
             modelBuilder.Entity<PatientRequest>()
                 .HasOne(ot => ot.PatientInfo)
                 .WithMany()
                 .HasForeignKey(ot => ot.PatientInfoId);
+
+            modelBuilder.Entity<RequestsRelation>()
+                .HasIndex(p => new { p.DonorRequestId, p.PatientRequestId })
+                .IsUnique();
         }
 
         private void RemoveCascadeDeletingGlobally(ModelBuilder modelBuilder)

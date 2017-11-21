@@ -27,7 +27,8 @@ namespace TrackYourLife.API.ViewModels.PatientRequests
             PatientInfoId = patientOrganQuery.PatientInfoId;
             OrganInfoId = patientOrganQuery.OrganInfoId;
             OrganInfoName = patientOrganQuery.OrganInfo.Name;
-            HasLinkedDonorRequest = patientOrganQuery.DonorRequest != null;
+            HasLinkedDonorRequest = patientOrganQuery.RequestsRelation != null
+                && patientOrganQuery.RequestsRelation.IsActive;
         }
     }
 }

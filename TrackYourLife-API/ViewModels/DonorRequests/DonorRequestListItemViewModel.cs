@@ -33,7 +33,8 @@ namespace TrackYourLife.API.ViewModels.DonorRequests
             DonorInfoId = donorOrganQuery.DonorInfoId;
             OrganInfoId = donorOrganQuery.OrganInfoId;
             OrganInfoName = donorOrganQuery.OrganInfo.Name;
-            HasLinkedPatientRequest = donorOrganQuery.PatientRequest != null;
+            HasLinkedPatientRequest = donorOrganQuery.RequestsRelation != null
+                && donorOrganQuery.RequestsRelation.IsActive;
             MedicalExamsCount = donorOrganQuery.DonorMedicalExams?.Count ?? 0;
 
             var lastMedExam = donorOrganQuery.DonorMedicalExams?.LastOrDefault();

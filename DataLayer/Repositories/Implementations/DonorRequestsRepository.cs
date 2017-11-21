@@ -21,8 +21,8 @@ namespace DataLayer.Repositories.Implementations
         {
             return GetSingleByPredicate(x => x.Id == donorRequestId,
                 include: x => x.Include(dr => dr.DonorMedicalExams)
-                    .Include(dr => dr.PatientRequest)
-                    .Include(dr => dr.DonorInfo)
+                    .Include(dr => dr.RequestsRelation)
+                        .ThenInclude(dpr => dpr.PatientRequest)
                     .Include(dr => dr.OrganInfo)
                     .Include(dr => dr.TransplantOrgan));
         }

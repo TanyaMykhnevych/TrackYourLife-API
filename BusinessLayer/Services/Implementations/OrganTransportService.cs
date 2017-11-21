@@ -1,7 +1,4 @@
 ﻿using BusinessLayer.Services.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using BusinessLayer.Models.ViewModels.Delivery;
 using Common.Entities.OrganDelivery;
 using DataLayer.Repositories.Abstractions;
@@ -13,15 +10,18 @@ namespace BusinessLayer.Services.Implementations
         private readonly IOrganDeliverySnapshotsRepository _deliverySnapshotsRepository;
         private readonly ITransplantOrgansService _transplantOrgansService;
         private readonly IPatientRequestsService _patientRequestsService;
+        private readonly IDonorRequestsService _donorRequestsService;
 
         public OrganTransportService(
             IOrganDeliverySnapshotsRepository deliverySnapshotsRepository,
             ITransplantOrgansService transplantOrgansService,
-            IPatientRequestsService patientRequestsService)
+            IPatientRequestsService patientRequestsService,
+            IDonorRequestsService donorRequestsService)
         {
             _deliverySnapshotsRepository = deliverySnapshotsRepository;
             _transplantOrgansService = transplantOrgansService;
             _patientRequestsService = patientRequestsService;
+            _donorRequestsService = donorRequestsService;
         }
 
         public void ScheduleOrganDelivery(ScheduleDeliveryViewModel model)
@@ -36,12 +36,13 @@ namespace BusinessLayer.Services.Implementations
             };
 
             var patientOrganRequest = _patientRequestsService.GetById(model.PatientOrganRequestId);
-            var donorRequest = patientOrganRequest.DonorRequest;
+            var patientDonorRequestsLink = patientOrganRequest.RequestsRelation;
+            var donorRequestId = patientDonorRequestsLink.DonorRequestId;
+            var donorRequest = _donorRequestsService.GetDetailedById(donorRequestId);
             var donorOrgan = _transplantOrgansService.GetById(donorRequest.TransplantOrganId.Value);
 
             donorOrgan.OrganDeliveryInfo = deliveryInfo;
-
-            //TODO: check that deliveryInfo is saved
+            
             _transplantOrgansService.Update(donorOrgan);
         }
 

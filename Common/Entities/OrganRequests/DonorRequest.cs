@@ -21,8 +21,8 @@ namespace Common.Entities.OrganRequests
 
         public int? TransplantOrganId { get; set; }
         public TransplantOrgan TransplantOrgan { get; set; }
-
-        public PatientRequest PatientRequest { get; set; }
+        
+        public RequestsRelation RequestsRelation { get; set; }
 
         public ICollection<DonorMedicalExam> DonorMedicalExams { get; set; }
     }

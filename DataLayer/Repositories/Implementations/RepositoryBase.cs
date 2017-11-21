@@ -38,6 +38,18 @@ namespace DataLayer.Repositories.Implementations
             return query.SingleOrDefault(predicate);
         }
 
+        public TEntity GetLastByPredicate(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null)
+        {
+            var query = Queryable;
+
+            if (include != null)
+            {
+                query = include(query);
+            }
+
+            return query.LastOrDefault(predicate);
+        }
+
         public virtual IList<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate = null,
             Func<IQueryable<TEntity>, IQueryable<TEntity>> include = null)
         {

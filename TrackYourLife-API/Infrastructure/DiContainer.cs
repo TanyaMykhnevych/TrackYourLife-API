@@ -39,6 +39,7 @@ namespace TrackYourLife.API.Infrastructure
             services.AddTransient<IOrganDeliverySnapshotsRepository, OrganDeliverySnapshotsRepository>();
             services.AddTransient<IPatientRequestsRepository, PatientRequestsRepository>();
             services.AddTransient<IUserInfoRepository, UserInfoRepository>();
+            services.AddTransient<IRequestsRelationsRepository, RequestsRelationsRepository>();
 
 
             // Business Layer
@@ -50,6 +51,8 @@ namespace TrackYourLife.API.Infrastructure
             services.AddTransient<IPatientQueueService, PatientQueueService>();
             services.AddTransient<IOrganTransportService, OrganTransportService>();
             services.AddTransient<IUserInfoService, UserInfoService>();
+            services.AddTransient<IMedicalExamsService, MedicalExamsService>();
+            services.AddTransient<IRequestsRelationsService, RequestsRelationsService>();
             
         }
     }

@@ -19,15 +19,15 @@ namespace TrackYourLife.API.ViewModels.PatientRequests
 
         public DonorRequest DonorOrganQuery { get; set; }
 
-        public PatientRequestDetailsViewModel(PatientRequest query)
+        public PatientRequestDetailsViewModel(PatientRequest query, DonorRequest donorRequest)
         {
             Id = query.Id;
             Message = query.Message;
-            Status = (PatientRequestStatuses)query.Status;
+            Status = query.Status;
             PatientInfoId = query.PatientInfoId;
             OrganInfoId = query.OrganInfoId;
             OrganInfo = query.OrganInfo;
-            DonorOrganQuery = query.DonorRequest;
+            DonorOrganQuery = donorRequest;
         }
 
         public PatientRequestDetailsViewModel() { }

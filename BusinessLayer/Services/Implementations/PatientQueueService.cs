@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Common.Entities.OrganRequests;
+using Common.Enums;
 
 namespace BusinessLayer.Services.Implementations
 {
@@ -17,17 +18,19 @@ namespace BusinessLayer.Services.Implementations
             _patientRequestsRepository = patientRequestsRepository;
         }
 
-        public IList<PatientRequest> GetPengingQueueByOrgan(int organInfoId)
-        {
-            //TODO: add filters
-            var patientQueries = _patientRequestsRepository.GetPendingByOrganInfo(organInfoId);
-            return SortQueue(patientQueries);
-        }
-
         public IList<PatientRequest> GetPengingQueue()
         {
             //TODO: add filters
-            var patientQueries = _patientRequestsRepository.GetAllPending();
+            var patientQueries = _patientRequestsRepository.GetAll(x => x.Status == PatientRequestStatuses.AwaitingForDonor);
+            return SortQueue(patientQueries);
+        }
+
+        public IList<PatientRequest> GetPengingQueueByOrgan(int organInfoId)
+        {
+            //TODO: add filters
+            var patientQueries = _patientRequestsRepository.GetAll(x =>
+                x.OrganInfoId == organInfoId && x.Status == PatientRequestStatuses.AwaitingForDonor);
+
             return SortQueue(patientQueries);
         }
 

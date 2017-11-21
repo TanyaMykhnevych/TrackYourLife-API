@@ -7,7 +7,7 @@ namespace BusinessLayer.Models.ViewModels
 {
     public class MedicalExamResultViewModel
     {
-        public int DonorOrganQueryId { get; set; }
+        public int DonorRequestId { get; set; }
         
         public MedicalExamStatuses MedicalExamStatus { get; set; }
 

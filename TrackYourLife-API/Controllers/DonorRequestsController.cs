@@ -7,6 +7,7 @@ using BusinessLayer.Services.Abstractions;
 using Common.Constants;
 using Common.Entities.Identity;
 using Common.Enums;
+using Common.Utils;
 using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -17,26 +18,30 @@ using TrackYourLife.API.ViewModels.DonorRequests;
 namespace TrackYourLife.API.Controllers
 {
     [Route("api/[controller]/[action]/{id?}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class DonorRequestsController : ControllerBase
     {
         private readonly IDonorRequestsService _donorRequestService;
+        private readonly IPatientQueueService _patientQueueService;
+        private readonly IRequestsRelationsService _requestsRelationsService;
         private readonly UserManager<AppUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public DonorRequestsController(IDonorRequestsService donorRequestService,
-            UserManager<AppUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+        public DonorRequestsController(
+            IDonorRequestsService donorRequestService,
+            IRequestsRelationsService requestsRelationsService,
+            IPatientQueueService patientQueueService,
+            UserManager<AppUser> userManager)
         {
             _donorRequestService = donorRequestService;
+            _requestsRelationsService = requestsRelationsService;
+            _patientQueueService = patientQueueService;
             _userManager = userManager;
-            _roleManager = roleManager;
         }
 
         /// <summary>
         /// Returns DonorRequestInfo by ID
         /// </summary>
         [HttpGet]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult GetDonorRequestInfo(int id)
         {
             var response = ContentExecute(() =>
@@ -53,7 +58,6 @@ namespace TrackYourLife.API.Controllers
         /// Returns Donor Requests List
         /// </summary>
         [HttpGet]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult GetDonorRequestList()
         {
             var response = ContentExecute(() =>
@@ -76,16 +80,13 @@ namespace TrackYourLife.API.Controllers
         /// Returns Donor Requests List
         /// </summary>
         [HttpGet]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult GetDonorRequestDetails(int id)
         {
             int donorRequestId = id;
-            var username = User.Identity.Name;
-            var user = _userManager.FindByNameAsync(username).Result;
-            bool isMedEmployee = _userManager.IsInRoleAsync(user, RolesConstants.MedicalEmployee).Result;
-            bool hasRights = isMedEmployee;
+            bool hasRights = _userManager.IsUserInMedEmployeeRole(User.Identity.Name);
             if (!hasRights)
             {
+                var user = _userManager.FindByNameAsync(User.Identity.Name).Result;
                 hasRights = _donorRequestService.HasDonorRequest(user.Id, donorRequestId);
             }
             if (!hasRights)
@@ -108,6 +109,7 @@ namespace TrackYourLife.API.Controllers
         ///  Sends email to medical employee (about creating new request)
         /// </summary>
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult CreateDonorRequest(DonorRequestViewModel model)
         {
             var response = Execute(() =>
@@ -136,11 +138,16 @@ namespace TrackYourLife.API.Controllers
         /// Sends emails to Donor and to clinic;
         /// </summary>
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult ScheduleMedicalExam(ScheduleMedicalExamViewModel model)
         {
             var result = Execute(() =>
             {
+                bool isMedEmployee = _userManager.IsUserInMedEmployeeRole(User.Identity.Name);
+                if (!isMedEmployee)
+                {
+                    throw new UnauthorizedAccessException("You have not appropriate rights to access this action");
+                }
+
                 _donorRequestService.ScheduleMedicalExam(model);
             });
 
@@ -152,11 +159,16 @@ namespace TrackYourLife.API.Controllers
         /// Updates DonorMedicalExam entity;
         /// </summary>
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult SetMedicalExamResults(MedicalExamResultViewModel model)
         {
             var result = Execute(() =>
             {
+                bool isMedEmployee = _userManager.IsUserInMedEmployeeRole(User.Identity.Name);
+                if (!isMedEmployee)
+                {
+                    throw new UnauthorizedAccessException("You have not appropriate rights to access this action");
+                }
+
                 _donorRequestService.UpdateMedicalExamResults(model);
             });
 
@@ -164,21 +176,36 @@ namespace TrackYourLife.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public IActionResult LinkPatientAndDonorRequests()
+        public IActionResult LinkPatientRequest(PatientDonorRequestRelationViewModel model)
         {
-            return Ok();
+            var result = Execute(() =>
+            {
+                bool isMedEmployee = _userManager.IsUserInMedEmployeeRole(User.Identity.Name);
+                if (!isMedEmployee)
+                {
+                    throw new UnauthorizedAccessException("You have not appropriate rights to access this action");
+                }
+
+                _requestsRelationsService.CreatePatientDonorRequestsRelation(model.PatientRequestId, model.DonorRequestId);
+            });
+
+            return Json(result);
         }
 
         /// <summary>
         /// Just changes donorOrganQuery status to AwaitingOrganRetrieving
         /// </summary>
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult TimeForRetrievingHasBeenScheduled([FromRoute]int id)
         {
             var result = Execute(() =>
             {
+                bool isMedEmployee = _userManager.IsUserInMedEmployeeRole(User.Identity.Name);
+                if (!isMedEmployee)
+                {
+                    throw new UnauthorizedAccessException("You have not appropriate rights to access this action");
+                }
+
                 int donorOrganQueryId = id;
                 _donorRequestService.ChangeStatusTo(donorOrganQueryId, DonorRequestStatuses.AwaitingOrganRetrieving);
             });
@@ -190,15 +217,20 @@ namespace TrackYourLife.API.Controllers
         /// Changes donorOrganQuery status to FinishedSuccessfully
         /// </summary>
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult FinishDonorRequest(FinishDonorRequestViewModel model)
         {
             var result = Execute(() =>
             {
+                bool isMedEmployee = _userManager.IsUserInMedEmployeeRole(User.Identity.Name);
+                if (!isMedEmployee)
+                {
+                    throw new UnauthorizedAccessException("You have not appropriate rights to access this action");
+                }
+
                 if (model.DonorRequestStatus != DonorRequestStatuses.FinishedFailed
                 || model.DonorRequestStatus != DonorRequestStatuses.FinishedSuccessfully)
                 {
-                    throw new ArgumentOutOfRangeException("This method must be used only for setting Success or Failed to DonorRequest status.");
+                    throw new UnauthorizedAccessException("This method must be used only for setting Success or Failed to DonorRequest status.");
                 }
 
                 _donorRequestService.ChangeStatusTo(model.DonorRequestId, model.DonorRequestStatus);

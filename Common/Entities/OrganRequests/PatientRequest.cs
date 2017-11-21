@@ -19,7 +19,7 @@ namespace Common.Entities.OrganRequests
 
         public int OrganInfoId { get; set; }
         public OrganInfo OrganInfo { get; set; }
-
-        public DonorRequest DonorRequest { get; set; }
+        
+        public RequestsRelation RequestsRelation { get; set; }
     }
 }

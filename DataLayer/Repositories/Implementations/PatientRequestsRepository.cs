@@ -14,20 +14,10 @@ namespace DataLayer.Repositories.Implementations
         {
         }
 
-        public IList<PatientRequest> GetAllPending()
-        {
-            return GetAll(x => x.Status == PatientRequestStatuses.AwaitingForDonor);
-        }
-
-        public IList<PatientRequest> GetPendingByOrganInfo(int organInfoId)
-        {
-            //TODO: use valud from enum
-            return GetAll(x => x.OrganInfoId == organInfoId && x.Status == PatientRequestStatuses.AwaitingForDonor);
-        }
-
         public PatientRequest GetById(int patientOrganQueryId)
         {
-            return GetSingleByPredicate(x => x.Id == patientOrganQueryId, x => x.Include(e => e.DonorRequest));
+            return GetSingleByPredicate(x => x.Id == patientOrganQueryId,
+                 query => query.Include(e => e.RequestsRelation));
         }
     }
 }
