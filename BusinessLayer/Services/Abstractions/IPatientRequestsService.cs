@@ -5,9 +5,9 @@ using Common.Enums;
 
 namespace BusinessLayer.Services.Abstractions
 {
-    public interface IPatientOrganRequestService
+    public interface IPatientRequestsService
     {
-        PatientOrganQuery GetById(int patientOrganRequestId);
+        PatientRequest GetById(int patientOrganRequestId);
 
         void AddPatientOrganQueryToQueue(PatientOrganRequestViewModel patientOrganQueryViewModel);
 

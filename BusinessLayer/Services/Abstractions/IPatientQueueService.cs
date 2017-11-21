@@ -7,8 +7,8 @@ namespace BusinessLayer.Services.Abstractions
 {
     public interface IPatientQueueService
     {
-        IList<PatientOrganQuery> GetPengingQueue();
+        IList<PatientRequest> GetPengingQueue();
 
-        IList<PatientOrganQuery> GetPengingQueueByOrgan(int organInfoId);
+        IList<PatientRequest> GetPengingQueueByOrgan(int organInfoId);
     }
 }

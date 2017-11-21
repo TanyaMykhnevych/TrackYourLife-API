@@ -20,7 +20,7 @@ namespace Common.Entities.OrganQueries
 
         public string Results { get; set; }
 
-        public int DonorOrganQueryId { get; set; }
-        public DonorOrganQuery DonorOrganQuery { get; set; }
+        public int DonorRequestId { get; set; }
+        public DonorRequest DonorRequest { get; set; }
     }
 }

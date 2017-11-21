@@ -13,6 +13,7 @@
 
         AwaitingOrganRetrieving = 500,
 
-        FinishedSuccessfully = 600
+        FinishedSuccessfully = 600,
+        FinishedFailed = 700
     }
 }

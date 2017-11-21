@@ -19,7 +19,7 @@ namespace TrackYourLife.API.ViewModels.PatientRequests
         
         public bool HasLinkedDonorRequest { get; set; }
 
-        public PatientRequestListItemViewModel(PatientOrganQuery patientOrganQuery)
+        public PatientRequestListItemViewModel(PatientRequest patientOrganQuery)
         {
             Id = patientOrganQuery.Id;
             Message = patientOrganQuery.Message;
@@ -27,7 +27,7 @@ namespace TrackYourLife.API.ViewModels.PatientRequests
             PatientInfoId = patientOrganQuery.PatientInfoId;
             OrganInfoId = patientOrganQuery.OrganInfoId;
             OrganInfoName = patientOrganQuery.OrganInfo.Name;
-            HasLinkedDonorRequest = patientOrganQuery.DonorOrganQuery != null;
+            HasLinkedDonorRequest = patientOrganQuery.DonorRequest != null;
         }
     }
 }

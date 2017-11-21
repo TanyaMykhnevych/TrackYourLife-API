@@ -16,7 +16,7 @@ namespace Common.Entities.Organ
         public int UserInfoId { get; set; }
         public virtual UserInfo UserInfo { get; set; }
         
-        public virtual DonorOrganQuery DonorOrganQuery { get; set; }
+        public virtual DonorRequest DonorRequest { get; set; }
 
         public int OrganInfoId { get; set; }
         public OrganInfo OrganInfo { get; set; }

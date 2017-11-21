@@ -10,32 +10,28 @@ namespace BusinessLayer.Services.Implementations
 {
     public class PatientQueueService : IPatientQueueService
     {
-        private readonly IPatientOrganQueriesRepository _patientOrganQueriesRepository;
-        private readonly IOrganInfoService _organInfoService;
+        private readonly IPatientRequestsRepository _patientRequestsRepository;
 
-        public PatientQueueService(
-            IPatientOrganQueriesRepository patientOrganQueriesRepository,
-            IOrganInfoService organInfoService)
+        public PatientQueueService(IPatientRequestsRepository patientRequestsRepository)
         {
-            _patientOrganQueriesRepository = patientOrganQueriesRepository;
-            _organInfoService = organInfoService;
+            _patientRequestsRepository = patientRequestsRepository;
         }
 
-        public IList<PatientOrganQuery> GetPengingQueueByOrgan(int organInfoId)
+        public IList<PatientRequest> GetPengingQueueByOrgan(int organInfoId)
         {
             //TODO: add filters
-            var patientQueries = _patientOrganQueriesRepository.GetPendingByOrganInfo(organInfoId);
+            var patientQueries = _patientRequestsRepository.GetPendingByOrganInfo(organInfoId);
             return SortQueue(patientQueries);
         }
 
-        public IList<PatientOrganQuery> GetPengingQueue()
+        public IList<PatientRequest> GetPengingQueue()
         {
             //TODO: add filters
-            var patientQueries = _patientOrganQueriesRepository.GetAllPending();
+            var patientQueries = _patientRequestsRepository.GetAllPending();
             return SortQueue(patientQueries);
         }
 
-        private IList<PatientOrganQuery> SortQueue(IList<PatientOrganQuery> organQueries)
+        private IList<PatientRequest> SortQueue(IList<PatientRequest> organQueries)
         {
             return organQueries
                 .OrderByDescending(x => x.Priority)

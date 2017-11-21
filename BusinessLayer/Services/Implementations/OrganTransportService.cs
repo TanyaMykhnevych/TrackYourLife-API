@@ -10,29 +10,23 @@ namespace BusinessLayer.Services.Implementations
 {
     public class OrganTransportService : IOrganTransportService
     {
-        private readonly IOrganDeliveryRepository _organDeliveryRepository;
         private readonly IOrganDeliverySnapshotsRepository _deliverySnapshotsRepository;
         private readonly ITransplantOrgansService _transplantOrgansService;
-        private readonly IPatientOrganRequestService _patientOrganRequestService;
-        private readonly IDonorOrganRequestService _donorOrganRequestService;
+        private readonly IPatientRequestsService _patientRequestsService;
 
         public OrganTransportService(
-            IOrganDeliveryRepository organDeliveryRepository,
             IOrganDeliverySnapshotsRepository deliverySnapshotsRepository,
             ITransplantOrgansService transplantOrgansService,
-            IPatientOrganRequestService patientOrganRequestService,
-            IDonorOrganRequestService donorOrganRequestService)
+            IPatientRequestsService patientRequestsService)
         {
-            _organDeliveryRepository = organDeliveryRepository;
             _deliverySnapshotsRepository = deliverySnapshotsRepository;
             _transplantOrgansService = transplantOrgansService;
-            _patientOrganRequestService = patientOrganRequestService;
-            _donorOrganRequestService = donorOrganRequestService;
+            _patientRequestsService = patientRequestsService;
         }
 
         public void ScheduleOrganDelivery(ScheduleDeliveryViewModel model)
         {
-            var deliveryInfo = new OrganDeliveryInfo()
+            var deliveryInfo = new OrganDeliveryInfo
             {
                 DonorId = model.DonorId,
                 PatientId = model.PatientId,
@@ -41,8 +35,8 @@ namespace BusinessLayer.Services.Implementations
                 StartTransportTime = model.StartTransportTime
             };
 
-            var patientOrganRequest = _patientOrganRequestService.GetById(model.PatientOrganRequestId);
-            var donorRequest = patientOrganRequest.DonorOrganQuery;
+            var patientOrganRequest = _patientRequestsService.GetById(model.PatientOrganRequestId);
+            var donorRequest = patientOrganRequest.DonorRequest;
             var donorOrgan = _transplantOrgansService.GetById(donorRequest.TransplantOrganId.Value);
 
             donorOrgan.OrganDeliveryInfo = deliveryInfo;

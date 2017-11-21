@@ -30,23 +30,23 @@ namespace TrackYourLife.API.Infrastructure
 
             // Data Layer
 
-            services.AddScoped<IDonorOrganRequestRepository, DonorOrganRequestRepository>();
+            services.AddScoped<IDonorRequestsRepository, DonorRequestsRepository>();
             services.AddTransient<IOrganInfoRepository, OrganInfoRepository>();
             services.AddTransient<IClinicsRepository, ClinicsRepository>();
             services.AddTransient<IMedicalExamsRepository, MedicalExamsRepository>();
             services.AddTransient<IOrganDeliveryRepository, OrganDeliveryRepository>();
             services.AddTransient<ITransplantOrgansRepository, TransplantOrgansRepository>();
             services.AddTransient<IOrganDeliverySnapshotsRepository, OrganDeliverySnapshotsRepository>();
-            services.AddTransient<IPatientOrganQueriesRepository, PatientOrganQueriesRepository>();
+            services.AddTransient<IPatientRequestsRepository, PatientRequestsRepository>();
             services.AddTransient<IUserInfoRepository, UserInfoRepository>();
 
 
             // Business Layer
-            services.AddTransient<IDonorOrganRequestService, DonorOrganRequestService>();
+            services.AddTransient<IDonorRequestsService, DonorRequestsService>();
             services.AddTransient<IOrganInfoService, OrganInfoService>();
             services.AddTransient<ITransplantOrgansService, TransplantOrgansService>();
             services.AddTransient<IClinicsService, ClinicsService>();
-            services.AddTransient<IPatientOrganRequestService, PatientOrganRequestService>();
+            services.AddTransient<IPatientRequestsService, PatientRequestsService>();
             services.AddTransient<IPatientQueueService, PatientQueueService>();
             services.AddTransient<IOrganTransportService, OrganTransportService>();
             services.AddTransient<IUserInfoService, UserInfoService>();

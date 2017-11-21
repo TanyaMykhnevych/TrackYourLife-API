@@ -28,8 +28,8 @@ namespace DataLayer.DbContext
         public DbSet<OrganDeliveryInfo> OrganDeliveryInfos { get; set; }
         public DbSet<OrganDataSnapshot> OrganDataSnapshots { get; set; }
 
-        public DbSet<DonorOrganQuery> DonorOrganQueries { get; set; }
-        public DbSet<PatientOrganQuery> PatientOrganQueries { get; set; }
+        public DbSet<DonorRequest> DonorRequests { get; set; }
+        public DbSet<PatientRequest> PatientRequests { get; set; }
 
         public DbSet<DonorMedicalExam> DonorMedicalExams { get; set; }
 
@@ -75,17 +75,17 @@ namespace DataLayer.DbContext
                 .HasForeignKey<TransplantOrgan>(ot => ot.OrganDeliveryInfoId)
                 .IsRequired(false);
 
-            modelBuilder.Entity<DonorOrganQuery>()
+            modelBuilder.Entity<DonorRequest>()
                 .HasOne(ot => ot.DonorInfo)
                 .WithMany()
                 .HasForeignKey(ot => ot.DonorInfoId);
             
-            modelBuilder.Entity<DonorOrganQuery>()
-                .HasOne(ot => ot.PatientOrganQuery)
+            modelBuilder.Entity<DonorRequest>()
+                .HasOne(ot => ot.PatientRequest)
                 .WithOne()
                 .IsRequired(false);
 
-            modelBuilder.Entity<PatientOrganQuery>()
+            modelBuilder.Entity<PatientRequest>()
                 .HasOne(ot => ot.PatientInfo)
                 .WithMany()
                 .HasForeignKey(ot => ot.PatientInfoId);

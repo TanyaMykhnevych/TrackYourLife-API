@@ -10,31 +10,31 @@ using Common.Enums;
 
 namespace BusinessLayer.Services.Implementations
 {
-    public class PatientOrganRequestService : IPatientOrganRequestService
+    public class PatientRequestsService : IPatientRequestsService
     {
-        private readonly IDonorOrganRequestService _donorOrganRequestService;
-        private readonly IPatientOrganQueriesRepository _patientOrganQueriesRepository;
+        private readonly IDonorRequestsService _donorRequestsService;
+        private readonly IPatientRequestsRepository _patientRequestsRepository;
         private readonly IOrganInfoService _organInfoService;
         private readonly IUserInfoService _userInfoService;
         private readonly UserManager<AppUser> _userManager;
 
-        public PatientOrganRequestService(
-            IPatientOrganQueriesRepository patientOrganQueriesRepository,
+        public PatientRequestsService(
+            IPatientRequestsRepository patientRequestsRepository,
             IOrganInfoService organInfoService,
             IUserInfoService userInfoService,
-            IDonorOrganRequestService donorOrganRequestService,
+            IDonorRequestsService donorRequestsService,
             UserManager<AppUser> userManager)
         {
             _userInfoService = userInfoService;
-            _patientOrganQueriesRepository = patientOrganQueriesRepository;
+            _patientRequestsRepository = patientRequestsRepository;
             _organInfoService = organInfoService;
-            _donorOrganRequestService = donorOrganRequestService;
+            _donorRequestsService = donorRequestsService;
             _userManager = userManager;
         }
 
-        public PatientOrganQuery GetById(int patientOrganRequestId)
+        public PatientRequest GetById(int patientOrganRequestId)
         {
-            return _patientOrganQueriesRepository.GetById(patientOrganRequestId);
+            return _patientRequestsRepository.GetById(patientOrganRequestId);
         }
 
         public void AddPatientOrganQueryToQueue(PatientOrganRequestViewModel model)
@@ -56,7 +56,7 @@ namespace BusinessLayer.Services.Implementations
                 ? _userInfoService.RegisterPatient(model) 
                 : _userInfoService.GetUserInfoByUserId(user.Id);
 
-            var patientOrganQuery = new PatientOrganQuery()
+            var patientOrganQuery = new PatientRequest()
             {
                 OrganInfoId = model.OrganInfoId,
                 PatientInfoId = patientUserInfo.UserInfoId,
@@ -65,7 +65,7 @@ namespace BusinessLayer.Services.Implementations
                 Status = PatientRequestStatuses.AwaitingForDonor
             };
 
-            _patientOrganQueriesRepository.Add(patientOrganQuery);
+            _patientRequestsRepository.Add(patientOrganQuery);
 
             //TODO: send email to patient email with credentials
             //TODO: send email to clinic that query has been added
@@ -73,7 +73,7 @@ namespace BusinessLayer.Services.Implementations
 
         public void ChangePatientOrganQueryStatus(int patientOrganQueryId, PatientRequestStatuses status)
         {
-            PatientOrganQuery patientOrganQuery = _patientOrganQueriesRepository.GetById(patientOrganQueryId);
+            PatientRequest patientOrganQuery = _patientRequestsRepository.GetById(patientOrganQueryId);
             if (patientOrganQuery == null)
             {
                 throw new ArgumentException(nameof(patientOrganQueryId));
@@ -86,31 +86,31 @@ namespace BusinessLayer.Services.Implementations
 
             patientOrganQuery.Status = PatientRequestStatuses.AwaitingForDonor;
 
-            _patientOrganQueriesRepository.Update(patientOrganQuery);
+            _patientRequestsRepository.Update(patientOrganQuery);
 
             //TODO: send email to clinic that query status has been changed
         }
 
         public void AssignToDonorOrganQuery(int patientOrganQueryId, int donorOrganQueryId)
         {
-            PatientOrganQuery patientOrganQuery = _patientOrganQueriesRepository.GetById(patientOrganQueryId);
+            PatientRequest patientOrganQuery = _patientRequestsRepository.GetById(patientOrganQueryId);
             if (patientOrganQuery == null)
             {
                 throw new ArgumentException(nameof(patientOrganQueryId));
             }
 
             //TODO: get PURE entity
-            DonorOrganQuery donorOrganQuery = _donorOrganRequestService.GetById(donorOrganQueryId);
+            DonorRequest donorOrganQuery = _donorRequestsService.GetById(donorOrganQueryId);
             if (donorOrganQuery == null)
             {
                 throw new ArgumentException(nameof(donorOrganQueryId));
             }
 
-            patientOrganQuery.DonorOrganQuery = donorOrganQuery;
+            patientOrganQuery.DonorRequest = donorOrganQuery;
             patientOrganQuery.Status = PatientRequestStatuses.AwaitingForTransplanting;
 
             //TODO: check if donorOrganQuery saved 
-            _patientOrganQueriesRepository.Update(patientOrganQuery);
+            _patientRequestsRepository.Update(patientOrganQuery);
 
             //TODO: send email to clinic/patient/donor that query status has been changed
         }

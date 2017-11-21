@@ -27,11 +27,11 @@ namespace TrackYourLife.API.ViewModels.DonorRequests
         public TransplantOrgan TransplantOrgan { get; set; }
 
         // TODO: replace with viewmodel
-        public PatientOrganQuery PatientOrganQuery { get; set; }
+        public PatientRequest PatientOrganQuery { get; set; }
 
         public ICollection<DonorMedicalExamListItemViewModel> DonorMedicalExams { get; set; }
 
-        public DonorRequestDetailsViewModel(DonorOrganQuery query)
+        public DonorRequestDetailsViewModel(DonorRequest query)
         {
             Id = query.Id;
             Message = query.Message;
@@ -42,7 +42,7 @@ namespace TrackYourLife.API.ViewModels.DonorRequests
             OrganInfo = query.OrganInfo;
             TransplantOrganId = query.TransplantOrganId;
             TransplantOrgan = query.TransplantOrgan;
-            PatientOrganQuery = query.PatientOrganQuery;
+            PatientOrganQuery = query.PatientRequest;
             DonorMedicalExams = query.DonorMedicalExams?.Select(x => new DonorMedicalExamListItemViewModel(x)).ToList();
         }
 

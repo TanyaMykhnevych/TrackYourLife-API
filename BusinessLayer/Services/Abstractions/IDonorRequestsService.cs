@@ -7,15 +7,15 @@ using Common.Enums;
 
 namespace BusinessLayer.Services.Abstractions
 {
-    public interface IDonorOrganRequestService
+    public interface IDonorRequestsService
     {
-        IList<DonorOrganQuery> GetDonorRequests();
+        IList<DonorRequest> GetDonorRequests();
 
-        IList<DonorOrganQuery> GetDonorRequestsByUsername(string userName);
+        IList<DonorRequest> GetDonorRequestsByUsername(string userName);
 
-        DonorOrganQuery GetById(int id);
+        DonorRequest GetById(int id);
 
-        DonorOrganQuery GetDetailedById(int id);
+        DonorRequest GetDetailedById(int id);
 
         bool HasDonorRequest(string id, int donorRequestId);
 

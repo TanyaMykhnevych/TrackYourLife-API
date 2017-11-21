@@ -29,7 +29,7 @@ namespace BusinessLayer.Models.ViewModels.MedicalExam
             ClinicId = exam.ClinicId;
             Status = exam.Status;
             Results = exam.Results;
-            DonorOrganQueryId = exam.DonorOrganQueryId;
+            DonorOrganQueryId = exam.DonorRequestId;
         }
     }
 }

@@ -18,59 +18,56 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLayer.Services.Implementations
 {
-    public class DonorOrganRequestService : IDonorOrganRequestService
+    public class DonorRequestsService : IDonorRequestsService
     {
-        private readonly IDonorOrganRequestRepository _donorOrganRequestRepository;
+        private readonly IDonorRequestsRepository _donorRequestsRepository;
         private readonly IMedicalExamsRepository _medicalExamsRepository;
         private readonly IOrganInfoService _organInfoService;
-        private readonly IClinicsService _clinicsService;
         private readonly UserManager<AppUser> _userManager;
         private readonly IUserInfoService _userInfoService;
 
-        public DonorOrganRequestService(
+        public DonorRequestsService(
             IOrganInfoService organInfoService,
-            IClinicsService clinicsService,
             IUserInfoService userInfoService,
-            IDonorOrganRequestRepository donorOrganRequestRepository,
+            IDonorRequestsRepository donorRequestsRepository,
             UserManager<AppUser> userManager,
             IMedicalExamsRepository medicalExamsRepository)
         {
-            _donorOrganRequestRepository = donorOrganRequestRepository;
+            _donorRequestsRepository = donorRequestsRepository;
             _medicalExamsRepository = medicalExamsRepository;
             _organInfoService = organInfoService;
-            _clinicsService = clinicsService;
             _userManager = userManager;
             _userInfoService = userInfoService;
         }
 
-        public IList<DonorOrganQuery> GetDonorRequests()
+        public IList<DonorRequest> GetDonorRequests()
         {
-            return _donorOrganRequestRepository.GetAll(
+            return _donorRequestsRepository.GetAll(
                 include: x => x.Include(dr => dr.DonorMedicalExams)
-                .Include(dr => dr.PatientOrganQuery)
+                .Include(dr => dr.PatientRequest)
                 .Include(dr => dr.OrganInfo)
                 .Include(dr => dr.TransplantOrgan));
         }
 
-        public IList<DonorOrganQuery> GetDonorRequestsByUsername(string userName)
+        public IList<DonorRequest> GetDonorRequestsByUsername(string userName)
         {
             var user = _userManager.FindByNameAsync(userName).Result;
-            return _donorOrganRequestRepository.GetAll(
+            return _donorRequestsRepository.GetAll(
                 predicate: dr => dr.DonorInfo.AppUserId == user.Id,
                 include: x => x.Include(dr => dr.DonorMedicalExams)
-                    .Include(dr => dr.PatientOrganQuery)
+                    .Include(dr => dr.PatientRequest)
                     .Include(dr => dr.OrganInfo)
                     .Include(dr => dr.TransplantOrgan));
         }
 
-        public DonorOrganQuery GetById(int id)
+        public DonorRequest GetById(int id)
         {
-            return _donorOrganRequestRepository.GetById(id);
+            return _donorRequestsRepository.GetById(id);
         }
 
-        public DonorOrganQuery GetDetailedById(int id)
+        public DonorRequest GetDetailedById(int id)
         {
-            return _donorOrganRequestRepository.GetDetailedById(id);
+            return _donorRequestsRepository.GetDetailedById(id);
         }
 
         public bool HasDonorRequest(string id, int donorRequestId)
@@ -78,7 +75,7 @@ namespace BusinessLayer.Services.Implementations
             var userInfo = _userInfoService.GetUserInfoByUserId(id);
             if (userInfo == null) return false;
 
-            return _donorOrganRequestRepository.Any(dr =>
+            return _donorRequestsRepository.Any(dr =>
                 dr.DonorInfoId == userInfo.UserInfoId && dr.Id == donorRequestId);
         }
 
@@ -106,7 +103,7 @@ namespace BusinessLayer.Services.Implementations
 
         private void RegisterDonorOrganRequestInner(DonorRequestViewModel request, UserInfo donorUserInfo)
         {
-            var donorOrganRequest = new DonorOrganQuery
+            var donorOrganRequest = new DonorRequest
             {
                 DonorInfoId = donorUserInfo.UserInfoId,
                 OrganInfoId = request.OrganInfoId,
@@ -114,7 +111,7 @@ namespace BusinessLayer.Services.Implementations
                 Status = DonorRequestStatuses.PendingMedicalExamination
             };
 
-            _donorOrganRequestRepository.Add(donorOrganRequest);
+            _donorRequestsRepository.Add(donorOrganRequest);
         }
 
         public void ScheduleMedicalExam(ScheduleMedicalExamViewModel model)
@@ -129,7 +126,7 @@ namespace BusinessLayer.Services.Implementations
 
         private void ScheduleMedicalExamInner(ScheduleMedicalExamViewModel model)
         {
-            var donorOrganRequest = _donorOrganRequestRepository.GetById(model.DonorRequestId);
+            var donorOrganRequest = _donorRequestsRepository.GetById(model.DonorRequestId);
             if (donorOrganRequest == null)
             {
                 //TODO: handle
@@ -139,7 +136,7 @@ namespace BusinessLayer.Services.Implementations
             var medicalExamEntity = new DonorMedicalExam()
             {
                 ClinicId = model.ClinicId,
-                DonorOrganQueryId = model.DonorRequestId,
+                DonorRequestId = model.DonorRequestId,
                 ScheduledAt = model.ScheduledDateTime,
                 Status = MedicalExamStatuses.Scheduled
             };
@@ -148,7 +145,7 @@ namespace BusinessLayer.Services.Implementations
 
             //TODO: better use transaction
             _medicalExamsRepository.Add(medicalExamEntity);
-            _donorOrganRequestRepository.Update(donorOrganRequest);
+            _donorRequestsRepository.Update(donorOrganRequest);
         }
 
         /// <summary>
@@ -167,7 +164,7 @@ namespace BusinessLayer.Services.Implementations
 
         private void UpdateMedicalExamResultsInner(MedicalExamResultViewModel model)
         {
-            var donorOrganQuery = _donorOrganRequestRepository.GetById(model.DonorOrganQueryId);
+            var donorOrganQuery = _donorRequestsRepository.GetById(model.DonorOrganQueryId);
             if (donorOrganQuery == null)
             {
                 //TODO: handle
@@ -197,12 +194,12 @@ namespace BusinessLayer.Services.Implementations
 
             //TODO: use transaction here
             _medicalExamsRepository.Update(exam);
-            _donorOrganRequestRepository.Update(donorOrganQuery);
+            _donorRequestsRepository.Update(donorOrganQuery);
         }
 
         public void ChangeStatusTo(int donorRequestId, DonorRequestStatuses status)
         {
-            DonorOrganQuery request = _donorOrganRequestRepository.GetById(donorRequestId);
+            DonorRequest request = _donorRequestsRepository.GetById(donorRequestId);
             if (request == null)
             {
                 throw new ArgumentNullException(nameof(request));
@@ -210,7 +207,7 @@ namespace BusinessLayer.Services.Implementations
 
             request.Status = status;
 
-            _donorOrganRequestRepository.Update(request);
+            _donorRequestsRepository.Update(request);
         }
     }
 }

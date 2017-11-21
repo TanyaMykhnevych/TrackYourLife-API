@@ -5,7 +5,7 @@ using Common.Enums;
 
 namespace Common.Entities.OrganQueries
 {
-    public class DonorOrganQuery : BaseEntity
+    public class DonorRequest : BaseEntity
     {
         public int Id { get; set; }
 
@@ -22,7 +22,7 @@ namespace Common.Entities.OrganQueries
         public int? TransplantOrganId { get; set; }
         public TransplantOrgan TransplantOrgan { get; set; }
 
-        public PatientOrganQuery PatientOrganQuery { get; set; }
+        public PatientRequest PatientRequest { get; set; }
 
         public ICollection<DonorMedicalExam> DonorMedicalExams { get; set; }
     }

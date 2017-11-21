@@ -7,27 +7,27 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataLayer.Repositories.Implementations
 {
-    public class PatientOrganQueriesRepository : RepositoryBase<PatientOrganQuery>, IPatientOrganQueriesRepository
+    public class PatientRequestsRepository : RepositoryBase<PatientRequest>, IPatientRequestsRepository
     {
-        public PatientOrganQueriesRepository(AppDbContext appDbContext)
-            : base(appDbContext, appDbContext.PatientOrganQueries)
+        public PatientRequestsRepository(AppDbContext appDbContext)
+            : base(appDbContext, appDbContext.PatientRequests)
         {
         }
 
-        public IList<PatientOrganQuery> GetAllPending()
+        public IList<PatientRequest> GetAllPending()
         {
             return GetAll(x => x.Status == PatientRequestStatuses.AwaitingForDonor);
         }
 
-        public IList<PatientOrganQuery> GetPendingByOrganInfo(int organInfoId)
+        public IList<PatientRequest> GetPendingByOrganInfo(int organInfoId)
         {
             //TODO: use valud from enum
             return GetAll(x => x.OrganInfoId == organInfoId && x.Status == PatientRequestStatuses.AwaitingForDonor);
         }
 
-        public PatientOrganQuery GetById(int patientOrganQueryId)
+        public PatientRequest GetById(int patientOrganQueryId)
         {
-            return GetSingleByPredicate(x => x.Id == patientOrganQueryId, x => x.Include(e => e.DonorOrganQuery));
+            return GetSingleByPredicate(x => x.Id == patientOrganQueryId, x => x.Include(e => e.DonorRequest));
         }
     }
 }

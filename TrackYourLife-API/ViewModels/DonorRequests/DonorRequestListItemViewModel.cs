@@ -25,7 +25,7 @@ namespace TrackYourLife.API.ViewModels.DonorRequests
 
         public DonorMedicalExamListItemViewModel LastMedicalExam { get; set; }
 
-        public DonorRequestListItemViewModel(DonorOrganQuery donorOrganQuery)
+        public DonorRequestListItemViewModel(DonorRequest donorOrganQuery)
         {
             Id = donorOrganQuery.Id;
             Message = donorOrganQuery.Message;
@@ -33,7 +33,7 @@ namespace TrackYourLife.API.ViewModels.DonorRequests
             DonorInfoId = donorOrganQuery.DonorInfoId;
             OrganInfoId = donorOrganQuery.OrganInfoId;
             OrganInfoName = donorOrganQuery.OrganInfo.Name;
-            HasLinkedPatientRequest = donorOrganQuery.PatientOrganQuery != null;
+            HasLinkedPatientRequest = donorOrganQuery.PatientRequest != null;
             MedicalExamsCount = donorOrganQuery.DonorMedicalExams?.Count ?? 0;
 
             var lastMedExam = donorOrganQuery.DonorMedicalExams?.LastOrDefault();

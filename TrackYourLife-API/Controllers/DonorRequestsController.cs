@@ -19,11 +19,11 @@ namespace TrackYourLife.API.Controllers
     [Route("api/[controller]/[action]/{id?}")]
     public class DonorRequestsController : ControllerBase
     {
-        private readonly IDonorOrganRequestService _donorRequestService;
+        private readonly IDonorRequestsService _donorRequestService;
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public DonorRequestsController(IDonorOrganRequestService donorRequestService,
+        public DonorRequestsController(IDonorRequestsService donorRequestService,
             UserManager<AppUser> userManager,
             RoleManager<IdentityRole> roleManager)
         {
@@ -163,12 +163,19 @@ namespace TrackYourLife.API.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult LinkPatientAndDonorRequests()
+        {
+            return Ok();
+        }
+
         /// <summary>
         /// Just changes donorOrganQuery status to AwaitingOrganRetrieving
         /// </summary>
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public IActionResult TimeForRetrievingHasBeenScheduled(int id)
+        public IActionResult TimeForRetrievingHasBeenScheduled([FromRoute]int id)
         {
             var result = Execute(() =>
             {
@@ -180,16 +187,21 @@ namespace TrackYourLife.API.Controllers
         }
 
         /// <summary>
-        /// Just changes donorOrganQuery status to FinishedSuccessfully
+        /// Changes donorOrganQuery status to FinishedSuccessfully
         /// </summary>
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public IActionResult FinishDonorRequest(int id)
+        public IActionResult FinishDonorRequest(FinishDonorRequestViewModel model)
         {
             var result = Execute(() =>
             {
-                int donorOrganQueryId = id;
-                _donorRequestService.ChangeStatusTo(donorOrganQueryId, DonorRequestStatuses.FinishedSuccessfully);
+                if (model.DonorRequestStatus != DonorRequestStatuses.FinishedFailed
+                || model.DonorRequestStatus != DonorRequestStatuses.FinishedSuccessfully)
+                {
+                    throw new ArgumentOutOfRangeException("This method must be used only for setting Success or Failed to DonorRequest status.");
+                }
+
+                _donorRequestService.ChangeStatusTo(model.DonorRequestId, model.DonorRequestStatus);
             });
 
             return Json(result);
