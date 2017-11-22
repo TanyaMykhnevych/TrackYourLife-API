@@ -9,6 +9,7 @@ namespace TrackYourLife.API.ViewModels.Clinics
         public string Name { get; set; }
 
         public string ContactPhone { get; set; }
+        public string AddressLine1 { get; set; }
 
         public string Country { get; set; }
         public string City { get; set; }
@@ -18,6 +19,7 @@ namespace TrackYourLife.API.ViewModels.Clinics
             Id = clinic.Id;
             Name = clinic.Name;
             ContactPhone = clinic.ContactPhone;
+            AddressLine1 = clinic.AddressLine1;
             Country = clinic.Country;
             City = clinic.City;
         }

@@ -97,7 +97,7 @@ namespace TrackYourLife.API.Controllers
             var response = ContentExecute<DonorRequestDetailsViewModel>(() =>
             {
                 var donorRequest = _donorRequestService.GetDetailedById(donorRequestId);
-                return new DonorRequestDetailsViewModel(donorRequest);
+                return new DonorRequestDetailsViewModel(donorRequest, donorRequest.RequestsRelation?.PatientRequest);
             });
 
             return Json(response);
@@ -228,12 +228,19 @@ namespace TrackYourLife.API.Controllers
                 }
 
                 if (model.DonorRequestStatus != DonorRequestStatuses.FinishedFailed
-                || model.DonorRequestStatus != DonorRequestStatuses.FinishedSuccessfully)
+                && model.DonorRequestStatus != DonorRequestStatuses.FinishedSuccessfully)
                 {
                     throw new UnauthorizedAccessException("This method must be used only for setting Success or Failed to DonorRequest status.");
                 }
 
-                _donorRequestService.ChangeStatusTo(model.DonorRequestId, model.DonorRequestStatus);
+                if (model.DonorRequestStatus == DonorRequestStatuses.FinishedSuccessfully)
+                {
+                    _donorRequestService.FinishDonorRequestSuccessfully(model.DonorRequestId);
+                }
+                else
+                {
+                    _donorRequestService.FinishDonorRequestFailed(model.DonorRequestId);
+                }
             });
 
             return Json(result);

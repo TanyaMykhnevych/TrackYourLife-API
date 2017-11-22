@@ -1,6 +1,6 @@
 ﻿namespace Common.Enums
 {
-    public enum PatientQueryPriority
+    public enum PatientRequestPriority
     {
         Low = 100,
         Normal = 200,

@@ -19,7 +19,7 @@ namespace BusinessLayer.Models.ViewModels.MedicalExam
 
         public string Results { get; set; }
 
-        public int DonorOrganQueryId { get; set; }
+        public int DonorRequestId { get; set; }
 
 
         public DonorMedicalExamListItemViewModel(DonorMedicalExam exam)
@@ -29,7 +29,7 @@ namespace BusinessLayer.Models.ViewModels.MedicalExam
             ClinicId = exam.ClinicId;
             Status = exam.Status;
             Results = exam.Results;
-            DonorOrganQueryId = exam.DonorRequestId;
+            DonorRequestId = exam.DonorRequestId;
         }
     }
 }

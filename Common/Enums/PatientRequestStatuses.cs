@@ -6,6 +6,7 @@
 
         AwaitingForTransplanting = 200,
 
-        FinishedSuccessfully = 300
+        FinishedSuccessfully = 300,
+        FinishedFailed = 400
     }
 }

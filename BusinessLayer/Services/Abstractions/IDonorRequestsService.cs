@@ -17,6 +17,10 @@ namespace BusinessLayer.Services.Abstractions
 
         DonorRequest GetDetailedById(int id);
 
+        void FinishDonorRequestSuccessfully(int donorRequestId);
+
+        void FinishDonorRequestFailed(int donorRequestId);
+
         bool HasDonorRequest(string id, int donorRequestId);
 
         void RegisterDonorOrganRequest(DonorRequestViewModel request);

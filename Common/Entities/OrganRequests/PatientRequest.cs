@@ -12,7 +12,7 @@ namespace Common.Entities.OrganRequests
         
         public PatientRequestStatuses Status { get; set; }
         
-        public PatientQueryPriority Priority { get; set; }
+        public PatientRequestPriority Priority { get; set; }
 
         public int? PatientInfoId { get; set; }
         public UserInfo PatientInfo { get; set; }

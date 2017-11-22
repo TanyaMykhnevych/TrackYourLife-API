@@ -46,8 +46,8 @@ namespace BusinessLayer.Services.Implementations
             if (!isOrganInfoExist)
                 throw new ArgumentException(nameof(model.OrganInfoId));
 
-            if (!Enum.IsDefined(typeof(PatientQueryPriority), model.QueryPriority))
-                model.QueryPriority = PatientQueryPriority.Normal;
+            if (!Enum.IsDefined(typeof(PatientRequestPriority), model.QueryPriority))
+                model.QueryPriority = PatientRequestPriority.Normal;
 
             var user = _userManager.FindByEmailAsync(model.Email).Result;
             var patientUserInfo = user == null 
@@ -69,16 +69,16 @@ namespace BusinessLayer.Services.Implementations
             //TODO: send email to clinic that query has been added
         }
 
-        public void ChangePatientOrganQueryStatus(int patientOrganQueryId, PatientRequestStatuses status)
+        public void ChangePatientRequestStatus(int patientRequestId, PatientRequestStatuses status)
         {
-            var patientOrganQuery = _patientRequestsRepository.GetById(patientOrganQueryId);
+            var patientOrganQuery = _patientRequestsRepository.GetById(patientRequestId);
             if (patientOrganQuery == null)
             {
-                throw new ArgumentException(nameof(patientOrganQueryId));
+                throw new ArgumentException(nameof(patientRequestId));
             }
 
-            if (!Enum.IsDefined(typeof(PatientQueryPriority), patientOrganQuery.Priority))
-                patientOrganQuery.Priority = PatientQueryPriority.Normal;
+            if (!Enum.IsDefined(typeof(PatientRequestPriority), patientOrganQuery.Priority))
+                patientOrganQuery.Priority = PatientRequestPriority.Normal;
 
             patientOrganQuery.Status = status;
 

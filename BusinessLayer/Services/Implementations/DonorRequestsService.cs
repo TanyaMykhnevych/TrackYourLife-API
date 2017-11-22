@@ -25,27 +25,32 @@ namespace BusinessLayer.Services.Implementations
         private readonly IOrganInfoService _organInfoService;
         private readonly UserManager<AppUser> _userManager;
         private readonly IUserInfoService _userInfoService;
+        private readonly IPatientRequestsService _patientRequestsService;
 
         public DonorRequestsService(
             IOrganInfoService organInfoService,
             IUserInfoService userInfoService,
             IDonorRequestsRepository donorRequestsRepository,
             UserManager<AppUser> userManager,
-            IMedicalExamsService medicalExamsService)
+            IMedicalExamsService medicalExamsService,
+            IPatientRequestsService patientRequestsService)
         {
             _donorRequestsRepository = donorRequestsRepository;
             _medicalExamsService = medicalExamsService;
             _organInfoService = organInfoService;
             _userManager = userManager;
             _userInfoService = userInfoService;
+            _patientRequestsService = patientRequestsService;
         }
 
         public IList<DonorRequest> GetDonorRequests()
         {
             return _donorRequestsRepository.GetAll(
                 include: x => x.Include(dr => dr.DonorMedicalExams)
-                .Include(dr => dr.OrganInfo)
-                .Include(dr => dr.TransplantOrgan));
+                    .Include(dr => dr.OrganInfo)
+                    .Include(dr => dr.DonorInfo)
+                    .Include(dr => dr.RequestsRelation)
+                    .Include(dr => dr.TransplantOrgan));
         }
 
         public IList<DonorRequest> GetDonorRequestsByUsername(string userName)
@@ -55,6 +60,8 @@ namespace BusinessLayer.Services.Implementations
                 predicate: dr => dr.DonorInfo.AppUserId == user.Id,
                 include: x => x.Include(dr => dr.DonorMedicalExams)
                     .Include(dr => dr.OrganInfo)
+                    .Include(dr => dr.DonorInfo)
+                    .Include(dr => dr.RequestsRelation)
                     .Include(dr => dr.TransplantOrgan));
         }
 
@@ -92,7 +99,7 @@ namespace BusinessLayer.Services.Implementations
             //TODO: validate contacts
 
             var user = _userManager.FindByEmailAsync(request.Email).Result;
-            UserInfo donorUserInfo = user == null 
+            UserInfo donorUserInfo = user == null
                 ? _userInfoService.RegisterDonor(request)
                 : _userInfoService.GetUserInfoByUserId(user.Id);
 
@@ -140,7 +147,7 @@ namespace BusinessLayer.Services.Implementations
             };
 
             donorOrganRequest.Status = DonorRequestStatuses.ScheduledMedicalExamination;
-            
+
             _medicalExamsService.AddMedicalExam(medicalExamEntity);
             _donorRequestsRepository.Update(donorOrganRequest);
         }
@@ -193,6 +200,34 @@ namespace BusinessLayer.Services.Implementations
 
             _medicalExamsService.UpdateMedicalExam(exam);
             _donorRequestsRepository.Update(donorRequest);
+        }
+
+        public void FinishDonorRequestSuccessfully(int donorRequestId)
+        {
+            var donorRequest = _donorRequestsRepository.GetDetailedById(donorRequestId);
+            if (donorRequest?.RequestsRelation == null)
+            {
+                return;
+            }
+
+            var requestsRelation = donorRequest.RequestsRelation;
+
+            ChangeStatusTo(donorRequestId, DonorRequestStatuses.FinishedSuccessfully);
+            _patientRequestsService.ChangePatientRequestStatus(requestsRelation.PatientRequestId, PatientRequestStatuses.FinishedSuccessfully);
+        }
+
+        public void FinishDonorRequestFailed(int donorRequestId)
+        {
+            var donorRequest = _donorRequestsRepository.GetDetailedById(donorRequestId);
+            if (donorRequest?.RequestsRelation == null)
+            {
+                return;
+            }
+
+            var requestsRelation = donorRequest.RequestsRelation;
+
+            ChangeStatusTo(donorRequestId, DonorRequestStatuses.FinishedFailed);
+            _patientRequestsService.ChangePatientRequestStatus(requestsRelation.PatientRequestId, PatientRequestStatuses.FinishedFailed);
         }
 
         public void ChangeStatusTo(int donorRequestId, DonorRequestStatuses status)

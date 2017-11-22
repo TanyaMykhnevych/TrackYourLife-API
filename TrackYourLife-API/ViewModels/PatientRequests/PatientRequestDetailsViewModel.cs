@@ -1,6 +1,9 @@
 ﻿using Common.Entities.Organ;
 using Common.Entities.OrganRequests;
 using Common.Enums;
+using TrackYourLife.API.ViewModels.DonorRequests;
+using TrackYourLife.API.ViewModels.OrganInfos;
+using TrackYourLife.API.ViewModels.UserInfo;
 
 namespace TrackYourLife.API.ViewModels.PatientRequests
 {
@@ -13,21 +16,27 @@ namespace TrackYourLife.API.ViewModels.PatientRequests
         public PatientRequestStatuses Status { get; set; }
 
         public int? PatientInfoId { get; set; }
+        public UserInfoDetailedViewModel PatientInfo { get; set; }
 
         public int OrganInfoId { get; set; }
-        public OrganInfo OrganInfo { get; set; }
+        public OrganInfoDetailsViewModel OrganInfo { get; set; }
 
-        public DonorRequest DonorOrganQuery { get; set; }
+        public DonorRequestDetailsViewModel DonorRequest { get; set; }
 
-        public PatientRequestDetailsViewModel(PatientRequest query, DonorRequest donorRequest)
+        public PatientRequestDetailsViewModel(PatientRequest request, DonorRequest donorRequest = null)
         {
-            Id = query.Id;
-            Message = query.Message;
-            Status = query.Status;
-            PatientInfoId = query.PatientInfoId;
-            OrganInfoId = query.OrganInfoId;
-            OrganInfo = query.OrganInfo;
-            DonorOrganQuery = donorRequest;
+            Id = request.Id;
+            Message = request.Message;
+            Status = request.Status;
+            PatientInfoId = request.PatientInfoId;
+            PatientInfo = new UserInfoDetailedViewModel(request.PatientInfo);
+            OrganInfoId = request.OrganInfoId;
+            OrganInfo = new OrganInfoDetailsViewModel(request.OrganInfo);
+
+            if (donorRequest != null)
+            {
+                DonorRequest = new DonorRequestDetailsViewModel(donorRequest);
+            }
         }
 
         public PatientRequestDetailsViewModel() { }

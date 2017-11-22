@@ -8,7 +8,7 @@ namespace BusinessLayer.Models.ViewModels
 
         public int OrganInfoId { get; set; }
 
-        public PatientQueryPriority QueryPriority { get; set; }
+        public PatientRequestPriority QueryPriority { get; set; }
 
         public string AdditionalInfo { get; set; }
 

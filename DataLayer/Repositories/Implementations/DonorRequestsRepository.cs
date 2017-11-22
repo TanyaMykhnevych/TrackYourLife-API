@@ -20,15 +20,15 @@ namespace DataLayer.Repositories.Implementations
         public DonorRequest GetDetailedById(int donorRequestId)
         {
             return GetSingleByPredicate(x => x.Id == donorRequestId,
-                include: x => x.Include(dr => dr.DonorMedicalExams)
+                include: 
+                    x => x.Include(dr => dr.DonorMedicalExams)
+                        .ThenInclude(e => e.Clinic)
                     .Include(dr => dr.RequestsRelation)
                         .ThenInclude(dpr => dpr.PatientRequest)
+                        .ThenInclude(pr => pr.PatientInfo)
                     .Include(dr => dr.OrganInfo)
+                    .Include(dr => dr.DonorInfo)
                     .Include(dr => dr.TransplantOrgan));
         }
-
-        //{
-        //    var oldEntity = GetById(donorOrganRequest.Id);
-        //    _appDbContext.Entry(oldEntity).State = EntityState.Detached;
     }
 }

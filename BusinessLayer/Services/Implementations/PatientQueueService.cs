@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using Common.Entities.OrganRequests;
 using Common.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLayer.Services.Implementations
 {
@@ -21,7 +22,9 @@ namespace BusinessLayer.Services.Implementations
         public IList<PatientRequest> GetPengingQueue()
         {
             //TODO: add filters
-            var patientQueries = _patientRequestsRepository.GetAll(x => x.Status == PatientRequestStatuses.AwaitingForDonor);
+            var patientQueries = _patientRequestsRepository.GetAll(x => x.Status == PatientRequestStatuses.AwaitingForDonor,
+                q => q.Include(x => x.PatientInfo));
+
             return SortQueue(patientQueries);
         }
 
@@ -29,7 +32,8 @@ namespace BusinessLayer.Services.Implementations
         {
             //TODO: add filters
             var patientQueries = _patientRequestsRepository.GetAll(x =>
-                x.OrganInfoId == organInfoId && x.Status == PatientRequestStatuses.AwaitingForDonor);
+                x.OrganInfoId == organInfoId && x.Status == PatientRequestStatuses.AwaitingForDonor,
+                q => q.Include(x => x.PatientInfo));
 
             return SortQueue(patientQueries);
         }
