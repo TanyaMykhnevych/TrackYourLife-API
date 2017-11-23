@@ -116,7 +116,7 @@ namespace TrackYourLife.API.Controllers
             {
                 if (User != null && User.IsAuthenticated())
                 {
-                    if (User.IsInRole(RolesConstants.Donor))
+                    if (_userManager.IsUserInDonorRole(User.Identity.Name))
                     {
                         var user = _userManager.FindByNameAsync(User.Identity.Name).Result;
                         model.Email = user.Email;

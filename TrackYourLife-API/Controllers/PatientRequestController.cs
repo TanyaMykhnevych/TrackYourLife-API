@@ -42,6 +42,17 @@ namespace TrackYourLife.API.Controllers
         }
 
         /// <summary>
+        /// Returns Patient Requests List
+        /// </summary>
+        [HttpGet]
+        public IActionResult GetPatientRequestList()
+        {
+            string response = null;
+
+            return Json(response);
+        }
+
+        /// <summary>
         /// Creates User/UserInfo for donor and sends email to donor
         /// Creates new PatientOrganQuery for patient
         /// </summary>

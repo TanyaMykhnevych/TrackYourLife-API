@@ -15,5 +15,26 @@ namespace Common.Utils
             var isMedEmployee = userManager.IsInRoleAsync(user, RolesConstants.MedicalEmployee).Result;
             return isMedEmployee;
         }
+
+        public static bool IsUserInDonorRole(this UserManager<AppUser> userManager, string username)
+        {
+            var user = userManager.FindByNameAsync(username).Result;
+            var isDonor = userManager.IsInRoleAsync(user, RolesConstants.Donor).Result;
+            return isDonor;
+        }
+
+        public static bool IsUserInPatientRole(this UserManager<AppUser> userManager, string username)
+        {
+            var user = userManager.FindByNameAsync(username).Result;
+            var isPatient = userManager.IsInRoleAsync(user, RolesConstants.Patient).Result;
+            return isPatient;
+        }
+
+        public static bool IsUserInAdminRole(this UserManager<AppUser> userManager, string username)
+        {
+            var user = userManager.FindByNameAsync(username).Result;
+            var isAdmin = userManager.IsInRoleAsync(user, RolesConstants.Administrator).Result;
+            return isAdmin;
+        }
     }
 }
