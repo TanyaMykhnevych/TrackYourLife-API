@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using TrackYourLife.API.ViewModels.PatientRequests;
 
 namespace TrackYourLife.API.Controllers
 {
@@ -47,7 +49,19 @@ namespace TrackYourLife.API.Controllers
         [HttpGet]
         public IActionResult GetPatientRequestList()
         {
-            string response = null;
+            var response = ContentExecute(() =>
+            {
+                var username = User.Identity.Name;
+                var user = _userManager.FindByNameAsync(username).Result;
+                var isMedEmployee = _userManager.IsInRoleAsync(user, RolesConstants.MedicalEmployee).Result;
+                var patientRequests = isMedEmployee
+                    ? _patientOrganRequestService.GetPatientRequests()
+                    : _patientOrganRequestService.GetPatientRequestsByUsername(user.UserName);
+
+                var patientRequestListItems = patientRequests.Select(dr => new PatientRequestListItemViewModel(dr)).ToList();
+                return new PatientRequestListViewModel(patientRequestListItems);
+            });
+
 
             return Json(response);
         }

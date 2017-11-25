@@ -50,7 +50,9 @@ namespace BusinessLayer.Services.Implementations
                     .Include(dr => dr.OrganInfo)
                     .Include(dr => dr.DonorInfo)
                     .Include(dr => dr.RequestsRelation)
-                    .Include(dr => dr.TransplantOrgan));
+                    .Include(dr => dr.TransplantOrgan))
+                    .OrderBy(dr => dr.TransplantOrgan.OrganInfo.Name)
+                    .ToList();
         }
 
         public IList<DonorRequest> GetDonorRequestsByUsername(string userName)
@@ -62,7 +64,9 @@ namespace BusinessLayer.Services.Implementations
                     .Include(dr => dr.OrganInfo)
                     .Include(dr => dr.DonorInfo)
                     .Include(dr => dr.RequestsRelation)
-                    .Include(dr => dr.TransplantOrgan));
+                    .Include(dr => dr.TransplantOrgan))
+                    .OrderBy(dr => dr.TransplantOrgan.OrganInfo.Name)
+                    .ToList();
         }
 
         public DonorRequest GetById(int id)

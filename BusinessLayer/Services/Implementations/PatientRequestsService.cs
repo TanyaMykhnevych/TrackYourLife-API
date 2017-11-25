@@ -7,6 +7,9 @@ using Common.Entities;
 using Common.Entities.Identity;
 using Common.Entities.OrganRequests;
 using Common.Enums;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace BusinessLayer.Services.Implementations
 {
@@ -35,6 +38,32 @@ namespace BusinessLayer.Services.Implementations
             _userManager = userManager;
         }
 
+        public IList<PatientRequest> GetPatientRequests()
+        {
+            return _patientRequestsRepository.GetAll(
+           include: x => x.Include(p => p.RequestsRelation)
+               .Include(p => p.OrganInfo)
+               .Include(p => p.RequestsRelation))
+               .OrderBy(p => p.OrganInfo.Name)
+                    .ThenByDescending(p => p.Priority)
+                    .ThenBy(p => p.Created)
+                    .ToList();
+        }
+
+        public IList<PatientRequest> GetPatientRequestsByUsername(string userName)
+        {
+            var user = _userManager.FindByNameAsync(userName).Result;
+            return _patientRequestsRepository.GetAll(
+                predicate: dr => dr.PatientInfo.AppUserId == user.Id,
+                include: x => x.Include(p => p.RequestsRelation)
+                    .Include(p => p.OrganInfo)
+                    .Include(p => p.PatientInfo))
+                    .OrderBy(p => p.OrganInfo.Name)
+                    .ThenByDescending(p => p.Priority)
+                    .ThenBy(p => p.Created)
+                    .ToList();
+        }
+
         public PatientRequest GetById(int patientOrganRequestId)
         {
             return _patientRequestsRepository.GetById(patientOrganRequestId);
@@ -50,8 +79,8 @@ namespace BusinessLayer.Services.Implementations
                 model.QueryPriority = PatientRequestPriority.Normal;
 
             var user = _userManager.FindByEmailAsync(model.Email).Result;
-            var patientUserInfo = user == null 
-                ? _userInfoService.RegisterPatient(model) 
+            var patientUserInfo = user == null
+                ? _userInfoService.RegisterPatient(model)
                 : _userInfoService.GetUserInfoByUserId(user.Id);
 
             var patientRequest = new PatientRequest()

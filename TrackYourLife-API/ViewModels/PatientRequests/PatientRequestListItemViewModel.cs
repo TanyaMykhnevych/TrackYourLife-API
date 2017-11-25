@@ -19,6 +19,8 @@ namespace TrackYourLife.API.ViewModels.PatientRequests
         
         public bool HasLinkedDonorRequest { get; set; }
 
+        public PatientRequestPriority Priority { get; set; }
+
         public PatientRequestListItemViewModel(PatientRequest patientRequest)
         {
             Id = patientRequest.Id;
@@ -29,6 +31,7 @@ namespace TrackYourLife.API.ViewModels.PatientRequests
             OrganInfoName = patientRequest.OrganInfo.Name;
             HasLinkedDonorRequest = patientRequest.RequestsRelation != null
                 && patientRequest.RequestsRelation.IsActive;
+            Priority = patientRequest.Priority;
         }
     }
 }
