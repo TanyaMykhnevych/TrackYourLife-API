@@ -9,6 +9,8 @@ namespace TrackYourLife.API.ViewModels.DonorRequests
     {
         public int Id { get; set; }
 
+        public string FullName { get; set; }
+
         public string Message { get; set; }
 
         public DonorRequestStatuses Status { get; set; }
@@ -28,6 +30,7 @@ namespace TrackYourLife.API.ViewModels.DonorRequests
         public DonorRequestListItemViewModel(DonorRequest donorRequest)
         {
             Id = donorRequest.Id;
+            FullName = donorRequest.DonorInfo.FirstName + " " + donorRequest.DonorInfo.SecondName;
             Message = donorRequest.Message;
             Status = donorRequest.Status;
             DonorInfoId = donorRequest.DonorInfoId;

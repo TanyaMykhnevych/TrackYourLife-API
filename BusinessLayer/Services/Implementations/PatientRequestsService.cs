@@ -43,6 +43,7 @@ namespace BusinessLayer.Services.Implementations
             return _patientRequestsRepository.GetAll(
            include: x => x.Include(p => p.RequestsRelation)
                .Include(p => p.OrganInfo)
+               .Include(p => p.PatientInfo)
                .Include(p => p.RequestsRelation))
                .OrderBy(p => p.OrganInfo.Name)
                     .ThenByDescending(p => p.Priority)
