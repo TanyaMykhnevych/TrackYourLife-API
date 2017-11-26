@@ -109,7 +109,7 @@ namespace BusinessLayer.Services.Implementations
                 UserInfo = patientInfo
             };
 
-            var password = PasswordHasher.GeneratePassword();
+            var password = PasswordHasher.GetStaticPassword();
             var result = _userManager.CreateAsync(user, password).Result;
 
             if (result.Succeeded)

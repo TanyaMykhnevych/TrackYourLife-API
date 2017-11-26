@@ -70,6 +70,20 @@ namespace BusinessLayer.Services.Implementations
             return _patientRequestsRepository.GetById(patientOrganRequestId);
         }
 
+        public PatientRequest GetDetailedById(int id)
+        {
+            return _patientRequestsRepository.GetDetailedById(id);
+        }
+
+        public bool HasPatientRequest(string id, int patientRequestId)
+        {
+            var userInfo = _userInfoService.GetUserInfoByUserId(id);
+            if (userInfo == null) return false;
+
+            return _patientRequestsRepository.Any(dr =>
+                dr.PatientInfoId == userInfo.UserInfoId && dr.Id == patientRequestId);
+        }
+
         public void AddPatientRequestToQueue(PatientOrganRequestViewModel model)
         {
             var isOrganInfoExist = _organInfoService.IfOrganInfoExists(model.OrganInfoId);

@@ -1,8 +1,6 @@
 ﻿using DataLayer.Repositories.Abstractions;
 using DataLayer.DbContext;
-using System.Collections.Generic;
 using Common.Entities.OrganRequests;
-using Common.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataLayer.Repositories.Implementations
@@ -18,6 +16,17 @@ namespace DataLayer.Repositories.Implementations
         {
             return GetSingleByPredicate(x => x.Id == patientOrganQueryId,
                  query => query.Include(e => e.RequestsRelation));
+        }
+
+        public PatientRequest GetDetailedById(int patientRequestId)
+        {
+            return GetSingleByPredicate(x => x.Id == patientRequestId,
+                include:
+                    x => x.Include(pt => pt.RequestsRelation)
+                        .ThenInclude(dpr => dpr.DonorRequest)
+                        .ThenInclude(pr => pr.DonorInfo)
+                    .Include(pt => pt.OrganInfo)
+                    .Include(pt => pt.PatientInfo));
         }
     }
 }

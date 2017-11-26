@@ -67,6 +67,33 @@ namespace TrackYourLife.API.Controllers
         }
 
         /// <summary>
+        /// Returns Patient Requests List
+        /// </summary>
+        [HttpGet]
+        public IActionResult GetPatientRequestDetails(int id)
+        {
+            int patientRequestId = id;
+            bool hasRights = _userManager.IsUserInMedEmployeeRole(User.Identity.Name);
+            if (!hasRights)
+            {
+                var user = _userManager.FindByNameAsync(User.Identity.Name).Result;
+                hasRights = _patientOrganRequestService.HasPatientRequest(user.Id, patientRequestId);
+            }
+            if (!hasRights)
+            {
+                return Unauthorized();
+            }
+
+            var response = ContentExecute<PatientRequestDetailsViewModel>(() =>
+            {
+                var patientRequest = _patientOrganRequestService.GetDetailedById(patientRequestId);
+                return new PatientRequestDetailsViewModel(patientRequest, patientRequest.RequestsRelation?.DonorRequest);
+            });
+
+            return Json(response);
+        }
+
+        /// <summary>
         /// Creates User/UserInfo for donor and sends email to donor
         /// Creates new PatientOrganQuery for patient
         /// </summary>

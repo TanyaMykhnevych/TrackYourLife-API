@@ -36,5 +36,10 @@ namespace Common.Utils
             x = x.Replace("-", "");
             return string.Join("", x.Take(8));
         }
+
+        public static string GetStaticPassword()
+        {
+            return "Test123!";
+        }
     }
 }
