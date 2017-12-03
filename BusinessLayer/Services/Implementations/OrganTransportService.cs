@@ -2,6 +2,7 @@
 using BusinessLayer.Models.ViewModels.Delivery;
 using Common.Entities.OrganDelivery;
 using DataLayer.Repositories.Abstractions;
+using System;
 
 namespace BusinessLayer.Services.Implementations
 {
@@ -24,33 +25,23 @@ namespace BusinessLayer.Services.Implementations
             _donorRequestsService = donorRequestsService;
         }
 
-        public void ScheduleOrganDelivery(ScheduleDeliveryViewModel model)
-        {
-            var deliveryInfo = new OrganDeliveryInfo
-            {
-                DonorId = model.DonorId,
-                PatientId = model.PatientId,
-                FromClinicId = model.FromClinicId,
-                ToClinicId = model.ToClinicId,
-                StartTransportTime = model.StartTransportTime
-            };
-
-            var patientOrganRequest = _patientRequestsService.GetById(model.PatientOrganRequestId);
-            var patientDonorRequestsLink = patientOrganRequest.RequestsRelation;
-            var donorRequestId = patientDonorRequestsLink.DonorRequestId;
-            var donorRequest = _donorRequestsService.GetDetailedById(donorRequestId);
-            var donorOrgan = _transplantOrgansService.GetById(donorRequest.TransplantOrganId.Value);
-
-            donorOrgan.OrganDeliveryInfo = deliveryInfo;
-            
-            _transplantOrgansService.Update(donorOrgan);
-        }
-
         public void AddOrganDeliverySnapshot(OrganStateSnapshotViewModel model)
         {
+            var transplantOrgan = _transplantOrgansService.GetById(model.TransplantOrganId);
+            if (transplantOrgan == null)
+            {
+                throw new ArgumentOutOfRangeException("Transplant organ ID is not exist.");
+            }
+
+            var deliveryInfo = transplantOrgan.OrganDeliveryInfo;
+            if (!transplantOrgan.OrganDeliveryInfoId.HasValue)
+            {
+                deliveryInfo = _deliverySnapshotsRepository.CreateDeliveryInfo(transplantOrgan.Id);
+            }
+
             var snapshot = new OrganDataSnapshot()
             {
-                OrganDeliveryId = model.OrganDeliveryInfoId,
+                OrganDeliveryId = deliveryInfo.Id,
                 Temperature = model.Temperature,
                 Time = model.Time,
                 Longitude = model.Longitude,

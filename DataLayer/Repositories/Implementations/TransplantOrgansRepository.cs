@@ -16,7 +16,8 @@ namespace DataLayer.Repositories.Implementations
 
         public TransplantOrgan GetById(int transplantOrganId)
         {
-            return GetSingleByPredicate(x => x.Id == transplantOrganId);
+            return GetSingleByPredicate(x => x.Id == transplantOrganId,
+                query => query.Include(x => x.OrganDeliveryInfo));
         }
     }
 }

@@ -217,18 +217,6 @@ namespace DataLayer.Migrations
 
                     b.Property<string>("CreatedBy");
 
-                    b.Property<int>("DonorId");
-
-                    b.Property<int>("FromClinicId");
-
-                    b.Property<int>("PatientId");
-
-                    b.Property<DateTime>("StartTransportTime");
-
-                    b.Property<int>("Status");
-
-                    b.Property<int>("ToClinicId");
-
                     b.Property<int>("TransplantOrganId");
 
                     b.Property<DateTime?>("Updated");
@@ -236,14 +224,6 @@ namespace DataLayer.Migrations
                     b.Property<string>("UpdatedBy");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DonorId");
-
-                    b.HasIndex("FromClinicId");
-
-                    b.HasIndex("PatientId");
-
-                    b.HasIndex("ToClinicId");
 
                     b.ToTable("OrganDeliveryInfos");
                 });
@@ -563,29 +543,6 @@ namespace DataLayer.Migrations
                     b.HasOne("Common.Entities.OrganDelivery.OrganDeliveryInfo", "OrganDelivery")
                         .WithMany("OrganDataSnapshots")
                         .HasForeignKey("OrganDeliveryId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("Common.Entities.OrganDelivery.OrganDeliveryInfo", b =>
-                {
-                    b.HasOne("Common.Entities.UserInfo", "Donor")
-                        .WithMany()
-                        .HasForeignKey("DonorId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Common.Entities.Clinic", "FromClinic")
-                        .WithMany()
-                        .HasForeignKey("FromClinicId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Common.Entities.UserInfo", "Patient")
-                        .WithMany()
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Common.Entities.Clinic", "ToClinic")
-                        .WithMany()
-                        .HasForeignKey("ToClinicId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

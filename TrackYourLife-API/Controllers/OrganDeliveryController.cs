@@ -15,21 +15,6 @@ namespace TrackYourLife.API.Controllers
         }
 
         /// <summary>
-        /// Creates OrganDeliveryInfo and links it to TransplantOrgan 
-        /// (to TransplantOrgan of DonorOrganRequest which assigned to current PatientOrganRequest)
-        /// </summary>
-        [HttpPost]
-        public IActionResult ScheduleDelivery(ScheduleDeliveryViewModel model)
-        {
-            var result = this.Execute(() =>
-            {
-                _transportService.ScheduleOrganDelivery(model);
-            });
-
-            return Json(result);
-        }
-
-        /// <summary>
         /// Adds new delivery snapshot to OrganDeliveryInfo
         /// </summary>
         [HttpPost]

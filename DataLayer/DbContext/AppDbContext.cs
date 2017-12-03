@@ -55,23 +55,6 @@ namespace DataLayer.DbContext
                 .HasForeignKey<UserInfo>(b => b.AppUserId);
 
             modelBuilder.Entity<OrganDeliveryInfo>()
-                .HasOne(ot => ot.Donor)
-                .WithMany()
-                .HasForeignKey(ot => ot.DonorId)
-                .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<OrganDeliveryInfo>()
-                .HasOne(ot => ot.Patient)
-                .WithMany()
-                .HasForeignKey(ot => ot.PatientId);
-            modelBuilder.Entity<OrganDeliveryInfo>()
-                .HasOne(ot => ot.ToClinic)
-                .WithMany()
-                .HasForeignKey(ot => ot.ToClinicId);
-            modelBuilder.Entity<OrganDeliveryInfo>()
-                .HasOne(ot => ot.FromClinic)
-                .WithMany()
-                .HasForeignKey(ot => ot.FromClinicId);
-            modelBuilder.Entity<OrganDeliveryInfo>()
                 .HasOne(ot => ot.TransplantOrgan)
                 .WithOne(x => x.OrganDeliveryInfo)
                 .HasForeignKey<TransplantOrgan>(ot => ot.OrganDeliveryInfoId)
