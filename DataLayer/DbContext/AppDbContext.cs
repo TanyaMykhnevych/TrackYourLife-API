@@ -24,8 +24,7 @@ namespace DataLayer.DbContext
 
         public DbSet<OrganInfo> OrganInfos { get; set; }
         public DbSet<TransplantOrgan> TransplantOrgans { get; set; }
-
-        public DbSet<OrganDeliveryInfo> OrganDeliveryInfos { get; set; }
+        
         public DbSet<OrganDataSnapshot> OrganDataSnapshots { get; set; }
 
         public DbSet<DonorRequest> DonorRequests { get; set; }
@@ -53,12 +52,6 @@ namespace DataLayer.DbContext
                 .HasOne(p => p.UserInfo)
                 .WithOne(i => i.AppUser)
                 .HasForeignKey<UserInfo>(b => b.AppUserId);
-
-            modelBuilder.Entity<OrganDeliveryInfo>()
-                .HasOne(ot => ot.TransplantOrgan)
-                .WithOne(x => x.OrganDeliveryInfo)
-                .HasForeignKey<TransplantOrgan>(ot => ot.OrganDeliveryInfoId)
-                .IsRequired(false);
 
             modelBuilder.Entity<DonorRequest>()
                 .HasOne(ot => ot.DonorInfo)

@@ -70,6 +70,25 @@ namespace TrackYourLife.API.Controllers
         /// Returns Patient Requests List
         /// </summary>
         [HttpGet]
+        [AllowAnonymous]
+        public IActionResult GetReadyToTransportPatientRequests()
+        {
+            var response = ContentExecute(() =>
+            {
+                var patientRequests = _patientOrganRequestService.GetReadyToTransportPatientRequests();
+
+                var patientRequestListItems = patientRequests.Select(dr => new PatientRequestListItemViewModel(dr)).ToList();
+                return new PatientRequestListViewModel(patientRequestListItems);
+            });
+
+
+            return Json(response);
+        }
+
+        /// <summary>
+        /// Returns Patient Requests List
+        /// </summary>
+        [HttpGet]
         public IActionResult GetPatientRequestDetails(int id)
         {
             int patientRequestId = id;

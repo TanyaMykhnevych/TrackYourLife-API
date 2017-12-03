@@ -4,7 +4,7 @@ namespace BusinessLayer.Models.ViewModels.Delivery
 {
     public class OrganStateSnapshotViewModel
     {
-        public int TransplantOrganId { get; set; }
+        public int PatientRequestId { get; set; }
 
         public double Altitude { get; set; }
         public double Longitude { get; set; }

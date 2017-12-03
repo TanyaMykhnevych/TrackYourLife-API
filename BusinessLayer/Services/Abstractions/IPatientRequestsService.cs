@@ -10,6 +10,8 @@ namespace BusinessLayer.Services.Abstractions
     {
         IList<PatientRequest> GetPatientRequests();
 
+        IList<PatientRequest> GetReadyToTransportPatientRequests();
+
         IList<PatientRequest> GetPatientRequestsByUsername(string userName);
 
         PatientRequest GetById(int patientOrganRequestId);

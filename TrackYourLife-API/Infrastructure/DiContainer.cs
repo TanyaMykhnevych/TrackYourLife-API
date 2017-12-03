@@ -34,7 +34,6 @@ namespace TrackYourLife.API.Infrastructure
             services.AddTransient<IOrganInfoRepository, OrganInfoRepository>();
             services.AddTransient<IClinicsRepository, ClinicsRepository>();
             services.AddTransient<IMedicalExamsRepository, MedicalExamsRepository>();
-            services.AddTransient<IOrganDeliveryRepository, OrganDeliveryRepository>();
             services.AddTransient<ITransplantOrgansRepository, TransplantOrgansRepository>();
             services.AddTransient<IOrganDeliverySnapshotsRepository, OrganDeliverySnapshotsRepository>();
             services.AddTransient<IPatientRequestsRepository, PatientRequestsRepository>();

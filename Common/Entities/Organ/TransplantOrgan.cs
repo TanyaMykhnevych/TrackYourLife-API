@@ -2,6 +2,7 @@
 using Common.Entities.OrganDelivery;
 using Common.Entities.OrganRequests;
 using Common.Enums;
+using System.Collections.Generic;
 
 namespace Common.Entities.Organ
 {
@@ -20,9 +21,8 @@ namespace Common.Entities.Organ
 
         public int OrganInfoId { get; set; }
         public OrganInfo OrganInfo { get; set; }
-
-        public int? OrganDeliveryInfoId { get; set; }
-        public virtual OrganDeliveryInfo OrganDeliveryInfo { get; set; }
+        
+        public virtual ICollection<OrganDataSnapshot> OrganDataSnapshots { get; set; }
 
         public int ClinicId { get; set; }
         public virtual Clinic Clinic { get; set; }

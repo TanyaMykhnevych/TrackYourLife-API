@@ -151,8 +151,6 @@ namespace DataLayer.Migrations
 
                     b.Property<string>("CreatedBy");
 
-                    b.Property<int?>("OrganDeliveryInfoId");
-
                     b.Property<int>("OrganInfoId");
 
                     b.Property<int>("Status");
@@ -166,10 +164,6 @@ namespace DataLayer.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClinicId");
-
-                    b.HasIndex("OrganDeliveryInfoId")
-                        .IsUnique()
-                        .HasFilter("[OrganDeliveryInfoId] IS NOT NULL");
 
                     b.HasIndex("OrganInfoId");
 
@@ -191,31 +185,9 @@ namespace DataLayer.Migrations
 
                     b.Property<double>("Longitude");
 
-                    b.Property<int>("OrganDeliveryId");
-
                     b.Property<float>("Temperature");
 
                     b.Property<DateTime>("Time");
-
-                    b.Property<DateTime?>("Updated");
-
-                    b.Property<string>("UpdatedBy");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrganDeliveryId");
-
-                    b.ToTable("OrganDataSnapshots");
-                });
-
-            modelBuilder.Entity("Common.Entities.OrganDelivery.OrganDeliveryInfo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("Created");
-
-                    b.Property<string>("CreatedBy");
 
                     b.Property<int>("TransplantOrganId");
 
@@ -225,7 +197,9 @@ namespace DataLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OrganDeliveryInfos");
+                    b.HasIndex("TransplantOrganId");
+
+                    b.ToTable("OrganDataSnapshots");
                 });
 
             modelBuilder.Entity("Common.Entities.OrganRequests.DonorMedicalExam", b =>
@@ -522,11 +496,6 @@ namespace DataLayer.Migrations
                         .HasForeignKey("ClinicId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("Common.Entities.OrganDelivery.OrganDeliveryInfo", "OrganDeliveryInfo")
-                        .WithOne("TransplantOrgan")
-                        .HasForeignKey("Common.Entities.Organ.TransplantOrgan", "OrganDeliveryInfoId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("Common.Entities.Organ.OrganInfo", "OrganInfo")
                         .WithMany()
                         .HasForeignKey("OrganInfoId")
@@ -540,9 +509,9 @@ namespace DataLayer.Migrations
 
             modelBuilder.Entity("Common.Entities.OrganDelivery.OrganDataSnapshot", b =>
                 {
-                    b.HasOne("Common.Entities.OrganDelivery.OrganDeliveryInfo", "OrganDelivery")
+                    b.HasOne("Common.Entities.Organ.TransplantOrgan")
                         .WithMany("OrganDataSnapshots")
-                        .HasForeignKey("OrganDeliveryId")
+                        .HasForeignKey("TransplantOrganId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

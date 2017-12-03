@@ -12,20 +12,5 @@ namespace DataLayer.Repositories.Implementations
             : base(dbContext, dbContext.OrganDataSnapshots)
         {
         }
-
-        public OrganDeliveryInfo CreateDeliveryInfo(int transplantOrganId)
-        {
-            var deliveryInfo = new OrganDeliveryInfo
-            {
-                TransplantOrganId = transplantOrganId, 
-                Created = DateTime.UtcNow,
-                CreatedBy = CurrentUserHolder.CurrentUser
-            };
-
-            var entry = DbContext.OrganDeliveryInfos.Add(deliveryInfo);
-            DbContext.SaveChanges();
-
-            return entry.Entity;
-        }
     }
 }

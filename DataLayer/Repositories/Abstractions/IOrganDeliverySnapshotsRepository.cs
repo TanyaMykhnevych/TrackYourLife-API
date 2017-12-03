@@ -7,6 +7,5 @@ namespace DataLayer.Repositories.Abstractions
 {
     public interface IOrganDeliverySnapshotsRepository : IRepositoryBase<OrganDataSnapshot>
     {
-        OrganDeliveryInfo CreateDeliveryInfo(int transplantOrganId);
     }
 }

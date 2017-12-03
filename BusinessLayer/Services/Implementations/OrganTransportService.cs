@@ -27,21 +27,31 @@ namespace BusinessLayer.Services.Implementations
 
         public void AddOrganDeliverySnapshot(OrganStateSnapshotViewModel model)
         {
-            var transplantOrgan = _transplantOrgansService.GetById(model.TransplantOrganId);
-            if (transplantOrgan == null)
+            var patientRequest = _patientRequestsService.GetById(model.PatientRequestId);
+            if (patientRequest == null)
             {
-                throw new ArgumentOutOfRangeException("Transplant organ ID is not exist.");
+                throw new ArgumentOutOfRangeException("PatientRequest is not exist.");
             }
 
-            var deliveryInfo = transplantOrgan.OrganDeliveryInfo;
-            if (!transplantOrgan.OrganDeliveryInfoId.HasValue)
+            var donorRequest = _donorRequestsService.GetById(patientRequest.RequestsRelation.DonorRequestId);
+            if (donorRequest == null)
             {
-                deliveryInfo = _deliverySnapshotsRepository.CreateDeliveryInfo(transplantOrgan.Id);
+                throw new ArgumentOutOfRangeException("DonorRequest is not exist.");
+            }
+            if (!donorRequest.TransplantOrganId.HasValue)
+            {
+                throw new ArgumentOutOfRangeException("DonorRequest has not linked transplant organ.");
+            }
+
+            var transplantOrgan = _transplantOrgansService.GetById(donorRequest.TransplantOrganId.Value);
+            if (transplantOrgan == null)
+            {
+                throw new ArgumentOutOfRangeException("Transplant organ is not exist.");
             }
 
             var snapshot = new OrganDataSnapshot()
             {
-                OrganDeliveryId = deliveryInfo.Id,
+                TransplantOrganId = transplantOrgan.Id,
                 Temperature = model.Temperature,
                 Time = model.Time,
                 Longitude = model.Longitude,

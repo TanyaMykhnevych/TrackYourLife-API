@@ -65,6 +65,24 @@ namespace BusinessLayer.Services.Implementations
                     .ToList();
         }
 
+
+        public IList<PatientRequest> GetReadyToTransportPatientRequests()
+        {
+            return _patientRequestsRepository.GetAll(
+                predicate: dr => 
+                    dr.Status == PatientRequestStatuses.AwaitingForTransplanting 
+                    && dr.RequestsRelation != null 
+                    && dr.RequestsRelation.DonorRequest != null 
+                    && dr.RequestsRelation.DonorRequest.TransplantOrgan != null,
+                include: x => x.Include(p => p.RequestsRelation)
+                    .Include(p => p.OrganInfo)
+                    .Include(p => p.PatientInfo))
+                    .OrderBy(p => p.OrganInfo.Name)
+                    .ThenByDescending(p => p.Priority)
+                    .ThenBy(p => p.Created)
+                    .ToList();
+        }
+
         public PatientRequest GetById(int patientOrganRequestId)
         {
             return _patientRequestsRepository.GetById(patientOrganRequestId);
