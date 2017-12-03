@@ -51,7 +51,7 @@ namespace BusinessLayer.Services.Implementations
                     .Include(dr => dr.DonorInfo)
                     .Include(dr => dr.RequestsRelation)
                     .Include(dr => dr.TransplantOrgan))
-                    .OrderBy(dr => dr.TransplantOrgan.OrganInfo.Name)
+                    .OrderBy(dr => dr.TransplantOrgan?.OrganInfo?.Name)
                     .ToList();
         }
 
