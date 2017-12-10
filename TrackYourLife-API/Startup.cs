@@ -3,24 +3,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TrackYourLife.API.Infrastructure;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using BusinessLayer.Models;
-using Microsoft.AspNetCore.Authorization;
 using DataLayer.DbContext;
-using Microsoft.AspNetCore.Identity;
 using System;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using IdentityServer4.AccessTokenValidation;
-using System.Collections.Generic;
-using IdentityServer4.Test;
-using IdentityServer4.Models;
-using System.Security.Claims;
 using System.Text;
 using Common.Constants;
 using Common.Utils;
-using Microsoft.AspNetCore.Http;
 
 namespace TrackYourLife.API
 {
@@ -66,9 +54,10 @@ namespace TrackYourLife.API
             {
                 app.UseDeveloperExceptionPage();
             }
-
+           
+            string origins = "https://TanyaMy.github.io";
             app.UseCors(builder => builder
-                .WithOrigins("http://localhost:4200")
+                .WithOrigins(origins)
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials());
