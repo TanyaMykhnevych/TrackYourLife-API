@@ -27,5 +27,17 @@ namespace TrackYourLife.API.Controllers
 
             return Json(result);
         }
+
+        [HttpGet]
+        public IActionResult GetOrganDeliverySnapshot(int id)
+        {
+            var response = ContentExecute(() =>
+            {
+                int patientRequestId = id;
+                return _transportService.GetByPatientRequestId(patientRequestId);
+            });
+
+            return Json(response);
+        }
     }
 }

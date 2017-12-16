@@ -3,6 +3,8 @@ using BusinessLayer.Models.ViewModels.Delivery;
 using Common.Entities.OrganDelivery;
 using DataLayer.Repositories.Abstractions;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BusinessLayer.Services.Implementations
 {
@@ -53,12 +55,38 @@ namespace BusinessLayer.Services.Implementations
             {
                 TransplantOrganId = transplantOrgan.Id,
                 Temperature = model.Temperature,
-                Time = model.Time,
+                Humidity = model.Humidity,
+                Time = DateTime.UtcNow,
                 Longitude = model.Longitude,
                 Altitude = model.Altitude
             };
 
             _deliverySnapshotsRepository.Add(snapshot);
+        }
+
+        public IList<OrganStateSnapshotViewModel> GetByPatientRequestId(int patientRequestId)
+        {
+            var patRequest = _patientRequestsService.GetDetailedById(patientRequestId);
+            var donorRequest = patRequest.RequestsRelation.DonorRequest;
+            var transplantOrganId = donorRequest.TransplantOrganId;
+            if (!transplantOrganId.HasValue)
+            {
+                return Enumerable.Empty<OrganStateSnapshotViewModel>()
+                    .ToList();
+            } 
+
+            var snapshots = _deliverySnapshotsRepository.GetByTransplantOrganId(transplantOrganId.Value)
+                .TakeLast(10);
+
+            return snapshots.Select(snapshot => new OrganStateSnapshotViewModel()
+            {
+                PatientRequestId = patientRequestId,
+                Temperature = snapshot.Temperature,
+                Humidity = snapshot.Humidity,
+                Time = snapshot.Time,
+                Longitude = snapshot.Longitude,
+                Altitude = snapshot.Altitude
+            }).ToList();
         }
     }
 }

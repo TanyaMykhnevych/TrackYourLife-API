@@ -183,6 +183,8 @@ namespace DataLayer.Migrations
 
                     b.Property<string>("CreatedBy");
 
+                    b.Property<float>("Humidity");
+
                     b.Property<double>("Longitude");
 
                     b.Property<float>("Temperature");

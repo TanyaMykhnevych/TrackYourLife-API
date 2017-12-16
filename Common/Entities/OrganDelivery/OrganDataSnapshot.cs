@@ -14,6 +14,8 @@ namespace Common.Entities.OrganDelivery
 
         public float Temperature { get; set; }
 
+        public float Humidity { get; set; }
+
         public int TransplantOrganId { get; set; }
     }
 }

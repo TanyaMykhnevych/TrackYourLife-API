@@ -12,5 +12,7 @@ namespace BusinessLayer.Models.ViewModels.Delivery
         public DateTime Time { get; set; }
 
         public float Temperature { get; set; }
+
+        public float Humidity { get; set; }
     }
 }
