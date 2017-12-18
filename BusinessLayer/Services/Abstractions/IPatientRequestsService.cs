@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Common.Entities.OrganRequests;
 using Common.Enums;
 using System.Collections.Generic;
+using Common.Models;
 
 namespace BusinessLayer.Services.Abstractions
 {
@@ -23,5 +24,7 @@ namespace BusinessLayer.Services.Abstractions
         void AddPatientRequestToQueue(PatientOrganRequestViewModel patientOrganQueryViewModel);
 
         void ChangePatientRequestStatus(int patientOrganQueryId, PatientRequestStatuses status);
+
+        void UpdatePatientRequestWithPatient(EditPatientRequestModel model);
     }
 }

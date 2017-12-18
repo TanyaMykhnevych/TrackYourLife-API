@@ -13,5 +13,7 @@ namespace BusinessLayer.Services.Abstractions
         UserInfo RegisterDonor(DonorRequestViewModel request);
 
         UserInfo RegisterPatient(PatientOrganRequestViewModel model);
+
+        void Update(UserInfo patient);
     }
 }

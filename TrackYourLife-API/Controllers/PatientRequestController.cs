@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using TrackYourLife.API.ViewModels.PatientRequests;
+using Common.Models;
 
 namespace TrackYourLife.API.Controllers
 {
@@ -17,7 +18,7 @@ namespace TrackYourLife.API.Controllers
     [Route("api/[controller]/[action]/{id?}")]
     public class PatientRequestController : ControllerBase
     {
-        private readonly IPatientRequestsService _patientOrganRequestService;
+        private readonly IPatientRequestsService _patientRequestService;
         private readonly IRequestsRelationsService _requestsRelationsService;
         private readonly UserManager<AppUser> _userManager;
 
@@ -26,7 +27,7 @@ namespace TrackYourLife.API.Controllers
             IRequestsRelationsService requestsRelationsService,
             UserManager<AppUser> userManager)
         {
-            _patientOrganRequestService = patientOrganRequestService;
+            _patientRequestService = patientOrganRequestService;
             _requestsRelationsService = requestsRelationsService;
             _userManager = userManager;
         }
@@ -37,7 +38,7 @@ namespace TrackYourLife.API.Controllers
             var result = ContentExecute(() =>
             {
                 int patientRequestId = id;
-                return _patientOrganRequestService.GetById(patientRequestId);
+                return _patientRequestService.GetById(patientRequestId);
             });
 
             return Json(result);
@@ -55,8 +56,8 @@ namespace TrackYourLife.API.Controllers
                 var user = _userManager.FindByNameAsync(username).Result;
                 var isMedEmployee = _userManager.IsInRoleAsync(user, RolesConstants.MedicalEmployee).Result;
                 var patientRequests = isMedEmployee
-                    ? _patientOrganRequestService.GetPatientRequests()
-                    : _patientOrganRequestService.GetPatientRequestsByUsername(user.UserName);
+                    ? _patientRequestService.GetPatientRequests()
+                    : _patientRequestService.GetPatientRequestsByUsername(user.UserName);
 
                 var patientRequestListItems = patientRequests.Select(dr => new PatientRequestListItemViewModel(dr)).ToList();
                 return new PatientRequestListViewModel(patientRequestListItems);
@@ -75,7 +76,7 @@ namespace TrackYourLife.API.Controllers
         {
             var response = ContentExecute(() =>
             {
-                var patientRequests = _patientOrganRequestService.GetReadyToTransportPatientRequests();
+                var patientRequests = _patientRequestService.GetReadyToTransportPatientRequests();
 
                 var patientRequestListItems = patientRequests.Select(dr => new PatientRequestListItemViewModel(dr)).ToList();
                 return new PatientRequestListViewModel(patientRequestListItems);
@@ -96,7 +97,7 @@ namespace TrackYourLife.API.Controllers
             if (!hasRights)
             {
                 var user = _userManager.FindByNameAsync(User.Identity.Name).Result;
-                hasRights = _patientOrganRequestService.HasPatientRequest(user.Id, patientRequestId);
+                hasRights = _patientRequestService.HasPatientRequest(user.Id, patientRequestId);
             }
             if (!hasRights)
             {
@@ -105,7 +106,7 @@ namespace TrackYourLife.API.Controllers
 
             var response = ContentExecute<PatientRequestDetailsViewModel>(() =>
             {
-                var patientRequest = _patientOrganRequestService.GetDetailedById(patientRequestId);
+                var patientRequest = _patientRequestService.GetDetailedById(patientRequestId);
                 return new PatientRequestDetailsViewModel(patientRequest, patientRequest.RequestsRelation?.DonorRequest);
             });
 
@@ -127,11 +128,23 @@ namespace TrackYourLife.API.Controllers
                     throw new UnauthorizedAccessException("You have not appropriate rights to access this action");
                 }
 
-                _patientOrganRequestService.AddPatientRequestToQueue(model);
+                _patientRequestService.AddPatientRequestToQueue(model);
             });
 
             return Json(result);
         }
+
+        [HttpPost]
+        public IActionResult UpdatePatientRequest(EditPatientRequestModel model)
+        {
+            var result = Execute(() =>
+            {
+                _patientRequestService.UpdatePatientRequestWithPatient(model);
+            });
+
+            return Json(result);
+        }
+
         
         [HttpPost]
         public IActionResult LinkDonorRequest(PatientDonorRequestRelationViewModel model)

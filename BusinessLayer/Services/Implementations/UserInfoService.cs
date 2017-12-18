@@ -129,5 +129,10 @@ namespace BusinessLayer.Services.Implementations
 
             return patientInfo;
         }
+
+        public void Update(UserInfo patient)
+        {
+            _userInfoRepository.Update(patient);
+        }
     }
 }

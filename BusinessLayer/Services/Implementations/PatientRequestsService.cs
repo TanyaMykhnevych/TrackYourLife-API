@@ -10,6 +10,7 @@ using Common.Enums;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Common.Models;
 
 namespace BusinessLayer.Services.Implementations
 {
@@ -69,10 +70,10 @@ namespace BusinessLayer.Services.Implementations
         public IList<PatientRequest> GetReadyToTransportPatientRequests()
         {
             return _patientRequestsRepository.GetAll(
-                predicate: dr => 
-                    dr.Status == PatientRequestStatuses.AwaitingForTransplanting 
-                    && dr.RequestsRelation != null 
-                    && dr.RequestsRelation.DonorRequest != null 
+                predicate: dr =>
+                    dr.Status == PatientRequestStatuses.AwaitingForTransplanting
+                    && dr.RequestsRelation != null
+                    && dr.RequestsRelation.DonorRequest != null
                     && dr.RequestsRelation.DonorRequest.TransplantOrgan != null,
                 include: x => x.Include(p => p.RequestsRelation)
                     .Include(p => p.OrganInfo)
@@ -147,6 +148,28 @@ namespace BusinessLayer.Services.Implementations
             _patientRequestsRepository.Update(patientOrganQuery);
 
             //TODO: send email to clinic that query status has been changed
+        }
+
+        public void UpdatePatientRequestWithPatient(EditPatientRequestModel model)
+        {
+            var patRequest = _patientRequestsRepository.GetById(model.PatientRequestId);
+            if (patRequest == null)
+            {
+                return;
+            }
+
+            patRequest.Message = model.Message;
+            _patientRequestsRepository.Update(patRequest);
+
+            if (patRequest.PatientInfoId.HasValue)
+            {
+                var patient = _userInfoService.GetUserInfoById(patRequest.PatientInfoId.Value);
+
+                patient.AddressLine1 = model.PatientAddressLine1;
+                patient.PhoneNumber = model.PatientPhoneNumber;
+
+                _userInfoService.Update(patient);
+            }
         }
     }
 }
